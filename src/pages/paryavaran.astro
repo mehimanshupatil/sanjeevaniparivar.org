@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import KshetraPage from '@/components/KshetraPage';
+import { getKshetra } from '@/content/kshetras';
+import '@/styles/global.css';
+
+const data = getKshetra('paryavaran')!;
+---
+
+<Layout
+  title={`${data.label.mr} | ${data.label.en} — संजीवनी परिवार`}
+  description={`${data.body.en.slice(0, 155)}...`}
+>
+  <KshetraPage client:load slug="paryavaran" data={data} />
+</Layout>
