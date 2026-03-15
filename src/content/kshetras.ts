@@ -262,6 +262,18 @@ export const KSHETRAS: KshetraData[] = [
   },
 ];
 
+/** Color map derived from KSHETRAS — includes 'general' for non-kshetra events/gallery items */
+export const KSHETRA_COLOR: Record<string, string> = {
+  ...Object.fromEntries(KSHETRAS.map((k) => [k.slug, k.color])),
+  general: '#475569',
+};
+
+/** Label map derived from KSHETRAS — includes 'general' */
+export const KSHETRA_LABEL: Record<string, Bilingual> = {
+  ...Object.fromEntries(KSHETRAS.map((k) => [k.slug, k.label])),
+  general: { mr: 'सामान्य', en: 'General' },
+};
+
 /** Quick lookup by slug */
 export const getKshetra = (slug: string) =>
   KSHETRAS.find((k) => k.slug === slug);

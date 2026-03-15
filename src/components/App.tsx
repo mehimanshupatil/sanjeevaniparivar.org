@@ -7,7 +7,6 @@ import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import AboutSection from './AboutSection';
 import KshetraOverview from './KshetraOverview';
-import EventsSection from './EventsSection';
 import GalleryTeaser from './GalleryTeaser';
 import SocialSection from './SocialSection';
 import ContactSection from './ContactSection';
@@ -22,7 +21,6 @@ export default function App() {
         <HeroSection />
         <AboutSection />
         <KshetraOverview />
-        <EventsSection />
         <GalleryTeaser />
         <SocialSection />
         <ContactSection />

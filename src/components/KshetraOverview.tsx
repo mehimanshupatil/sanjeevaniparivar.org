@@ -45,8 +45,7 @@ export default function KshetraOverview() {
                 {k.num}
               </span>
               <h3 className="text-xl font-extrabold mb-2 leading-tight">{t(k.label)}</h3>
-              <p className="text-sm font-medium opacity-70 mb-6">{t(k.tagline)}</p>
-              <p className="text-sm leading-relaxed flex-1 opacity-75">{t(k.label.mr === k.label.mr ? { mr: '', en: '' } : k.label)}</p>
+              <p className="text-sm font-medium opacity-70 mb-6 flex-1">{t(k.tagline)}</p>
 
               <div className="mt-auto pt-6 flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
                 <span>{t({ mr: 'अधिक जाणून घ्या', en: 'Learn more' })}</span>

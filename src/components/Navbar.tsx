@@ -108,6 +108,20 @@ export default function Navbar() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
+              {/* Events */}
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  href="/events"
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'text-[15px] bg-transparent hover:bg-accent-light hover:text-primary',
+                    isActive('/events') ? 'text-primary bg-accent-light' : 'text-gray-700'
+                  )}
+                >
+                  {t({ mr: 'कार्यक्रम', en: 'Events' })}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
               {/* Gallery */}
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -193,6 +207,12 @@ export default function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <a href="/events" onClick={closeMenu}
+                 className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/events') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
+                {t({ mr: 'कार्यक्रम', en: 'Events' })}
+              </a>
+            </li>
             <li>
               <a href="/gallery" onClick={closeMenu}
                  className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/gallery') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>

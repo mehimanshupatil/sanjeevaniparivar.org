@@ -4,31 +4,13 @@ import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { GALLERY, GALLERY_YEARS, type GalleryItem } from '@/content/gallery';
+import { KSHETRAS as ALL_KSHETRAS, KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 const KSHETRAS = [
-  { key: 'all',        label: { mr: 'सर्व',       en: 'All'          }, color: '#C41E3A' },
-  { key: 'shikshan',   label: { mr: 'शिक्षण',     en: 'Education'    }, color: '#1565C0' },
-  { key: 'paryavaran', label: { mr: 'पर्यावरण',   en: 'Environment'  }, color: '#1B7A1B' },
-  { key: 'aarogya',    label: { mr: 'आरोग्य',     en: 'Health'       }, color: '#C41E3A' },
-  { key: 'prabodhana', label: { mr: 'प्रबोधना',   en: 'Enlightenment'}, color: '#6A1B9A' },
-  { key: 'general',    label: { mr: 'सामान्य',    en: 'General'      }, color: '#475569' },
+  { key: 'all', label: { mr: 'सर्व', en: 'All' }, color: '#C41E3A' },
+  ...ALL_KSHETRAS.map((k) => ({ key: k.slug, label: k.label, color: k.color })),
+  { key: 'general', label: { mr: 'सामान्य', en: 'General' }, color: '#475569' },
 ] as const;
-
-const KSHETRA_LABEL: Record<string, { mr: string; en: string }> = {
-  shikshan:   { mr: 'शिक्षण',   en: 'Education'     },
-  paryavaran: { mr: 'पर्यावरण', en: 'Environment'   },
-  aarogya:    { mr: 'आरोग्य',   en: 'Health'        },
-  prabodhana: { mr: 'प्रबोधना', en: 'Enlightenment' },
-  general:    { mr: 'सामान्य',  en: 'General'       },
-};
-
-const KSHETRA_COLOR: Record<string, string> = {
-  shikshan:   '#1565C0',
-  paryavaran: '#1B7A1B',
-  aarogya:    '#C41E3A',
-  prabodhana: '#6A1B9A',
-  general:    '#475569',
-};
 
 interface LightboxState {
   item: GalleryItem;
