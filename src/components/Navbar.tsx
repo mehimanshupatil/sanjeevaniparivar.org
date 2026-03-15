@@ -23,7 +23,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-gray-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : ''}`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-[68px] flex items-center gap-6">
+      <div className="max-w-6xl mx-auto px-6 h-17 flex items-center justify-between gap-6">
 
         {/* Logo */}
         <a href="/" className="flex items-center gap-2.5 shrink-0">
@@ -61,7 +61,7 @@ export default function Navbar() {
             </button>
             {kshetraOpen && (
               <div
-                className="absolute top-full left-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg py-2 min-w-[180px] z-50"
+                className="absolute top-full left-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg py-2 min-w-45 z-50"
                 onMouseEnter={() => setKshetraOpen(true)}
                 onMouseLeave={() => setKshetraOpen(false)}
               >
@@ -84,12 +84,7 @@ export default function Navbar() {
             )}
           </li>
 
-          <li>
-            <a href="/#vyakhyanmala"
-               className="px-2.5 py-1.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
-              {t(tr.footer.vyakhyan)}
-            </a>
-          </li>
+          
           <li>
             <a href="/#contact"
                className="px-2.5 py-1.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
@@ -99,23 +94,23 @@ export default function Navbar() {
         </ul>
 
         {/* Language toggle */}
-        <button
+        {/* <button
           onClick={toggle}
           className="ml-auto flex items-center px-4 py-1.5 rounded-full border-2 border-primary text-primary font-bold text-xs hover:bg-primary hover:text-white transition-all"
           aria-label="Toggle language"
         >
           {lang === 'mr' ? 'EN' : 'मर'}
-        </button>
+        </button> */}
 
         {/* Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="lg:hidden flex flex-col gap-[5px] p-1"
+          className="lg:hidden flex flex-col gap-1.25 p-1"
           aria-label="Toggle menu"
         >
-          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? 'rotate-45 translate-y-1.75' : ''}`} />
           <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? '-rotate-45 -translate-y-1.75' : ''}`} />
         </button>
       </div>
 

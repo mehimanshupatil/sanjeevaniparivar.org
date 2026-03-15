@@ -7,8 +7,7 @@ import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import AboutSection from './AboutSection';
 import KshetraOverview from './KshetraOverview';
-import VyakhyanSection from './VyakhyanSection';
-import SocialSection from './SocialSection';
+ import SocialSection from './SocialSection';
 import ContactSection from './ContactSection';
 import Footer from './Footer';
 
@@ -20,8 +19,7 @@ export default function App() {
         <HeroSection />
         <AboutSection />
         <KshetraOverview />
-        <VyakhyanSection />
-        <SocialSection />
+         <SocialSection />
         <ContactSection />
       </main>
       <Footer />
