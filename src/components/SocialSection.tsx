@@ -20,7 +20,7 @@ export default function SocialSection() {
           tagClass="bg-primary/10 text-primary"
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {allLinks.map((s) => {
             const Icon = s.icon;
             return (

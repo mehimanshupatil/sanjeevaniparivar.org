@@ -1,15 +1,15 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import KshetraPage from '@/components/KshetraPage';
-import { getKshetra } from '@/content/kshetras';
-import '@/styles/global.css';
+import Layout from "@/layouts/Layout.astro";
+import KshetraPage from "@/components/KshetraPage";
+import { getKshetra } from "@/content/kshetras";
+import "@/styles/global.css";
 
-const data = getKshetra('prabodhana')!;
+const data = getKshetra("prabodhana")!;
 ---
 
 <Layout
   title={`${data.label.mr} | ${data.label.en} — संजीवनी परिवार`}
   description={`${data.body.en.slice(0, 155)}...`}
 >
-  <KshetraPage client:load slug="prabodhana" data={data} />
+  <KshetraPage slug="prabodhana" data={data} />
 </Layout>
