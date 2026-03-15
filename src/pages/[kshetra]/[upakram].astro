@@ -24,5 +24,5 @@ const description = activity.body?.en.slice(0, 155) ?? activity.desc.en;
 ---
 
 <Layout title={title} description={description}>
-  <UpakramPage kshetra={kshetra} activity={activity} />
+  <UpakramPage kshetra={kshetra} activity={activity} client:load />
 </Layout>

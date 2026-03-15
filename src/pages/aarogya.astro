@@ -11,5 +11,5 @@ const data = getKshetra("aarogya")!;
   title={`${data.label.mr} | ${data.label.en} — संजीवनी परिवार`}
   description={`${data.body.en.slice(0, 155)}...`}
 >
-  <KshetraPage slug="aarogya" data={data} />
+  <KshetraPage slug="aarogya" data={data} client:load />
 </Layout>

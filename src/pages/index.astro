@@ -9,19 +9,14 @@
  * For future pages: duplicate this file, add a new Astro page
  * and import the relevant React section components.
  */
-import Layout from '@/layouts/Layout.astro';
-import App from '@/components/App';
-import '@/styles/global.css';
+import Layout from "@/layouts/Layout.astro";
+import App from "@/components/App";
+import "@/styles/global.css";
 ---
 
 <Layout
   title="संजीवनी परिवार | Sanjeevani Parivar — ध्यास परिवर्तनाचा"
   description="Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for 31+ years."
 >
-  <!--
-    client:load → React hydrates immediately on page load.
-    Language is persisted in localStorage so the user's choice
-    survives page refreshes.
-  -->
-  <App   />
+  <App client:load />
 </Layout>
