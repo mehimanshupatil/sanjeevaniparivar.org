@@ -52,17 +52,21 @@ export default function Footer() {
               {t(f.social)}
             </h4>
             <div className="flex gap-2 flex-wrap">
-              {SOCIAL_LINKS.map((s) => (
-                <a
-                  key={s.key}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${s.bg} w-10 h-10 rounded-xl flex items-center justify-center text-white font-extrabold text-xs hover:scale-110 transition-transform`}
-                >
-                  {s.short}
-                </a>
-              ))}
+              {SOCIAL_LINKS.map((s) => {
+                const Icon = s.icon;
+                return (
+                  <a
+                    key={s.key}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${s.bg} w-10 h-10 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform`}
+                    title={s.label}
+                  >
+                    <Icon className="w-5 h-5" strokeWidth={1.5} />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

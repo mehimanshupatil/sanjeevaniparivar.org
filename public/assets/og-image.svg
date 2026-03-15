@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C41E3A"/>
+      <stop offset="55%" stop-color="#9B1530"/>
+      <stop offset="100%" stop-color="#1B7A1B"/>
+    </linearGradient>
+    <!-- dot pattern -->
+    <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="white" opacity="0.06"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- Bottom fade -->
+  <rect width="1200" height="200" y="430" fill="url(#bg)" opacity="0.4"/>
+
+  <!-- Logo circle -->
+  <circle cx="140" cy="315" r="90" fill="#FFFDE7" stroke="#F5C518" stroke-width="4"/>
+  <!-- SP initials as placeholder (replace with actual logo embed) -->
+  <text x="140" y="300" text-anchor="middle" font-family="serif" font-size="36" font-weight="900" fill="#C41E3A">सं</text>
+  <text x="140" y="340" text-anchor="middle" font-family="serif" font-size="22" font-weight="700" fill="#1B7A1B">परिवार</text>
+
+  <!-- Org name -->
+  <text x="270" y="280" font-family="sans-serif" font-size="62" font-weight="900" fill="#FFFDE7" letter-spacing="-1">Sanjeevani</text>
+  <text x="270" y="350" font-family="sans-serif" font-size="62" font-weight="900" fill="#F5C518" letter-spacing="-1">Parivar</text>
+
+  <!-- Devanagari -->
+  <text x="270" y="410" font-family="sans-serif" font-size="32" font-weight="600" fill="rgba(255,253,231,0.7)">संजीवनी परिवार · वसई, महाराष्ट्र</text>
+
+  <!-- Tagline -->
+  <text x="270" y="460" font-family="sans-serif" font-size="22" fill="rgba(255,253,231,0.5)">Education · Environment · Health · Enlightenment</text>
+
+  <!-- Bottom strip -->
+  <rect x="0" y="580" width="1200" height="50" fill="rgba(0,0,0,0.25)"/>
+  <text x="600" y="612" text-anchor="middle" font-family="sans-serif" font-size="18" fill="rgba(255,253,231,0.6)">sanjeevaniparivar.org · Since 1994</text>
+</svg>

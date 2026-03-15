@@ -99,21 +99,27 @@ function PageContent({ data }: { data: KshetraData }) {
 
               <ol className="space-y-0 divide-y divide-gray-100">
                 {data.activities.map((a, i) => (
-                  <li key={i} className="flex gap-5 py-5 group">
-                    <span
-                      className="text-sm font-black tabular-nums mt-0.5 shrink-0 w-7"
-                      style={{ color: data.color }}
+                  <li key={i}>
+                    <a
+                      href={`/${data.slug}/${a.slug}`}
+                      className="flex gap-5 py-5 group hover:bg-gray-50 -mx-3 px-3 rounded-xl transition-colors"
                     >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <strong className="block text-base font-bold text-gray-900 mb-0.5">
-                        {t(a.title)}
-                      </strong>
-                      <span className="text-sm text-gray-500 leading-relaxed">
-                        {t(a.desc)}
+                      <span
+                        className="text-sm font-black tabular-nums mt-0.5 shrink-0 w-7"
+                        style={{ color: data.color }}
+                      >
+                        {String(i + 1).padStart(2, '0')}
                       </span>
-                    </div>
+                      <div className="flex-1">
+                        <strong className="block text-base font-bold text-gray-900 mb-0.5 group-hover:underline">
+                          {t(a.title)}
+                        </strong>
+                        <span className="text-sm text-gray-500 leading-relaxed">
+                          {t(a.desc)}
+                        </span>
+                      </div>
+                      <span className="ml-auto self-center text-gray-300 group-hover:text-gray-500 transition-colors shrink-0">→</span>
+                    </a>
                   </li>
                 ))}
               </ol>

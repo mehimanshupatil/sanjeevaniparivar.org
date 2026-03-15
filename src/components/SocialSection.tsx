@@ -1,6 +1,6 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
-import { SOCIAL_LINKS } from '@/lib/social';
+import { SOCIAL_LINKS, WEBSITE_LINK } from '@/lib/social';
 import SectionHeader from './ui/SectionHeader';
 
 export default function SocialSection() {
@@ -8,14 +8,7 @@ export default function SocialSection() {
 
   const allLinks = [
     ...SOCIAL_LINKS,
-    {
-      key: 'web',
-      label: t(tr.social.website),
-      short: '🌐',
-      handle: 'sanjeevaniparivar.org',
-      href: 'https://sanjeevaniparivar.org',
-      bg: 'bg-secondary',
-    },
+    { ...WEBSITE_LINK, label: t(tr.social.website) },
   ];
 
   return (
@@ -28,19 +21,22 @@ export default function SocialSection() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {allLinks.map((s) => (
-            <a
-              key={s.key}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${s.bg} text-white flex flex-col items-center p-8 rounded-2xl hover:-translate-y-1.5 hover:shadow-xl transition-all`}
-            >
-              <span className="text-4xl font-black mb-2">{s.short}</span>
-              <span className="text-base font-bold mb-1">{s.label}</span>
-              <span className="text-xs opacity-80">{s.handle}</span>
-            </a>
-          ))}
+          {allLinks.map((s) => {
+            const Icon = s.icon;
+            return (
+              <a
+                key={s.key}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${s.bg} text-white flex flex-col items-center p-8 rounded-2xl hover:-translate-y-1.5 hover:shadow-xl transition-all`}
+              >
+                <Icon className="w-10 h-10 mb-3" strokeWidth={1.5} />
+                <span className="text-base font-bold mb-1">{s.label}</span>
+                <span className="text-xs opacity-80">{s.handle}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>

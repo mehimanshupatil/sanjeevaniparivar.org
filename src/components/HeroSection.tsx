@@ -139,7 +139,6 @@ export default function HeroSection() {
         <div className="w-px h-8" style={{ background: 'rgba(255,253,231,0.2)' }} />
       </div>
 
-      <style>{`@keyframes orbitSpin { to { transform: rotate(360deg); } }`}</style>
     </section>
   );
 }

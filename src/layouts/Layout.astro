@@ -2,12 +2,46 @@
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = 'संजीवनी परिवार | Sanjeevani Parivar — ध्यास परिवर्तनाचा',
   description = 'Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for 31+ years.',
+  ogImage = '/assets/og-image.svg',
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL   = new URL(ogImage, Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'Sanjeevani Parivar',
+  alternateName: 'संजीवनी परिवार',
+  url: 'https://sanjeevaniparivar.org',
+  logo: 'https://sanjeevaniparivar.org/assets/logo.png',
+  description,
+  foundingDate: '1994',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: "'Parijat', Wagholi, Nirmal Road",
+    addressLocality: 'Vasai',
+    addressRegion: 'Maharashtra',
+    postalCode: '401304',
+    addressCountry: 'IN',
+  },
+  sameAs: [
+    'https://youtube.com/@sanjeevaniParivar',
+    'https://facebook.com/sanjeevani.parivar.org',
+    'https://instagram.com/sanjeevani.parivar/',
+  ],
+  areaServed: {
+    '@type': 'City',
+    name: 'Vasai',
+  },
+  knowsAbout: ['Education', 'Environment', 'Health', 'Financial Literacy'],
+};
 ---
 
 <!doctype html>
@@ -16,22 +50,34 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="author" content="Sanjeevani Parivar" />
+    <meta name="theme-color" content="#C41E3A" />
 
-    <!-- SEO -->
-    <meta property="og:title" content={title} />
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="Sanjeevani Parivar" />
+    <meta property="og:locale"      content="mr_IN" />
+    <meta property="og:url"         content={canonicalURL} />
+    <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://sanjeevaniparivar.org" />
-    <meta property="og:image" content="/assets/logo.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta property="og:image"       content={ogImageURL} />
+    <meta property="og:image:alt"   content="Sanjeevani Parivar logo" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image"       content={ogImageURL} />
+    <meta name="twitter:image:alt"   content="Sanjeevani Parivar logo" />
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://sanjeevaniparivar.org" />
+    <link rel="canonical" href={canonicalURL} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/logo.png" />
+    <link rel="icon"             type="image/png" href="/assets/logo.png" />
+    <link rel="apple-touch-icon" href="/assets/logo.png" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,6 +86,9 @@ const {
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <title>{title}</title>
   </head>

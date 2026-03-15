@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Menu, X, ChevronDown, Heart } from 'lucide-react';
 import { useLang, useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { KSHETRAS } from '@/content/kshetras';
@@ -10,6 +11,11 @@ export default function Navbar() {
   const [scrolled, setScrolled]   = useState(false);
   const [menuOpen, setMenuOpen]   = useState(false);
   const [kshetraOpen, setKshetraOpen] = useState(false);
+  const [pathname, setPathname] = useState('');
+
+  useEffect(() => {
+    setPathname(window.location.pathname);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -31,10 +37,10 @@ export default function Navbar() {
             <LogoImage className="w-10 h-10 object-contain p-1" />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-[15px] font-bold text-primary">
+            <span className="text-[17px] font-bold text-primary">
               {t(tr.nav.logoName)}
             </span>
-            <span className="text-[10px] font-medium text-secondary">
+            <span className="text-[12px] font-medium text-secondary">
               {t(tr.nav.logoTagline)}
             </span>
           </div>
@@ -44,7 +50,7 @@ export default function Navbar() {
         <ul className="hidden lg:flex items-center gap-1 flex-1">
           <li>
             <a href="/#about"
-               className="px-2.5 py-1.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
+               className="px-2.5 py-1.5 rounded-md text-[15px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
               {t(tr.nav.about)}
             </a>
           </li>
@@ -54,10 +60,10 @@ export default function Navbar() {
             <button
               onMouseEnter={() => setKshetraOpen(true)}
               onMouseLeave={() => setKshetraOpen(false)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors"
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[15px] font-medium transition-colors ${KSHETRAS.some(k => pathname.startsWith('/' + k.slug)) ? 'text-primary bg-accent-light' : 'text-gray-700 hover:bg-accent-light hover:text-primary'}`}
             >
               {t(tr.nav.kshetras)}
-              <span className="text-[10px] opacity-50">▾</span>
+              <ChevronDown className="w-3.5 h-3.5 opacity-50" />
             </button>
             {kshetraOpen && (
               <div
@@ -69,7 +75,10 @@ export default function Navbar() {
                   <a
                     key={k.slug}
                     href={`/${k.slug}`}
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors"
+                    style={pathname.startsWith('/' + k.slug)
+                      ? { background: k.color + '15', color: k.color, fontWeight: 600 }
+                      : { color: '#374151' }}
                   >
                     <span
                       className="w-5 h-5 rounded text-white text-[9px] font-black flex items-center justify-center shrink-0"
@@ -84,11 +93,31 @@ export default function Navbar() {
             )}
           </li>
 
-          
+          <li>
+            <a href="/gallery"
+               className={`px-2.5 py-1.5 rounded-md text-[15px] font-medium transition-colors ${pathname === '/gallery' ? 'text-primary bg-accent-light' : 'text-gray-700 hover:bg-accent-light hover:text-primary'}`}>
+              {t({ mr: 'चित्रदालन', en: 'Gallery' })}
+            </a>
+          </li>
+
+          <li>
+            <a href="/team"
+               className={`px-2.5 py-1.5 rounded-md text-[15px] font-medium transition-colors ${pathname === '/team' ? 'text-primary bg-accent-light' : 'text-gray-700 hover:bg-accent-light hover:text-primary'}`}>
+              {t({ mr: 'आमचा परिवार', en: 'Team' })}
+            </a>
+          </li>
+
           <li>
             <a href="/#contact"
-               className="px-2.5 py-1.5 rounded-md text-[13px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
+               className="px-2.5 py-1.5 rounded-md text-[15px] font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
               {t(tr.nav.contact)}
+            </a>
+          </li>
+          <li className="ml-2">
+            <a href="/donate"
+               className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-white text-[14px] font-semibold hover:bg-primary-dark transition-colors">
+              <Heart className="w-3.5 h-3.5" />
+              {t({ mr: 'देणगी द्या', en: 'Donate' })}
             </a>
           </li>
         </ul>
@@ -105,12 +134,10 @@ export default function Navbar() {
         {/* Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="lg:hidden flex flex-col gap-1.25 p-1"
+          className="lg:hidden p-1.5 rounded-md text-gray-700 hover:bg-gray-100 transition-colors"
           aria-label="Toggle menu"
         >
-          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? 'rotate-45 translate-y-1.75' : ''}`} />
-          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-5 h-0.5 bg-gray-700 rounded transition-all ${menuOpen ? '-rotate-45 -translate-y-1.75' : ''}`} />
+          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
@@ -139,9 +166,28 @@ export default function Navbar() {
               </li>
             ))}
             <li>
+              <a href="/gallery" onClick={closeMenu}
+                 className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/gallery' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary'}`}>
+                {t({ mr: 'चित्रदालन', en: 'Gallery' })}
+              </a>
+            </li>
+            <li>
+              <a href="/team" onClick={closeMenu}
+                 className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${pathname === '/team' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary'}`}>
+                {t({ mr: 'आमचा परिवार', en: 'Team' })}
+              </a>
+            </li>
+            <li>
               <a href="/#contact" onClick={closeMenu}
                  className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
                 {t(tr.nav.contact)}
+              </a>
+            </li>
+            <li>
+              <a href="/donate" onClick={closeMenu}
+                 className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-colors">
+                <Heart className="w-4 h-4" />
+                {t({ mr: 'देणगी द्या', en: 'Donate' })}
               </a>
             </li>
           </ul>

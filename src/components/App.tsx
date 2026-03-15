@@ -7,8 +7,11 @@ import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import AboutSection from './AboutSection';
 import KshetraOverview from './KshetraOverview';
- import SocialSection from './SocialSection';
+import EventsSection from './EventsSection';
+import GalleryTeaser from './GalleryTeaser';
+import SocialSection from './SocialSection';
 import ContactSection from './ContactSection';
+import BackToTop from './BackToTop';
 import Footer from './Footer';
 
 export default function App() {
@@ -19,10 +22,13 @@ export default function App() {
         <HeroSection />
         <AboutSection />
         <KshetraOverview />
-         <SocialSection />
+        <EventsSection />
+        <GalleryTeaser />
+        <SocialSection />
         <ContactSection />
       </main>
       <Footer />
+      <BackToTop />
     </LangProvider>
   );
 }

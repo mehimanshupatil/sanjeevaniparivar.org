@@ -1,0 +1,28 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import UpakramPage from '@/components/UpakramPage';
+import { KSHETRAS, getActivity } from '@/content/kshetras';
+import '@/styles/global.css';
+
+export function getStaticPaths() {
+  return KSHETRAS.flatMap((kshetra) =>
+    kshetra.activities.map((activity) => ({
+      params: { kshetra: kshetra.slug, upakram: activity.slug },
+    }))
+  );
+}
+
+const { kshetra: kshetraSlug, upakram: activitySlug } = Astro.params;
+const result = getActivity(kshetraSlug, activitySlug);
+
+if (!result?.activity) return Astro.redirect('/404');
+
+const { kshetra, activity } = result;
+
+const title = `${activity.title.en} | ${kshetra.label.en} — संजीवनी परिवार`;
+const description = activity.body?.en.slice(0, 155) ?? activity.desc.en;
+---
+
+<Layout title={title} description={description}>
+  <UpakramPage client:load kshetra={kshetra} activity={activity} />
+</Layout>

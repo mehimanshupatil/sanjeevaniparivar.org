@@ -134,20 +134,6 @@ export const translations = {
     ],
   },
 
-  // // --- VYAKHYANMALA ---
-  // vyakhyan: {
-  //   tag:     { mr: 'व्याख्यानमाला २०२५',   en: 'Vyakhyanmala 2025' },
-  //   heading: { mr: 'संजीवनी व्याख्यानमाला — २३वे वर्ष', en: 'Sanjeevani Vyakhyanmala — 23rd Year' },
-  //   sub:     { mr: 'नवे विचार, नवी दृष्टी, जीवनाचे नवे आयाम समजून घेण्यासाठी या', en: 'Come to understand new thoughts, new perspectives, new dimensions of life' },
-  //   invitation: { mr: 'आपणा सर्वांना मन:पूर्वक आमंत्रण !!', en: 'You are all cordially invited!!' },
-  //   youtube: { mr: 'YouTube वर पाहा ▶', en: 'Watch on YouTube ▶' },
-  //   lectures: [
-  //     { day: { mr: 'गुरुवार', en: 'Thursday' }, date: '1', month: { mr: 'मे २०२५', en: 'May 2025' }, speaker: 'श्री. अतुल कहाते', topic: { mr: 'आर्टिफिशियल इंटेलिजन्स (AI) : नवयुगाची सुरुवात', en: 'Artificial Intelligence (AI): Dawn of a New Era' } },
-  //     { day: { mr: 'शनिवार', en: 'Saturday' }, date: '4', month: { mr: 'मे २०२५', en: 'May 2025' }, speaker: 'सौ. सुमेधा चिथाडे', topic: { mr: 'राष्ट्रीय स्वाहा इदंन मम', en: 'Rashtreeya Svaha Idannam' } },
-  //     { day: { mr: 'रविवार', en: 'Sunday' },   date: '5', month: { mr: 'मे २०२५', en: 'May 2025' }, speaker: 'डॉ. स्वाती दातार', topic: { mr: 'स्त्री : काल, आज, उद्या', en: 'Woman: Yesterday, Today, Tomorrow' } },
-  //   ],
-  // },
-
   // --- SOCIAL ---
   social: {
     tag: { mr: 'आमच्याशी जोडा', en: 'Connect With Us' },
