@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-950 text-white/85 pt-16 pb-0">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-4 gap-10 mb-12">
+        <div className="grid lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
@@ -32,10 +32,32 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               {[
-                { href: '#shikshan',   label: tr.nav.education     },
-                { href: '#paryavaran', label: tr.nav.environment   },
-                { href: '#aarogya',    label: tr.nav.health        },
-                { href: '#prabodhana', label: tr.nav.enlightenment },
+                { href: '/shikshan',   label: tr.nav.education     },
+                { href: '/paryavaran', label: tr.nav.environment   },
+                { href: '/aarogya',    label: tr.nav.health        },
+                { href: '/prabodhana', label: tr.nav.enlightenment },
+              ].map((l) => (
+                <li key={l.href}>
+                  <a href={l.href} className="text-sm text-white/50 hover:text-accent transition-colors">
+                    {t(l.label)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Pages */}
+          <div>
+            <h4 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
+              {t({ mr: 'पाने', en: 'Pages' })}
+            </h4>
+            <ul className="space-y-2">
+              {[
+                { href: '/events',  label: { mr: 'कार्यक्रम',   en: 'Events'   } },
+                { href: '/blog',    label: { mr: 'ब्लॉग',        en: 'Blog'     } },
+                { href: '/gallery', label: { mr: 'चित्रदालन',   en: 'Gallery'  } },
+                { href: '/team',    label: { mr: 'आमचा परिवार', en: 'Team'     } },
+                { href: '/donate',  label: { mr: 'देणगी द्या',  en: 'Donate'   } },
               ].map((l) => (
                 <li key={l.href}>
                   <a href={l.href} className="text-sm text-white/50 hover:text-accent transition-colors">

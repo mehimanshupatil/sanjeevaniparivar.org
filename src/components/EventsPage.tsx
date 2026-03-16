@@ -22,7 +22,7 @@ function EventCard({ ev }: { ev: Event }) {
     <div className="flex gap-5 p-5 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white">
       <div
         className="shrink-0 w-16 flex flex-col items-center justify-center rounded-xl py-3"
-        style={{ background: color + '15' }}
+        style={{ background: `color-mix(in srgb, ${color} 8%, transparent)` }}
       >
         <span className="text-2xl font-black leading-none" style={{ color }}>{d.getDate()}</span>
         <span className="text-[10px] font-bold uppercase mt-0.5" style={{ color }}>
@@ -95,7 +95,7 @@ function PageContent() {
         <div className="flex flex-wrap gap-2 mb-10">
           {FILTERS.map((f) => {
             const active = filter === f.key;
-            const color = f.key === 'all' ? '#C41E3A' : KSHETRA_COLOR[f.key];
+            const color = KSHETRA_COLOR[f.key] ?? 'var(--color-primary)';
             return (
               <button
                 key={f.key}

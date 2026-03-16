@@ -9,17 +9,17 @@ const VALUES = [
 ] as const;
 
 const CARDS = [
-  { icon: '📚', title: tr.about.card1Title, desc: tr.about.card1Desc, accent: '#1565C0' },
-  { icon: '🌿', title: tr.about.card2Title, desc: tr.about.card2Desc, accent: '#2E7D32' },
-  { icon: '🏥', title: tr.about.card3Title, desc: tr.about.card3Desc, accent: '#C62828' },
-  { icon: '💬', title: tr.about.card4Title, desc: tr.about.card4Desc, accent: '#6A1B9A' },
-] as const;
+  { icon: '📚', title: tr.about.card1Title, desc: tr.about.card1Desc, accent: 'var(--color-education)'    },
+  { icon: '🌿', title: tr.about.card2Title, desc: tr.about.card2Desc, accent: 'var(--color-environment)'  },
+  { icon: '🏥', title: tr.about.card3Title, desc: tr.about.card3Desc, accent: 'var(--color-health)'       },
+  { icon: '💬', title: tr.about.card4Title, desc: tr.about.card4Desc, accent: 'var(--color-enlightenment)'},
+];
 
 export default function AboutSection() {
   const t = useT();
 
   return (
-    <section id="about" className="py-20" style={{ background: '#FFFDE7' }}>
+    <section id="about" className="py-20 bg-accent-light">
       <div className="max-w-6xl mx-auto px-6">
         <SectionHeader
           tag={t(tr.about.tag)}
@@ -58,7 +58,7 @@ export default function AboutSection() {
               <div
                 key={c.title.en}
                 className="p-6 rounded-2xl text-center hover:-translate-y-1 hover:shadow-lg transition-all"
-                style={{ background: '#fff', border: `2px solid ${c.accent}22` }}
+                style={{ background: '#fff', border: `2px solid color-mix(in srgb, ${c.accent} 13%, transparent)` }}
               >
                 <span className="text-3xl block mb-2">{c.icon}</span>
                 <h3 className="text-sm font-bold mb-1" style={{ color: c.accent }}>

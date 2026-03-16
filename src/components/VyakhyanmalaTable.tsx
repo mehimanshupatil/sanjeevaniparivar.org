@@ -5,8 +5,8 @@ import { VYAKHYANE } from '@/content/vyakhyanmala';
 
 const totalEditions = Math.max(...VYAKHYANE.map((v) => v.edition));
 
-const COLOR = '#6A1B9A';
-const TINT  = '#F5F3FF';
+const COLOR = 'var(--color-enlightenment)';
+const TINT  = 'var(--color-enlightenment-tint)';
 
 export default function VyakhyanmalaTable() {
   const [query, setQuery] = useState('');

@@ -7,10 +7,10 @@ import { GALLERY, GALLERY_YEARS, type GalleryItem } from '@/content/gallery';
 import { KSHETRAS as ALL_KSHETRAS, KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 const KSHETRAS = [
-  { key: 'all', label: { mr: 'सर्व', en: 'All' }, color: '#C41E3A' },
+  { key: 'all',     label: { mr: 'सर्व',    en: 'All'     }, color: 'var(--color-primary)' },
   ...ALL_KSHETRAS.map((k) => ({ key: k.slug, label: k.label, color: k.color })),
-  { key: 'general', label: { mr: 'सामान्य', en: 'General' }, color: '#475569' },
-] as const;
+  { key: 'general', label: { mr: 'सामान्य', en: 'General' }, color: 'var(--color-general)' },
+];
 
 interface LightboxState {
   item: GalleryItem;
@@ -124,7 +124,7 @@ function Lightbox({
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
           <span
             className="text-[11px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full text-white"
-            style={{ background: KSHETRA_COLOR[item.kshetra] ?? '#475569' }}
+            style={{ background: KSHETRA_COLOR[item.kshetra] ?? 'var(--color-general)' }}
           >
             {t(KSHETRA_LABEL[item.kshetra] ?? { mr: item.kshetra, en: item.kshetra })}
           </span>

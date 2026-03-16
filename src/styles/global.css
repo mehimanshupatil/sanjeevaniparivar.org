@@ -17,11 +17,21 @@
   --color-accent-light:      #FFFDE7;
   --color-accent-dark:       #D4A017;
 
-  /* Kshetra colors */
-  --color-education:         #1565C0;
-  --color-environment:       #2E7D32;
-  --color-health:            #C62828;
-  --color-enlightenment:     #6A1B9A;
+  /* Kshetra colors — single source of truth */
+  --color-education:            #1565C0;
+  --color-environment:          #1B7A1B;   /* = secondary */
+  --color-health:               #C41E3A;   /* = primary */
+  --color-enlightenment:        #6A1B9A;
+  --color-general:              #475569;
+
+  /* Kshetra tints (8% blend with white) */
+  --color-education-tint:       #EFF6FF;
+  --color-environment-tint:     #F0FDF4;
+  --color-health-tint:          #FFF1F2;
+  --color-enlightenment-tint:   #F5F3FF;
+
+  /* Extended primary scale */
+  --color-primary-darker:       #7B1019;
 
   /* Typography */
   --font-sans: 'Noto Sans Devanagari', 'Inter', ui-sans-serif, system-ui, sans-serif;

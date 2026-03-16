@@ -10,7 +10,7 @@ export default function KshetraOverview() {
     <section
       id="kshetras"
       className="py-20"
-      style={{ background: '#1B7A1B' }}
+      style={{ background: 'var(--color-secondary-light)' }}
     >
       <div className="max-w-6xl mx-auto px-6">
         <SectionHeader

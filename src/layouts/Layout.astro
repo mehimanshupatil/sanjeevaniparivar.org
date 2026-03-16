@@ -3,12 +3,16 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
 }
 
 const {
   title = "संजीवनी परिवार | Sanjeevani Parivar — ध्यास परिवर्तनाचा",
   description = "Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for 31+ years.",
   ogImage = "/assets/og-image.svg",
+  ogImageAlt = "Sanjeevani Parivar",
+  ogType = "website",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -55,14 +59,14 @@ const jsonLd = {
     <meta name="theme-color" content="#C41E3A" />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Sanjeevani Parivar" />
     <meta property="og:locale" content="mr_IN" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
-    <meta property="og:image:alt" content="Sanjeevani Parivar logo" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
@@ -71,10 +75,13 @@ const jsonLd = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
-    <meta name="twitter:image:alt" content="Sanjeevani Parivar logo" />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- Canonical -->
     <link rel="canonical" href={canonicalURL} />
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="Sanjeevani Parivar Blog" href="/rss.xml" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/assets/logo.png" />
@@ -90,6 +97,9 @@ const jsonLd = {
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Page-specific head additions (e.g. article schema) -->
+    <slot name="head" />
 
     <title>{title}</title>
   </head>

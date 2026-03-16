@@ -42,9 +42,9 @@ export const KSHETRAS: KshetraData[] = [
   {
     slug:       'shikshan',
     num:        '01',
-    color:      '#1565C0',
-    colorTint:  '#EFF6FF',
-    colorClass: 'text-[#1565C0]',
+    color:      'var(--color-education)',
+    colorTint:  'var(--color-education-tint)',
+    colorClass: 'text-education',
     label:   { mr: 'शिक्षण क्षेत्र',         en: 'Education Kshetra'   },
     tagline: { mr: 'ज्ञान हेच सामर्थ्य',     en: 'Knowledge is Power'  },
     heading: { mr: 'शिक्षणातून समाजपरिवर्तन', en: 'Social Change Through Education' },
@@ -114,9 +114,9 @@ export const KSHETRAS: KshetraData[] = [
   {
     slug:       'paryavaran',
     num:        '02',
-    color:      '#1B7A1B',
-    colorTint:  '#F0FDF4',
-    colorClass: 'text-[#1B7A1B]',
+    color:      'var(--color-environment)',
+    colorTint:  'var(--color-environment-tint)',
+    colorClass: 'text-environment',
     label:   { mr: 'पर्यावरण क्षेत्र',                   en: 'Environment Kshetra'              },
     tagline: { mr: 'निसर्ग वाचवा, भविष्य जगवा',           en: 'Save Nature, Sustain the Future'  },
     heading: { mr: 'निसर्गाचे रक्षण, भविष्याचे संरक्षण', en: 'Protecting Nature, Securing the Future' },
@@ -175,9 +175,9 @@ export const KSHETRAS: KshetraData[] = [
   {
     slug:       'aarogya',
     num:        '03',
-    color:      '#C41E3A',
-    colorTint:  '#FFF1F2',
-    colorClass: 'text-[#C41E3A]',
+    color:      'var(--color-health)',
+    colorTint:  'var(--color-health-tint)',
+    colorClass: 'text-health',
     label:   { mr: 'आरोग्य क्षेत्र',          en: 'Health Kshetra'          },
     tagline: { mr: 'स्वास्थ्य हेच संपदा',     en: 'Health is True Wealth'   },
     heading: { mr: 'निरोगी समाज, सुदृढ राष्ट्र', en: 'Healthy Society, Strong Nation' },
@@ -218,9 +218,9 @@ export const KSHETRAS: KshetraData[] = [
   {
     slug:       'prabodhana',
     num:        '04',
-    color:      '#6A1B9A',
-    colorTint:  '#F5F3FF',
-    colorClass: 'text-[#6A1B9A]',
+    color:      'var(--color-enlightenment)',
+    colorTint:  'var(--color-enlightenment-tint)',
+    colorClass: 'text-enlightenment',
     label:   { mr: 'प्रबोधन क्षेत्र',                   en: 'Enlightenment Kshetra'           },
     tagline: { mr: 'विचारातून परिवर्तन',                 en: 'Change Through Thought'          },
     heading: { mr: 'ज्ञानातून जागृती, जागृतीतून प्रगती', en: 'Awakening Through Knowledge'     },
@@ -265,7 +265,7 @@ export const KSHETRAS: KshetraData[] = [
 /** Color map derived from KSHETRAS — includes 'general' for non-kshetra events/gallery items */
 export const KSHETRA_COLOR: Record<string, string> = {
   ...Object.fromEntries(KSHETRAS.map((k) => [k.slug, k.color])),
-  general: '#475569',
+  general: 'var(--color-general)',
 };
 
 /** Label map derived from KSHETRAS — includes 'general' */

@@ -1,0 +1,31 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import BlogPage from "@/components/BlogPage";
+import { getCollection } from "astro:content";
+import "@/styles/global.css";
+
+const allPosts = await getCollection("blog");
+const posts = allPosts
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  )
+  .map((p) => ({
+    slug: p.id,
+    titleMr: p.data.titleMr,
+    titleEn: p.data.titleEn,
+    excerptMr: p.data.excerptMr,
+    excerptEn: p.data.excerptEn,
+    authorMr: p.data.authorMr,
+    authorEn: p.data.authorEn,
+    date: p.data.date,
+    kshetra: p.data.kshetra,
+    image: p.data.image ?? null,
+  }));
+---
+
+<Layout
+  title="Blog | संजीवनी परिवार — Sanjeevani Parivar"
+  description="Articles, updates, and initiative reports from Sanjeevani Parivar — a leading social organization from Vasai working in Education, Environment, Health & Enlightenment."
+>
+  <BlogPage posts={posts} client:load />
+</Layout>

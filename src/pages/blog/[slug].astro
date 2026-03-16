@@ -1,0 +1,83 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import BlogPostPage from "@/components/BlogPostPage";
+import { getCollection, render } from 'astro:content';
+import { marked } from 'marked';
+import "@/styles/global.css";
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id } }));
+}
+
+const { slug } = Astro.params;
+const posts = await getCollection('blog');
+const post = posts.find((p) => p.id === slug);
+
+if (!post) return Astro.redirect('/blog');
+
+const { Content } = await render(post);
+
+// Render English body to HTML string for passing to React
+// We need to render the Astro Content to a string — use renderToString workaround
+// Instead, pass raw body and let the client render both via marked
+const bodyHtmlEn = marked.parse(post.body ?? '') as string;
+const bodyHtmlMr = marked.parse(post.data.bodyMr ?? '') as string;
+
+const postProps = {
+  slug:       post.id,
+  titleMr:    post.data.titleMr,
+  titleEn:    post.data.titleEn,
+  excerptMr:  post.data.excerptMr,
+  excerptEn:  post.data.excerptEn,
+  authorMr:   post.data.authorMr,
+  authorEn:   post.data.authorEn,
+  date:       post.data.date,
+  kshetra:    post.data.kshetra,
+  bodyHtmlEn,
+  bodyHtmlMr,
+  image:      post.data.image ?? null,
+};
+
+const canonicalUrl = new URL(`/blog/${post.id}`, 'https://sanjeevaniparivar.org').href;
+const imageUrl = post.data.image
+  ? new URL(post.data.image, 'https://sanjeevaniparivar.org').href
+  : 'https://sanjeevaniparivar.org/assets/og-image.svg';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.titleEn,
+  description: post.data.excerptEn,
+  image: imageUrl,
+  datePublished: post.data.date,
+  author: {
+    "@type": "Organization",
+    name: post.data.authorEn,
+    url: "https://sanjeevaniparivar.org",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Sanjeevani Parivar",
+    url: "https://sanjeevaniparivar.org",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://sanjeevaniparivar.org/assets/logo.png",
+    },
+  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+  inLanguage: ["mr", "en"],
+  keywords: ["Sanjeevani Parivar", post.data.kshetra, "Vasai", "social work"],
+};
+---
+
+<Layout
+  title={`${post.data.titleEn} | संजीवनी परिवार`}
+  description={post.data.excerptEn}
+  ogImage={post.data.image ?? undefined}
+  ogImageAlt={post.data.titleEn}
+  ogType="article"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <BlogPostPage post={postProps} client:idle />
+</Layout>
