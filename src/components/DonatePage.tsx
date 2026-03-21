@@ -40,7 +40,7 @@ function PageContent() {
           <div className="flex items-center gap-2 mb-8 text-white/60 text-sm">
             <a href="/" className="hover:text-white transition-colors">संजीवनी परिवार</a>
             <span>/</span>
-            <span className="text-white/40">Donate</span>
+            <span className="text-white/40">{t({ mr: 'देणगी', en: 'Donate' })}</span>
           </div>
           <div className="flex items-center gap-4 mb-4">
             <Heart className="w-8 h-8 text-white/80" strokeWidth={1.5} />
