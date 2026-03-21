@@ -2,14 +2,28 @@
 import Layout from "@/layouts/Layout.astro";
 import KshetraPage from "@/components/KshetraPage";
 import { getKshetra } from "@/content/kshetras";
+import { getCollection } from "astro:content";
 import "@/styles/global.css";
 
 const data = getKshetra("paryavaran")!;
+
+const allPosts = await getCollection("blog");
+const posts = allPosts
+  .filter((p) => !p.data.draft && p.data.kshetra === "paryavaran")
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  )
+  .map((p) => ({
+    slug: p.id,
+    title: p.data.title,
+    excerpt: p.data.excerpt,
+    date: p.data.date,
+  }));
 ---
 
 <Layout
   title={`${data.label.mr} | ${data.label.en} — संजीवनी परिवार`}
   description={`${data.body.en.slice(0, 155)}...`}
 >
-  <KshetraPage slug="paryavaran" data={data} client:idle />
+  <KshetraPage slug="paryavaran" data={data} posts={posts} client:idle />
 </Layout>

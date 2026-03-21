@@ -1,26 +1,21 @@
-import { LangProvider, useT, useLang } from './LangContext';
+import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 export interface BlogPostProps {
   slug: string;
-  titleMr: string;
-  titleEn: string;
-  excerptMr: string;
-  excerptEn: string;
-  authorMr: string;
-  authorEn: string;
+  title: string;
+  excerpt: string;
+  author: string;
   date: string;
   kshetra: string;
-  bodyHtmlEn: string;   // pre-rendered HTML (English)
-  bodyHtmlMr: string;   // pre-rendered HTML (Marathi)
+  bodyHtml: string;
   image?: string | null;
 }
 
 function PageContent({ post }: { post: BlogPostProps }) {
   const t = useT();
-  const { lang } = useLang();
 
   const color = KSHETRA_COLOR[post.kshetra] ?? 'var(--color-primary)';
   const label = post.kshetra === 'general'
@@ -28,11 +23,6 @@ function PageContent({ post }: { post: BlogPostProps }) {
     : (KSHETRA_LABEL[post.kshetra] ?? { mr: post.kshetra, en: post.kshetra });
 
   const d = new Date(post.date);
-  const title   = lang === 'mr' ? post.titleMr   : post.titleEn;
-  const excerpt = lang === 'mr' ? post.excerptMr : post.excerptEn;
-  const author  = lang === 'mr' ? post.authorMr  : post.authorEn;
-
-  const bodyHtml = lang === 'mr' && post.bodyHtmlMr ? post.bodyHtmlMr : post.bodyHtmlEn;
 
   return (
     <>
@@ -48,7 +38,7 @@ function PageContent({ post }: { post: BlogPostProps }) {
       >
         {post.image && (
           <div className="absolute inset-0 -z-0">
-            <img src={post.image} alt={title} className="w-full h-full object-cover opacity-20" />
+            <img src={post.image} alt={post.title} className="w-full h-full object-cover opacity-20" />
           </div>
         )}
         <div
@@ -68,10 +58,10 @@ function PageContent({ post }: { post: BlogPostProps }) {
             </span>
           </div>
           <h1 className="font-extrabold text-white leading-tight mb-3" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)' }}>
-            {title}
+            {post.title}
           </h1>
-          <p className="text-base text-white/80 leading-relaxed">{excerpt}</p>
-          <p className="text-xs text-white/50 mt-3">{t({ mr: 'लेखक', en: 'By' })} {author}</p>
+          <p className="text-base text-white/80 leading-relaxed">{post.excerpt}</p>
+          <p className="text-xs text-white/50 mt-3">{t({ mr: 'लेखक', en: 'By' })} {post.author}</p>
         </div>
       </section>
 
@@ -88,7 +78,7 @@ function PageContent({ post }: { post: BlogPostProps }) {
             prose-table:text-sm
             prose-a:text-primary hover:prose-a:underline"
           style={{ '--tw-prose-links': color } as React.CSSProperties}
-          dangerouslySetInnerHTML={{ __html: bodyHtml }}
+          dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
         />
 
         {/* Back link */}

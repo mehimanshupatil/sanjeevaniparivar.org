@@ -1,17 +1,14 @@
 import { useState } from 'react';
-import { LangProvider, useT, useLang } from './LangContext';
+import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 export interface BlogPostSummary {
   slug: string;
-  titleMr: string;
-  titleEn: string;
-  excerptMr: string;
-  excerptEn: string;
-  authorMr: string;
-  authorEn: string;
+  title: string;
+  excerpt: string;
+  author: string;
   date: string;
   kshetra: string;
   image?: string | null;
@@ -28,14 +25,11 @@ const FILTERS = [
 
 function BlogCard({ post }: { post: BlogPostSummary }) {
   const t = useT();
-  const { lang } = useLang();
   const color = KSHETRA_COLOR[post.kshetra] ?? 'var(--color-primary)';
   const label = post.kshetra === 'general'
     ? { mr: 'सामान्य', en: 'General' }
     : (KSHETRA_LABEL[post.kshetra] ?? { mr: post.kshetra, en: post.kshetra });
   const d = new Date(post.date);
-  const title   = lang === 'mr' ? post.titleMr   : post.titleEn;
-  const excerpt = lang === 'mr' ? post.excerptMr : post.excerptEn;
   return (
     <a
       href={`/blog/${post.slug}`}
@@ -46,7 +40,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
         <div className="h-44 overflow-hidden">
           <img
             src={post.image}
-            alt={title}
+            alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
@@ -70,18 +64,18 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
 
         {/* Title */}
         <h2 className="font-bold text-gray-900 text-lg leading-snug group-hover:text-primary transition-colors">
-          {title}
+          {post.title}
         </h2>
 
         {/* Excerpt */}
         <p className="text-sm text-gray-500 leading-relaxed flex-1">
-          {excerpt}
+          {post.excerpt}
         </p>
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100 mt-auto">
           <span className="text-xs text-gray-400">
-            {lang === 'mr' ? post.authorMr : post.authorEn}
+            {post.author}
           </span>
           <span
             className="text-xs font-semibold transition-colors"

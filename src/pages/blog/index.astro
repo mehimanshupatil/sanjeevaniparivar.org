@@ -11,12 +11,9 @@ const posts = allPosts
   )
   .map((p) => ({
     slug: p.id,
-    titleMr: p.data.titleMr,
-    titleEn: p.data.titleEn,
-    excerptMr: p.data.excerptMr,
-    excerptEn: p.data.excerptEn,
-    authorMr: p.data.authorMr,
-    authorEn: p.data.authorEn,
+    title: p.data.title,
+    excerpt: p.data.excerpt,
+    author: p.data.author,
     date: p.data.date,
     kshetra: p.data.kshetra,
     image: p.data.image ?? null,

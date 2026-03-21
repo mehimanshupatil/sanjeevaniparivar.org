@@ -9,18 +9,18 @@ export async function GET(context: APIContext) {
     .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
   return rss({
-    title: 'Sanjeevani Parivar — Blog',
-    description: 'Articles, updates, and initiative reports from Sanjeevani Parivar, Vasai.',
+    title: 'संजीवनी परिवार — ब्लॉग',
+    description: 'संजीवनी परिवार, वसई यांचे उपक्रम, लेख आणि महत्त्वाच्या घडामोडी.',
     site: context.site!,
     items: sorted.map((post) => ({
-      title:       post.data.titleEn,
-      description: post.data.excerptEn,
+      title:       post.data.title,
+      description: post.data.excerpt,
       pubDate:     new Date(post.data.date),
       link:        `/blog/${post.id}/`,
       categories:  [post.data.kshetra],
-      author:      post.data.authorEn,
+      author:      post.data.author,
     })),
-    customData: `<language>en-IN</language>`,
+    customData: `<language>mr-IN</language>`,
     stylesheet: false,
   });
 }

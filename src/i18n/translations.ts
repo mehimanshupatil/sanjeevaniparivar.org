@@ -161,7 +161,7 @@ export const translations = {
     social: { mr: 'सोशल मीडिया', en: 'Social Media' },
     about: { mr: 'आमच्याबद्दल', en: 'About' },
     vyakhyan: { mr: 'व्याख्यानमाला', en: 'Vyakhyanmala' },
-    copyright: { mr: '© 2025 संजीवनी परिवार. सर्व हक्क राखीव.', en: '© 2025 Sanjeevani Parivar. All rights reserved.' },
+    copyright: { mr: '© 2026 संजीवनी परिवार. सर्व हक्क राखीव.', en: '© 2026 Sanjeevani Parivar. All rights reserved.' },
     motto: { mr: 'सा नो दधातु सुकृतस्य लोके', en: 'Sa No Dadhatu Sukritasya Loke' },
   },
 } as const;

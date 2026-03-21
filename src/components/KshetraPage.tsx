@@ -9,9 +9,16 @@ import Footer from './Footer';
 import type { KshetraData } from '@/content/kshetras';
 import { KSHETRAS } from '@/content/kshetras';
 
-interface Props { slug: string; data: KshetraData }
+export interface RelatedPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+}
 
-function PageContent({ data }: { data: KshetraData }) {
+interface Props { slug: string; data: KshetraData; posts?: RelatedPost[] }
+
+function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedPost[] }) {
   const t = useT();
   const others = KSHETRAS.filter((k) => k.slug !== data.slug);
 
@@ -176,6 +183,43 @@ function PageContent({ data }: { data: KshetraData }) {
         </div>
       </section>
 
+      {/* ── RELATED BLOG POSTS ───────────────────── */}
+      {posts.length > 0 && (
+        <section className="py-16 bg-white border-t border-gray-100">
+          <div className="max-w-6xl mx-auto px-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-6" style={{ color: data.color }}>
+              {t({ mr: 'संबंधित लेख', en: 'Related Posts' })}
+            </p>
+            <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 snap-x snap-mandatory">
+              {posts.map((post) => {
+                const d = new Date(post.date);
+                return (
+                  <a
+                    key={post.slug}
+                    href={`/blog/${post.slug}`}
+                    className="group flex flex-col gap-3 p-5 rounded-2xl border border-gray-100 hover:shadow-md transition-all bg-white shrink-0 w-72 snap-start"
+                  >
+                    <div className="h-1 w-10 rounded-full" style={{ background: data.color }} />
+                    <time className="text-xs text-gray-400">
+                      {d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </time>
+                    <h3 className="font-bold text-gray-900 leading-snug group-hover:underline">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 flex-1">
+                      {post.excerpt}
+                    </p>
+                    <span className="text-xs font-semibold" style={{ color: data.color }}>
+                      अधिक वाचा →
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── OTHER KSHETRAS ────────────────────────── */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
@@ -216,10 +260,10 @@ function PageContent({ data }: { data: KshetraData }) {
   );
 }
 
-export default function KshetraPage({ slug, data }: Props) {
+export default function KshetraPage({ slug, data, posts }: Props) {
   return (
     <LangProvider>
-      <PageContent data={data} />
+      <PageContent data={data} posts={posts} />
     </LangProvider>
   );
 }

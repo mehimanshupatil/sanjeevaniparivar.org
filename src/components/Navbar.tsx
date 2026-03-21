@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, ChevronRight } from 'lucide-react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { KSHETRAS } from '@/content/kshetras';
@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import { NavigationMenu as NavMenuPrimitive } from '@base-ui/react/navigation-menu';
 import { cn } from '@/lib/utils';
 
 export default function Navbar() {
@@ -65,46 +66,88 @@ export default function Navbar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              {/* Kshetras dropdown */}
+              {/* Kshetras nested inline submenu */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger
                   className={cn(
                     'text-[15px] bg-transparent hover:bg-accent-light hover:text-primary',
                     isKshetraActive ? 'text-primary bg-accent-light' : 'text-gray-700'
                   )}
-             
-             >
+                >
                   {t(tr.nav.kshetras)}
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="cv:w-[200px]">
-                  <ul  >
-                    {KSHETRAS.map((k) => {
-                      const active = pathname.startsWith('/' + k.slug);
-                      return (
-                        <li key={k.slug}>
-                          <NavigationMenuLink
-                             href={`/${k.slug}`}
-                            className={cn(
-                              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors select-none outline-none',
-                              active ? 'font-semibold' : 'text-gray-700 hover:bg-gray-50'
-                            )}
-                            style={active ? { background: k.color + '15', color: k.color } : {}}
-                           >
-                            <span
-                              className="w-6 h-6 rounded-md text-white text-[10px] font-black flex items-center justify-center shrink-0"
-                              style={{ background: k.color }}
+                <NavigationMenuContent>
+                  {/* Inner NavigationMenu — no Portal, renders Viewport inline */}
+                  <NavMenuPrimitive.Root
+                    defaultValue={KSHETRAS.find(k => pathname.startsWith('/' + k.slug))?.slug ?? KSHETRAS[0].slug}
+                    className="flex w-130"
+                  >
+                    {/* Left: kshetra triggers */}
+                    <NavMenuPrimitive.List className="flex flex-col w-44 border-r border-gray-100 py-1 shrink-0">
+                      {KSHETRAS.map((k) => {
+                        const active = pathname.startsWith('/' + k.slug);
+                        return (
+                          <NavMenuPrimitive.Item key={k.slug} value={k.slug}>
+                            <NavMenuPrimitive.Trigger
+                              className={cn(
+                                'flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors outline-none rounded-lg mx-1',
+                                'hover:bg-gray-50 data-[popup-open]:font-semibold',
+                                active ? 'font-semibold' : 'text-gray-700'
+                              )}
+                              style={{ color: active ? k.color : undefined }}
                             >
-                              {k.num}
-                            </span>
-                            <div>
-                              <p className="font-semibold leading-none mb-0.5">{t(k.label)}</p>
-                              <p className="text-[11px] text-gray-400 leading-none">{t(k.tagline)}</p>
-                            </div>
-                          </NavigationMenuLink>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                              <span
+                                className="w-5 h-5 rounded text-white text-[9px] font-black flex items-center justify-center shrink-0"
+                                style={{ background: k.color }}
+                              >
+                                {k.num}
+                              </span>
+                              <span className="flex-1 text-left leading-none">{t(k.label)}</span>
+                              <ChevronRight className="w-3 h-3 text-gray-300 shrink-0" />
+                            </NavMenuPrimitive.Trigger>
+
+                            {/* Content stays in inner Viewport (no Portal) */}
+                            <NavMenuPrimitive.Content>
+                              <div className="py-2 px-3">
+                                {/* Kshetra page link */}
+                                <NavMenuPrimitive.Link
+                                  href={`/${k.slug}`}
+                                  className="flex items-center gap-2 px-2 py-2 mb-1 rounded-lg text-[13px] font-bold transition-colors hover:opacity-90"
+                                  style={{ background: k.color + '15', color: k.color }}
+                                >
+                                  {t(k.label)}
+                                  <span className="text-[11px] font-normal opacity-70 ml-1">— सर्व पहा →</span>
+                                </NavMenuPrimitive.Link>
+                                {/* Activities */}
+                                <ul className="flex flex-col gap-0.5">
+                                  {k.activities.map((a) => {
+                                    const aActive = pathname === `/${k.slug}/${a.slug}`;
+                                    return (
+                                      <li key={a.slug}>
+                                        <NavMenuPrimitive.Link
+                                          href={`/${k.slug}/${a.slug}`}
+                                          className={cn(
+                                            'block px-2 py-1.5 rounded text-[13px] leading-snug transition-colors',
+                                            aActive ? 'font-semibold' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                          )}
+                                          style={aActive ? { color: k.color } : {}}
+                                        >
+                                          {t(a.title)}
+                                        </NavMenuPrimitive.Link>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
+                            </NavMenuPrimitive.Content>
+                          </NavMenuPrimitive.Item>
+                        );
+                      })}
+                    </NavMenuPrimitive.List>
+
+                    {/* Right: inline Viewport (no Portal) */}
+                    <NavMenuPrimitive.Viewport className="flex-1 overflow-hidden" />
+                  </NavMenuPrimitive.Root>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
@@ -195,73 +238,135 @@ export default function Navbar() {
         >
           {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
-      </div> 
+      </div>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden bg-white border-b-2 border-gray-100 shadow-md px-6 pb-5 pt-2">
-          <ul className="flex flex-col gap-1">
-            <li>
-              <a href="/#about" onClick={closeMenu}
-                 className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
-                {t(tr.nav.about)}
-              </a>
-            </li>
-            {KSHETRAS.map((k) => (
-              <li key={k.slug}>
-                <a href={`/${k.slug}`} onClick={closeMenu}
-                   className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
-                  <span
-                    className="w-5 h-5 rounded text-white text-[9px] font-black flex items-center justify-center shrink-0"
-                    style={{ background: k.color }}
-                  >
-                    {k.num}
-                  </span>
-                  {t(k.label)}
-                </a>
-              </li>
-            ))}
-            <li>
-              <a href="/events" onClick={closeMenu}
-                 className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/events') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
-                {t({ mr: 'कार्यक्रम', en: 'Events' })}
-              </a>
-            </li>
-            <li>
-              <a href="/blog" onClick={closeMenu}
-                 className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/blog') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
-                {t({ mr: 'ब्लॉग', en: 'Blog' })}
-              </a>
-            </li>
-            <li>
-              <a href="/gallery" onClick={closeMenu}
-                 className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/gallery') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
-                {t({ mr: 'चित्रदालन', en: 'Gallery' })}
-              </a>
-            </li>
-            <li>
-              <a href="/team" onClick={closeMenu}
-                 className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', isActive('/team') ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
-                {t({ mr: 'आमचा परिवार', en: 'Team' })}
-              </a>
-            </li>
-            <li>
-              <a href="/#contact" onClick={closeMenu}
-                 className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
-                {t(tr.nav.contact)}
-              </a>
-            </li>
-            <li>
-              <a href="/donate" onClick={closeMenu}
-                 className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-colors">
-                <Heart className="w-4 h-4" />
-                {t({ mr: 'देणगी द्या', en: 'Donate' })}
-              </a>
-            </li>
-          </ul>
-        </div>
+        <MobileMenu pathname={pathname} closeMenu={closeMenu} />
       )}
     </nav>
+  );
+}
+
+function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () => void }) {
+  const t = useT();
+  const activeKshetra = KSHETRAS.find(k => pathname.startsWith('/' + k.slug))?.slug ?? null;
+  const [openSlug, setOpenSlug] = useState<string | null>(activeKshetra);
+
+  return (
+    <div className="lg:hidden bg-white border-b-2 border-gray-100 shadow-md px-4 pb-5 pt-2 max-h-[80vh] overflow-y-auto">
+      <ul className="flex flex-col gap-0.5">
+        <li>
+          <a href="/#about" onClick={closeMenu}
+             className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
+            {t(tr.nav.about)}
+          </a>
+        </li>
+
+        {/* Kshetras accordion */}
+        {KSHETRAS.map((k) => {
+          const isOpen = openSlug === k.slug;
+          const kshetraActive = pathname.startsWith('/' + k.slug);
+          return (
+            <li key={k.slug}>
+              {/* Accordion trigger */}
+              <button
+                onClick={() => setOpenSlug(isOpen ? null : k.slug)}
+                className={cn(
+                  'flex w-full items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  kshetraActive ? 'font-semibold' : 'text-gray-700 hover:bg-gray-50'
+                )}
+                style={kshetraActive ? { color: k.color } : {}}
+              >
+                <span
+                  className="w-5 h-5 rounded text-white text-[9px] font-black flex items-center justify-center shrink-0"
+                  style={{ background: k.color }}
+                >
+                  {k.num}
+                </span>
+                <span className="flex-1 text-left">{t(k.label)}</span>
+                <ChevronRight
+                  className="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0"
+                  style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                />
+              </button>
+
+              {/* Expanded activities */}
+              {isOpen && (
+                <ul className="ml-8 mb-1 flex flex-col gap-0.5">
+                  <li>
+                    <a
+                      href={`/${k.slug}`}
+                      onClick={closeMenu}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition-colors"
+                      style={{ color: k.color }}
+                    >
+                      सर्व {t(k.label)} →
+                    </a>
+                  </li>
+                  {k.activities.map((a) => {
+                    const aActive = pathname === `/${k.slug}/${a.slug}`;
+                    return (
+                      <li key={a.slug}>
+                        <a
+                          href={`/${k.slug}/${a.slug}`}
+                          onClick={closeMenu}
+                          className={cn(
+                            'block px-3 py-2 rounded-lg text-[13px] transition-colors',
+                            aActive ? 'font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          )}
+                          style={aActive ? { color: k.color } : {}}
+                        >
+                          {t(a.title)}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+
+        <li>
+          <a href="/events" onClick={closeMenu}
+             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/events' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
+            {t({ mr: 'कार्यक्रम', en: 'Events' })}
+          </a>
+        </li>
+        <li>
+          <a href="/blog" onClick={closeMenu}
+             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/blog' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
+            {t({ mr: 'ब्लॉग', en: 'Blog' })}
+          </a>
+        </li>
+        <li>
+          <a href="/gallery" onClick={closeMenu}
+             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/gallery' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
+            {t({ mr: 'चित्रदालन', en: 'Gallery' })}
+          </a>
+        </li>
+        <li>
+          <a href="/team" onClick={closeMenu}
+             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/team' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
+            {t({ mr: 'आमचा परिवार', en: 'Team' })}
+          </a>
+        </li>
+        <li>
+          <a href="/#contact" onClick={closeMenu}
+             className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-accent-light hover:text-primary transition-colors">
+            {t(tr.nav.contact)}
+          </a>
+        </li>
+        <li>
+          <a href="/donate" onClick={closeMenu}
+             className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-colors">
+            <Heart className="w-4 h-4" />
+            {t({ mr: 'देणगी द्या', en: 'Donate' })}
+          </a>
+        </li>
+      </ul>
+    </div>
   );
 }
 

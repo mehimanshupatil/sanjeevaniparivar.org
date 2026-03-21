@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import BlogCreateForm from "@/components/BlogCreateForm";
+import "@/styles/global.css";
+---
+
+<Layout
+  title="नवीन लेख तयार करा | संजीवनी परिवार"
+  description="Create a new blog post for Sanjeevani Parivar"
+>
+  <meta name="robots" slot="head" content="noindex, nofollow" />
+  <BlogCreateForm client:load />
+</Layout>
