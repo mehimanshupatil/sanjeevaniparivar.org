@@ -4,7 +4,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogImageAlt?: string;
-  ogType?: 'website' | 'article';
+  ogType?: "website" | "article";
 }
 
 const {
@@ -81,7 +81,12 @@ const jsonLd = {
     <link rel="canonical" href={canonicalURL} />
 
     <!-- RSS -->
-    <link rel="alternate" type="application/rss+xml" title="Sanjeevani Parivar Blog" href="/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Sanjeevani Parivar Blog"
+      href="/rss.xml"
+    />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/assets/logo.png" />
@@ -102,6 +107,11 @@ const jsonLd = {
     <slot name="head" />
 
     <title>{title}</title>
+
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6911279377607069"
+      crossorigin="anonymous"></script>
   </head>
   <body>
     <slot />
