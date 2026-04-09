@@ -21,6 +21,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [pathname, setPathname] = useState('');
+  const [wipDismissed, setWipDismissed] = useState(false);
 
   useEffect(() => { setPathname(window.location.pathname); }, []);
 
@@ -38,6 +39,20 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-gray-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : ''}`}
     >
+      {/* WIP banner */}
+      {!wipDismissed && (
+        <div className="bg-gray-900 text-white text-xs font-semibold flex items-center justify-center gap-2 px-4 py-1.5 relative">
+          <span>🚧</span>
+          <span>{t({ mr: 'हे संकेतस्थळ अद्याप निर्माणाधीन आहे. काही भाग अपूर्ण असू शकतात.', en: 'This website is a work in progress. Some sections may be incomplete.' })}</span>
+          <button
+            onClick={() => setWipDismissed(true)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-white/10 transition-colors"
+            aria-label="Dismiss"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
       <div className="max-w-6xl mx-auto px-6 h-17 flex items-center justify-between gap-6">
 
         {/* Logo */}

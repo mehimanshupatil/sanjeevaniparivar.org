@@ -1,5 +1,6 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
+import { KSHETRAS } from '@/content/kshetras';
 import SectionHeader from './ui/SectionHeader';
 
 const VALUES = [
@@ -8,12 +9,12 @@ const VALUES = [
   { icon: '💡', label: tr.about.valuesLabel,  val: tr.about.valuesVal  },
 ] as const;
 
-const CARDS = [
-  { icon: '📚', title: tr.about.card1Title, desc: tr.about.card1Desc, accent: 'var(--color-education)'    },
-  { icon: '🌿', title: tr.about.card2Title, desc: tr.about.card2Desc, accent: 'var(--color-environment)'  },
-  { icon: '🏥', title: tr.about.card3Title, desc: tr.about.card3Desc, accent: 'var(--color-health)'       },
-  { icon: '💬', title: tr.about.card4Title, desc: tr.about.card4Desc, accent: 'var(--color-enlightenment)'},
-];
+export const KSHETRA_ICONS: Record<string, string> = {
+  shikshan:   '📚',
+  paryavaran: '🌿',
+  aarogya:    '🏥',
+  prabodhana: '💬',
+};
 
 export default function AboutSection() {
   const t = useT();
@@ -54,17 +55,17 @@ export default function AboutSection() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {CARDS.map((c) => (
+            {KSHETRAS.map((k) => (
               <div
-                key={c.title.en}
+                key={k.slug}
                 className="p-6 rounded-2xl text-center hover:-translate-y-1 hover:shadow-lg transition-all"
-                style={{ background: '#fff', border: `2px solid color-mix(in srgb, ${c.accent} 13%, transparent)` }}
+                style={{ background: '#fff', border: `2px solid color-mix(in srgb, ${k.color} 13%, transparent)` }}
               >
-                <span className="text-3xl block mb-2">{c.icon}</span>
-                <h3 className="text-sm font-bold mb-1" style={{ color: c.accent }}>
-                  {t(c.title)}
+                <span className="text-3xl block mb-2">{KSHETRA_ICONS[k.slug]}</span>
+                <h3 className="text-sm font-bold mb-1" style={{ color: k.color }}>
+                  {t(k.label)}
                 </h3>
-                <p className="text-xs text-gray-500 leading-snug">{t(c.desc)}</p>
+                <p className="text-xs text-gray-500 leading-snug">{t(k.overview_desc)}</p>
               </div>
             ))}
           </div>

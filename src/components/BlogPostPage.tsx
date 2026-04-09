@@ -24,17 +24,19 @@ function PageContent({ post }: { post: BlogPostProps }) {
 
   const d = new Date(post.date);
 
+    const gradientBg = post.image                
+       ? `linear-gradient(135deg, color-mix(in srgb, ${color} 87%, transparent), color-mix(in srgb, ${color} 60%, transparent))` 
+  : `linear-gradient(135deg, color-mix(in srgb, ${color} 93%, transparent), color-mix(in srgb, ${color} 60%, transparent))`;
+         
+
   return (
     <>
       <Navbar />
 
       {/* Hero */}
       <section
-        className="pt-[68px] min-h-[28vh] flex flex-col justify-end relative overflow-hidden"
-        style={post.image
-          ? { background: `linear-gradient(135deg, ${color}dd, ${color}99)` }
-          : { background: `linear-gradient(135deg, ${color}ee, ${color}99)` }
-        }
+        className="pt-17 min-h-[28vh] flex flex-col justify-end relative overflow-hidden"
+       style={{ background: gradientBg }}
       >
         {post.image && (
           <div className="absolute inset-0 -z-0">
@@ -69,14 +71,20 @@ function PageContent({ post }: { post: BlogPostProps }) {
       <main className="max-w-3xl mx-auto px-6 py-14">
         <article
           className="prose prose-gray max-w-none
-            prose-headings:font-bold prose-headings:text-gray-900
-            prose-h2:text-xl prose-h3:text-lg
-            prose-p:text-gray-700 prose-p:leading-relaxed
-            prose-li:text-gray-700
-            prose-blockquote:border-l-4 prose-blockquote:italic prose-blockquote:text-gray-500
-            prose-strong:text-gray-900
-            prose-table:text-sm
-            prose-a:text-primary hover:prose-a:underline"
+            prose-headings:font-bold prose-headings:text-gray-900 prose-headings:mt-10 prose-headings:mb-3
+            prose-h2:text-2xl prose-h2:border-b prose-h2:border-gray-100 prose-h2:pb-2
+            prose-h3:text-xl prose-h3:text-gray-800
+            prose-p:text-gray-700 prose-p:leading-loose prose-p:text-[1.05rem]
+            prose-li:text-gray-700 prose-li:leading-loose
+            prose-img:rounded-xl prose-img:mx-auto prose-img:shadow-sm prose-img:my-8 prose-img:border prose-img:border-gray-100
+            prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-primary/60
+            prose-blockquote:bg-primary/4 prose-blockquote:rounded-r-xl prose-blockquote:py-0.5
+            prose-blockquote:text-gray-700
+            prose-strong:text-gray-900 prose-strong:font-bold
+            prose-table:text-sm prose-th:bg-gray-50 prose-th:font-semibold
+            prose-td:border-gray-200 prose-th:border-gray-200
+            prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+            prose-hr:border-gray-200"
           style={{ '--tw-prose-links': color } as React.CSSProperties}
           dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
         />

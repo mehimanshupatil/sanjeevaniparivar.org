@@ -3,6 +3,7 @@ import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
+import { KSHETRA_ICONS } from './AboutSection';
 
 export interface BlogPostSummary {
   slug: string;
@@ -45,7 +46,14 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
           />
         </div>
       ) : (
-        <div className="h-1.5 w-full" style={{ background: color }} />
+        <div
+          className="h-24 w-full flex items-center justify-center"
+          style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${color} 12%, transparent), color-mix(in srgb, ${color} 6%, transparent))` }}
+        >
+          <span className="text-3xl opacity-30">
+            {KSHETRA_ICONS[post.kshetra] ?? '📰'}
+          </span>
+        </div>
       )}
 
       <div className="flex-1 p-6 flex flex-col gap-3">
