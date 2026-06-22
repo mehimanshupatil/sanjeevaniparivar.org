@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -95,7 +95,7 @@ function PageContent({ kshetra, activity }: Props) {
                     className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current hover:-translate-y-0.5 transition-all group"
                     style={{ ['--tw-border-opacity' as string]: '1' }}
                   >
-                    <ArrowLeft className="w-4 h-4 shrink-0" />
+                    <ArrowLeftIcon className="w-4 h-4 shrink-0" />
                     <span>{t(prev.title)}</span>
                   </a>
                 )}
@@ -105,7 +105,7 @@ function PageContent({ kshetra, activity }: Props) {
                     className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current hover:-translate-y-0.5 transition-all ml-auto"
                   >
                     <span>{t(next.title)}</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRightIcon className="w-4 h-4 shrink-0" />
                   </a>
                 )}
               </div>
@@ -153,7 +153,7 @@ function PageContent({ kshetra, activity }: Props) {
                 className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
                 style={{ borderColor: kshetra.color, color: kshetra.color }}
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeftIcon className="w-4 h-4" />
                 {t({ mr: 'क्षेत्र पानावर परत', en: `Back to ${t(kshetra.label)}` })}
               </a>
             </div>

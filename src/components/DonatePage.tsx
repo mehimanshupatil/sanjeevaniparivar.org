@@ -1,4 +1,4 @@
-import { Heart, Building2, Smartphone, ArrowLeft } from 'lucide-react';
+import { HeartIcon, BuildingsIcon, DeviceMobileIcon, ArrowLeftIcon } from '@phosphor-icons/react';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -43,7 +43,7 @@ function PageContent() {
             <span className="text-white/40">{t({ mr: 'देणगी', en: 'Donate' })}</span>
           </div>
           <div className="flex items-center gap-4 mb-4">
-            <Heart className="w-8 h-8 text-white/80" strokeWidth={1.5} />
+            <HeartIcon className="w-8 h-8 text-white/80" />
             <span
               className="text-xs font-bold uppercase tracking-[0.25em] px-3 py-1 rounded-full"
               style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}
@@ -93,7 +93,7 @@ function PageContent() {
                 <div className="rounded-2xl border border-gray-100 p-7 mb-5">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-primary" strokeWidth={1.5} />
+                      <BuildingsIcon className="w-5 h-5 text-primary" />
                     </div>
                     <h2 className="text-base font-bold text-gray-900">
                       {t({ mr: 'बँक हस्तांतरण', en: 'Bank Transfer' })}
@@ -119,7 +119,7 @@ function PageContent() {
                 <div className="rounded-2xl border border-gray-100 p-7 mb-5">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Smartphone className="w-5 h-5 text-primary" strokeWidth={1.5} />
+                      <DeviceMobileIcon className="w-5 h-5 text-primary" />
                     </div>
                     <h2 className="text-base font-bold text-gray-900">
                       {t({ mr: 'UPI / QR कोड', en: 'UPI / QR Code' })}
@@ -208,7 +208,7 @@ function PageContent() {
                 href="/"
                 className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 border-primary text-sm font-semibold text-primary transition-all hover:-translate-y-0.5"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeftIcon className="w-4 h-4" />
                 {t({ mr: 'मुख्य पानावर परत', en: 'Back to Home' })}
               </a>
             </div>

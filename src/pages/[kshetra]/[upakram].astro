@@ -2,7 +2,6 @@
 import Layout from "@/layouts/Layout.astro";
 import UpakramPage from "@/components/UpakramPage";
 import { KSHETRAS, getActivity } from "@/content/kshetras";
-import "@/styles/global.css";
 
 export function getStaticPaths() {
   return KSHETRAS.flatMap((kshetra) =>
@@ -23,6 +22,6 @@ const title = `${activity.title.en} | ${kshetra.label.en} — संजीवन
 const description = activity.body?.en.slice(0, 155) ?? activity.desc.en;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} ogImage={`/og/upakram/${kshetraSlug}/${activitySlug}.png`}>
   <UpakramPage kshetra={kshetra} activity={activity} client:idle />
 </Layout>

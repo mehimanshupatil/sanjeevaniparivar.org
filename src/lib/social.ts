@@ -1,5 +1,5 @@
 import { SiYoutube, SiFacebook, SiInstagram, SiWhatsapp, type IconType } from '@icons-pack/react-simple-icons';
-import { Globe } from 'lucide-react';
+import { GlobeIcon } from '@phosphor-icons/react';
 
 export type SocialLink = {
   key: string;
@@ -20,7 +20,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const WEBSITE_LINK = {
   key: 'web',
-  icon: Globe,
+  icon: GlobeIcon,
   handle: 'sanjeevaniparivar.org',
   href: 'https://sanjeevaniparivar.org',
   bg: 'bg-secondary',

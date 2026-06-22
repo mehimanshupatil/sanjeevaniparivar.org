@@ -4,6 +4,7 @@
 // =============================================
 
 export type Lang = 'mr' | 'en';
+export type Bilingual = { mr: string; en: string };
 
 export const translations = {
   // --- NAVBAR ---

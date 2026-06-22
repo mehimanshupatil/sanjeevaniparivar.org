@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LangProvider, useT } from './LangContext';
+import { Button } from '@/components/ui/button';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { EVENTS, type Event } from '@/content/events';
@@ -53,10 +54,11 @@ function PageContent() {
   const t = useT();
   const [filter, setFilter] = useState<string>('all');
 
-  const upcoming = EVENTS.filter((e) => e.upcoming).sort(
+  const now = new Date();
+  const upcoming = EVENTS.filter((e) => new Date(e.date) >= now).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
-  const past = EVENTS.filter((e) => !e.upcoming).sort(
+  const past = EVENTS.filter((e) => new Date(e.date) < now).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
@@ -97,17 +99,18 @@ function PageContent() {
             const active = filter === f.key;
             const color = KSHETRA_COLOR[f.key] ?? 'var(--color-primary)';
             return (
-              <button
+              <Button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className="px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors"
+                variant="outline"
+                className="rounded-full text-sm font-semibold h-auto py-1.5 px-4"
                 style={active
                   ? { background: color, color: '#fff', borderColor: color }
                   : { background: '#fff', color: '#374151', borderColor: '#e5e7eb' }
                 }
               >
                 {t(f.label)}
-              </button>
+              </Button>
             );
           })}
         </div>

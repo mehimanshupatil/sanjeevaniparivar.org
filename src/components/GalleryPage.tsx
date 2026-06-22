@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { XIcon, MagnifyingGlassPlusIcon, CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -70,14 +72,16 @@ function Lightbox({
       onClick={onClose}
     >
       {/* Close */}
-      <button
+      <Button
         ref={closeRef}
-        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10"
+        size="icon"
+        variant="ghost"
+        className="absolute top-4 right-4 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-white z-10"
         onClick={onClose}
         aria-label="Close"
       >
-        <X className="w-5 h-5" />
-      </button>
+        <XIcon className="w-5 h-5" />
+      </Button>
 
       {/* Counter */}
       <span className="absolute top-4 left-1/2 -translate-x-1/2 text-xs text-white/40 tabular-nums">
@@ -85,24 +89,28 @@ function Lightbox({
       </span>
 
       {/* Prev */}
-      <button
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all disabled:opacity-20 disabled:cursor-not-allowed z-10"
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute left-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-white z-10"
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
         disabled={!hasPrev}
         aria-label="Previous photo"
       >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
+        <CaretLeftIcon className="w-5 h-5" />
+      </Button>
 
       {/* Next */}
-      <button
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all disabled:opacity-20 disabled:cursor-not-allowed z-10"
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute right-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-white/10 hover:bg-white/20 text-white hover:text-white z-10"
         onClick={(e) => { e.stopPropagation(); onNext(); }}
         disabled={!hasNext}
         aria-label="Next photo"
       >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+        <CaretRightIcon className="w-5 h-5" />
+      </Button>
 
       {/* Content */}
       <div
@@ -211,31 +219,36 @@ function GalleryContent() {
             {KSHETRAS.map((k) => {
               const isActive = activeKshetra === k.key;
               return (
-                <button
+                <Button
                   key={k.key}
                   onClick={() => setActiveKshetra(k.key)}
-                  className="px-3 py-1 rounded-full text-sm font-medium transition-all"
+                  variant="ghost"
+                  className="rounded-full text-sm font-medium h-auto py-1 px-3"
                   style={isActive
                     ? { background: k.color, color: '#fff' }
                     : { background: '#f3f4f6', color: '#374151' }
                   }
                 >
                   {t(k.label)}
-                </button>
+                </Button>
               );
             })}
           </div>
 
-          <select
+          <Select
             value={String(activeYear)}
-            onChange={(e) => setActiveYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-            className="text-sm border border-gray-200 rounded-lg px-3 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            onValueChange={(v) => setActiveYear(v === 'all' ? 'all' : Number(v))}
           >
-            <option value="all">{t({ mr: 'सर्व वर्षे', en: 'All years' })}</option>
-            {GALLERY_YEARS.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+            <SelectTrigger className="w-32 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t({ mr: 'सर्व वर्षे', en: 'All years' })}</SelectItem>
+              {GALLERY_YEARS.map((y) => (
+                <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </section>
 
@@ -270,7 +283,7 @@ function GalleryContent() {
                         }}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                        <ZoomIn className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <MagnifyingGlassPlusIcon className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </div>
                     {item.caption && (

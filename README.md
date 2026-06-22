@@ -99,6 +99,16 @@ draft: false
 
 To bulk-import from WordPress CSV exports, use the scripts in `scripts/`.
 
+## Architecture Decisions
+
+Key design decisions are documented in [`docs/decisions/`](docs/decisions/):
+
+- [001 — Astro Static Site with React Islands](docs/decisions/001-astro-static-site.md)
+- [002 — Custom Bilingual System](docs/decisions/002-bilingual-system.md)
+- [003 — Mailto via DOM createElement](docs/decisions/003-mailto-via-dom.md)
+- [004 — Structured Content in TypeScript](docs/decisions/004-content-in-typescript.md)
+- [005 — Tailwind v4 Theme Tokens in CSS](docs/decisions/005-tailwind-v4-theme.md)
+
 ## About Sanjeevani Parivar
 
 Sanjeevani Parivar is a social organisation founded in 1994 by Samavedis Brahmin youth of Vasai, serving the community spread across twelve villages from Bhuigaon to Agashi. Its four core kshetras (areas of work) are:

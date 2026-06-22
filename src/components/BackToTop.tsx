@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ArrowUp } from 'lucide-react';
+import {  ArrowUpIcon } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -13,13 +14,13 @@ export default function BackToTop() {
   if (!visible) return null;
 
   return (
-    <button
+    <Button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full shadow-lg flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-xl"
-      style={{ background: '#C41E3A', color: '#fff' }}
+      size="icon"
+      className="fixed bottom-6 right-6 z-50 size-11 rounded-full shadow-lg hover:-translate-y-1 hover:shadow-xl"
       aria-label="Back to top"
     >
-      <ArrowUp className="w-5 h-5" />
-    </button>
+      <ArrowUpIcon className="w-5 h-5" />
+    </Button>
   );
 }

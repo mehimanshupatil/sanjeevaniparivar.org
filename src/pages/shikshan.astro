@@ -3,7 +3,6 @@ import Layout from "@/layouts/Layout.astro";
 import KshetraPage from "@/components/KshetraPage";
 import { getKshetra } from "@/content/kshetras";
 import { getCollection } from "astro:content";
-import "@/styles/global.css";
 
 const data = getKshetra("shikshan")!;
 
@@ -17,6 +16,7 @@ const posts = allPosts
 <Layout
   title={`${data.label.mr} | ${data.label.en} — संजीवनी परिवार`}
   description={`${data.body.en.slice(0, 155)}...`}
+  ogImage="/og/kshetra/shikshan.png"
 >
   <KshetraPage slug="shikshan" data={data} posts={posts} client:idle />
 </Layout>

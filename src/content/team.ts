@@ -1,4 +1,4 @@
-export type Bilingual = { mr: string; en: string };
+import type { Bilingual } from '@/i18n/translations';
 
 export interface TeamMember {
   id: string;

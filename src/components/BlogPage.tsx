@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LangProvider, useT } from './LangContext';
+import { Button } from '@/components/ui/button';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
@@ -139,17 +140,18 @@ function PageContent({ posts }: { posts: BlogPostSummary[] }) {
             const active = filter === f.key;
             const color = KSHETRA_COLOR[f.key] ?? 'var(--color-primary)';
             return (
-              <button
+              <Button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className="px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors"
+                variant="outline"
+                className="rounded-full text-sm font-semibold h-auto py-1.5 px-4"
                 style={active
                   ? { background: color, color: '#fff', borderColor: color }
                   : { background: '#fff', color: '#374151', borderColor: '#e5e7eb' }
                 }
               >
                 {t(f.label)}
-              </button>
+              </Button>
             );
           })}
         </div>

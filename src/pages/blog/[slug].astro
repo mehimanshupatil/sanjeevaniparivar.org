@@ -1,38 +1,40 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import BlogPostPage from "@/components/BlogPostPage";
-import { getCollection } from 'astro:content';
-import { marked } from 'marked';
-import "@/styles/global.css";
+import { getCollection } from "astro:content";
+import { marked } from "marked";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection("blog");
   return posts.map((post) => ({ params: { slug: post.id } }));
 }
 
 const { slug } = Astro.params;
-const posts = await getCollection('blog');
+const posts = await getCollection("blog");
 const post = posts.find((p) => p.id === slug);
 
-if (!post) return Astro.redirect('/blog');
+if (!post) return Astro.redirect("/blog");
 
-const bodyHtml = marked.parse(post.body ?? '') as string;
+const bodyHtml = marked.parse(post.body ?? "") as string;
 
 const postProps = {
-  slug:     post.id,
-  title:    post.data.title,
-  excerpt:  post.data.excerpt,
-  author:   post.data.author,
-  date:     post.data.date,
-  kshetra:  post.data.kshetra,
+  slug: post.id,
+  title: post.data.title,
+  excerpt: post.data.excerpt,
+  author: post.data.author,
+  date: post.data.date,
+  kshetra: post.data.kshetra,
   bodyHtml,
-  image:    post.data.image ?? null,
+  image: post.data.image ?? null,
 };
 
-const canonicalUrl = new URL(`/blog/${post.id}`, 'https://sanjeevaniparivar.org').href;
-const imageUrl = post.data.image
-  ? new URL(post.data.image, 'https://sanjeevaniparivar.org').href
-  : 'https://sanjeevaniparivar.org/assets/og-image.svg';
+const canonicalUrl = new URL(
+  `/blog/${post.id}`,
+  "https://sanjeevaniparivar.org",
+).href;
+const imageUrl =
+  post.data.image &&
+  new URL(post.data.image, "https://sanjeevaniparivar.org").href;
 
 const articleSchema = {
   "@context": "https://schema.org",
@@ -64,10 +66,14 @@ const articleSchema = {
 <Layout
   title={`${post.data.title} | संजीवनी परिवार`}
   description={post.data.excerpt}
-  ogImage={post.data.image ?? undefined}
+  ogImage={post.data.image ?? `/og/blog/${post.id}.png`}
   ogImageAlt={post.data.title}
   ogType="article"
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(articleSchema)}
+  />
   <BlogPostPage post={postProps} client:idle />
 </Layout>

@@ -3,6 +3,10 @@ import type { FormEvent } from 'react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import SectionHeader from './ui/SectionHeader';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 const TO_EMAIL = 'sanjeevani.parivar@gmail.com';
 
@@ -88,52 +92,36 @@ export default function ContactSection() {
             </h3>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
+              <div className="space-y-1.5">
+                <Label className="font-semibold text-gray-700">
                   {t({ mr: 'नाव', en: 'Name' })} <span className="text-primary">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  placeholder={t({ mr: 'तुमचे नाव', en: 'Your name' })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition"
-                />
+                </Label>
+                <Input name="name" required placeholder={t({ mr: 'तुमचे नाव', en: 'Your name' })} />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
+              <div className="space-y-1.5">
+                <Label className="font-semibold text-gray-700">
                   {t({ mr: 'फोन / ईमेल', en: 'Phone / Email' })} <span className="text-primary">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="contact"
-                  required
-                  placeholder={t({ mr: 'फोन किंवा ईमेल', en: 'Phone or email' })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition"
-                />
+                </Label>
+                <Input name="contact" required placeholder={t({ mr: 'फोन किंवा ईमेल', en: 'Phone or email' })} />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
+            <div className="space-y-1.5">
+              <Label className="font-semibold text-gray-700">
                 {t({ mr: 'संदेश', en: 'Message' })} <span className="text-primary">*</span>
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 name="message"
                 required
                 rows={4}
                 placeholder={t({ mr: 'तुमचा संदेश लिहा…', en: 'Write your message…' })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition resize-none"
+                className="resize-none"
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl font-bold text-sm text-white transition-all hover:-translate-y-0.5"
-              style={{ background: '#C41E3A' }}
-            >
+            <Button type="submit" className="w-full hover:-translate-y-0.5">
               {t({ mr: 'संदेश पाठवा', en: 'Send message' })}
-            </button>
+            </Button>
 
             {status === 'sent' && (
               <p className="text-xs text-green-600 text-center">

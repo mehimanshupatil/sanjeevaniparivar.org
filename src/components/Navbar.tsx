@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Heart, ChevronRight } from 'lucide-react';
+import { ListIcon, XIcon, HeartIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { KSHETRAS } from '@/content/kshetras';
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { NavigationMenu as NavMenuPrimitive } from '@base-ui/react/navigation-menu';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
   const t = useT();
@@ -44,13 +45,15 @@ export default function Navbar() {
         <div className="bg-gray-900 text-white text-xs font-semibold flex items-center justify-center gap-2 px-4 py-1.5 relative">
           <span>🚧</span>
           <span>{t({ mr: 'हे संकेतस्थळ अद्याप निर्माणाधीन आहे. काही भाग अपूर्ण असू शकतात.', en: 'This website is a work in progress. Some sections may be incomplete.' })}</span>
-          <button
+          <Button
             onClick={() => setWipDismissed(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-white/10 transition-colors"
+            variant="ghost"
+            size="icon-xs"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 hover:text-white"
             aria-label="Dismiss"
           >
-            <X className="w-3.5 h-3.5" />
-          </button>
+            <XIcon className="w-3.5 h-3.5" />
+          </Button>
         </div>
       )}
       <div className="max-w-6xl mx-auto px-6 h-17 flex items-center justify-between gap-6">
@@ -106,7 +109,7 @@ export default function Navbar() {
                             <NavMenuPrimitive.Trigger
                               className={cn(
                                 'flex w-full items-center gap-2.5 px-3 py-2.5 text-sm transition-colors outline-none rounded-lg mx-1',
-                                'hover:bg-gray-50 data-[popup-open]:font-semibold',
+                                'hover:bg-gray-50 data-popup-open:font-semibold',
                                 active ? 'font-semibold' : 'text-gray-700'
                               )}
                               style={{ color: active ? k.color : undefined }}
@@ -118,7 +121,7 @@ export default function Navbar() {
                                 {k.num}
                               </span>
                               <span className="flex-1 text-left leading-none">{t(k.label)}</span>
-                              <ChevronRight className="w-3 h-3 text-gray-300 shrink-0" />
+                              <CaretRightIcon className="w-3 h-3 text-gray-300 shrink-0" />
                             </NavMenuPrimitive.Trigger>
 
                             {/* Content stays in inner Viewport (no Portal) */}
@@ -240,19 +243,21 @@ export default function Navbar() {
             href="/donate"
             className="ml-2 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-white text-[14px] font-semibold hover:bg-primary-dark transition-colors"
           >
-            <Heart className="w-3.5 h-3.5" />
+            <HeartIcon className="w-3.5 h-3.5" />
             {t({ mr: 'देणगी द्या', en: 'Donate' })}
           </a>
         </div>
 
         {/* Hamburger */}
-        <button
+        <Button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="lg:hidden p-1.5 rounded-md text-gray-700 hover:bg-gray-100 transition-colors"
+          variant="ghost"
+          size="icon-sm"
+          className="lg:hidden text-gray-700"
           aria-label="Toggle menu"
         >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+          {menuOpen ? <XIcon className="w-5 h-5" /> : <ListIcon className="w-5 h-5" />}
+        </Button>
       </div>
 
       {/* Mobile menu */}
@@ -300,7 +305,7 @@ function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () =
                   {k.num}
                 </span>
                 <span className="flex-1 text-left">{t(k.label)}</span>
-                <ChevronRight
+                <CaretRightIcon
                   className="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0"
                   style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}
                 />
@@ -376,7 +381,7 @@ function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () =
         <li>
           <a href="/donate" onClick={closeMenu}
              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-colors">
-            <Heart className="w-4 h-4" />
+            <HeartIcon className="w-4 h-4" />
             {t({ mr: 'देणगी द्या', en: 'Donate' })}
           </a>
         </li>

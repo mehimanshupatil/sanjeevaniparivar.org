@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { Input } from '@/components/ui/input';
 import { SiYoutube } from '@icons-pack/react-simple-icons';
 import { VYAKHYANE } from '@/content/vyakhyanmala';
 
@@ -41,14 +42,12 @@ export default function VyakhyanmalaTable() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Input
             placeholder="वक्ते, विषय शोधा…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 w-64"
-            style={{ ['--tw-ring-color' as string]: COLOR + '40' }}
+            className="pl-9 w-64"
           />
         </div>
       </div>

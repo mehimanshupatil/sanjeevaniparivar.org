@@ -1,4 +1,5 @@
 ---
+import "@/styles/global.css";
 interface Props {
   title?: string;
   description?: string;
@@ -10,13 +11,13 @@ interface Props {
 const {
   title = "संजीवनी परिवार | Sanjeevani Parivar — ध्यास परिवर्तनाचा",
   description = "Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for 31+ years.",
-  ogImage = "/assets/og-image.svg",
+  ogImage,
   ogImageAlt = "Sanjeevani Parivar",
   ogType = "website",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(ogImage, Astro.site);
+const ogImageURL = new URL(ogImage ?? "", Astro.site);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -96,7 +97,7 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 

@@ -6,7 +6,7 @@ NGO website for Sanjeevani Parivar, Vasai, Maharashtra. Founded 1994. Bilingual 
 - **Astro 6** static site, React islands (`client:load`)
 - **Tailwind CSS v4** — theme tokens go in `@theme {}` in `src/styles/global.css`, NOT in `tailwind.config.mjs` (plugins only)
 - **pnpm** as package manager
-- **lucide-react** for UI icons; **@icons-pack/react-simple-icons** for brand icons (SiYoutube, SiFacebook, SiInstagram, SiWhatsapp)
+- **@phosphor-icons/react** for UI icons; **@icons-pack/react-simple-icons** for brand icons (SiYoutube, SiFacebook, SiInstagram, SiWhatsapp)
 - `@/*` aliases to `src/*`
 
 ## Bilingual system
