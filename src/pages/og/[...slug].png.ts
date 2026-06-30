@@ -6,25 +6,25 @@ import { resolve } from 'node:path';
 import { getCollection } from 'astro:content';
 import { KSHETRAS } from '@/content/kshetras';
 
-const fontDeva400  = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-400-normal.woff'));
-const fontDeva700  = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-700-normal.woff'));
+const fontDeva400 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-400-normal.woff'));
+const fontDeva700 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-700-normal.woff'));
 const fontInter400 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-400-normal.woff'));
 const fontInter700 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-700-normal.woff'));
-const logoData     = readFileSync(resolve(process.cwd(), 'public/assets/logo.png'));
-const logoDataUri  = `data:image/png;base64,${logoData.toString('base64')}`;
+const logoData = readFileSync(resolve(process.cwd(), 'public/assets/logo.jpg'));
+const logoDataUri = `data:image/png;base64,${logoData.toString('base64')}`;
 
 // Load fonts once into a shared renderer with distinct family names so CSS
 // font-family fallback ('Deva', 'Inter') picks the right font per script
 const renderer = new Renderer({ loadDefaultFonts: false });
-renderer.loadFontSync({ name: 'Deva',  data: fontDeva400,  weight: 400, style: 'normal' });
-renderer.loadFontSync({ name: 'Deva',  data: fontDeva700,  weight: 700, style: 'normal' });
+renderer.loadFontSync({ name: 'Deva', data: fontDeva400, weight: 400, style: 'normal' });
+renderer.loadFontSync({ name: 'Deva', data: fontDeva700, weight: 700, style: 'normal' });
 renderer.loadFontSync({ name: 'Inter', data: fontInter400, weight: 400, style: 'normal' });
 renderer.loadFontSync({ name: 'Inter', data: fontInter700, weight: 700, style: 'normal' });
 
 const KSHETRA_HEX: Record<string, string> = {
-  shikshan:   '#1565C0',
+  shikshan: '#1565C0',
   paryavaran: '#1B7A1B',
-  aarogya:    '#C41E3A',
+  aarogya: '#C41E3A',
   prabodhana: '#6A1B9A',
 };
 const PRIMARY = '#C41E3A';
@@ -40,11 +40,11 @@ export async function getStaticPaths() {
 
   return [
     { params: { slug: 'home' }, props: { title: 'संजीवनी परिवार', subtitle: 'ध्यास परिवर्तनाचा · स्थापना १९९४', color: PRIMARY } },
-    { params: { slug: 'page/donate' },  props: { title: 'देणगी',      subtitle: 'परिवर्तनाचा भाग व्हा',         color: PRIMARY } },
-    { params: { slug: 'page/gallery' }, props: { title: 'चित्रदालन',  subtitle: 'आमचा फोटो प्रवास',             color: PRIMARY } },
-    { params: { slug: 'page/team' },    props: { title: 'आमची टीम',   subtitle: 'संजीवनी परिवार',               color: PRIMARY } },
-    { params: { slug: 'page/events' },  props: { title: 'कार्यक्रम',  subtitle: 'आगामी व मागील कार्यक्रम',      color: PRIMARY } },
-    { params: { slug: 'page/blog' },    props: { title: 'ब्लॉग',      subtitle: 'आमच्या कार्याच्या कहाण्या',    color: PRIMARY } },
+    { params: { slug: 'page/donate' }, props: { title: 'देणगी', subtitle: 'परिवर्तनाचा भाग व्हा', color: PRIMARY } },
+    { params: { slug: 'page/gallery' }, props: { title: 'चित्रदालन', subtitle: 'आमचा फोटो प्रवास', color: PRIMARY } },
+    { params: { slug: 'page/team' }, props: { title: 'आमची टीम', subtitle: 'संजीवनी परिवार', color: PRIMARY } },
+    { params: { slug: 'page/events' }, props: { title: 'कार्यक्रम', subtitle: 'आगामी व मागील कार्यक्रम', color: PRIMARY } },
+    { params: { slug: 'page/blog' }, props: { title: 'ब्लॉग', subtitle: 'आमच्या कार्याच्या कहाण्या', color: PRIMARY } },
 
     ...KSHETRAS.map((k) => ({
       params: { slug: `kshetra/${k.slug}` },

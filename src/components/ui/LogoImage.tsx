@@ -7,7 +7,7 @@ interface LogoImageProps {
 export default function LogoImage({ className = '', alt = 'Sanjeevani Parivar' }: LogoImageProps) {
   return (
     <img
-      src="/assets/logo.png"
+      src="/assets/logo.jpg"
       alt={alt}
       className={className}
       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
