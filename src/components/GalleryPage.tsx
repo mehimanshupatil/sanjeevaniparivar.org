@@ -204,7 +204,7 @@ function GalleryContent() {
             {t({ mr: 'चित्रदालन', en: 'Photo Gallery' })}
           </p>
           <h1 className="font-extrabold text-white mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
-            {t({ mr: 'आमचा प्रवास', en: 'Our Journey' })}
+            {t({ mr: 'आपला प्रवास', en: 'Our Journey' })}
           </h1>
           <p className="text-base text-white/70 max-w-xl">
             {t({ mr: '३१ वर्षांच्या सेवाकार्याची झलक — शिक्षण, पर्यावरण, आरोग्य आणि प्रबोधना', en: 'A glimpse of 31 years of service — Education, Environment, Health & Enlightenment' })}

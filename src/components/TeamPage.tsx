@@ -21,7 +21,7 @@ function PageContent() {
         />
         <div className="relative z-10 max-w-6xl mx-auto px-6 pb-12 pt-14">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/60 mb-2">
-            {t({ mr: 'आमचा परिवार', en: 'Our Team' })}
+            {t({ mr: 'आपला परिवार', en: 'Our Team' })}
           </p>
           <h1 className="font-extrabold text-white mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
             {t({ mr: 'कार्यकारी मंडळ', en: 'Executive Committee' })}

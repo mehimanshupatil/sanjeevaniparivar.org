@@ -56,7 +56,7 @@ export default function Footer() {
                 { href: '/events',  label: { mr: 'कार्यक्रम',   en: 'Events'   } },
                 { href: '/blog',    label: { mr: 'ब्लॉग',        en: 'Blog'     } },
                 { href: '/gallery', label: { mr: 'चित्रदालन',   en: 'Gallery'  } },
-                { href: '/team',    label: { mr: 'आमचा परिवार', en: 'Team'     } },
+                { href: '/team',    label: { mr: 'आपला परिवार', en: 'Team'     } },
                 { href: '/donate',  label: { mr: 'देणगी द्या',  en: 'Donate'   } },
               ].map((l) => (
                 <li key={l.href}>

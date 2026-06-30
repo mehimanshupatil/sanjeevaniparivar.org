@@ -1,7 +1,46 @@
+import { useEffect, useRef, useState } from 'react';
 import { HeartIcon, BuildingsIcon, DeviceMobileIcon, ArrowLeftIcon } from '@phosphor-icons/react';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { QRCodeSVG } from 'qrcode.react';
+
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
+const rand = (n: number) => Array.from({ length: n }, () => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join('');
+
+function scrambleReveal(el: HTMLElement, value: string, speed = 35) {
+  const len = value.length;
+  let revealed = 0;
+  el.textContent = rand(len);
+  const iv = setInterval(() => {
+    if (!el) return clearInterval(iv);
+    revealed++;
+    el.textContent = value.slice(0, revealed) + rand(len - revealed);
+    if (revealed >= len) clearInterval(iv);
+  }, speed);
+  return iv;
+}
+
+function ProtectedText({ b64, className }: { b64: string; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const iv = scrambleReveal(ref.current, atob(b64));
+    return () => clearInterval(iv);
+  }, [b64]);
+  return <span ref={ref} className={className} />;
+}
+
+function ProtectedLink({ hrefPrefixB64, numB64, labelB64, className }: { hrefPrefixB64: string; numB64: string; labelB64: string; className?: string }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.href = `${atob(hrefPrefixB64)}${atob(numB64)}`;
+    const iv = scrambleReveal(ref.current, atob(labelB64));
+    return () => clearInterval(iv);
+  }, [hrefPrefixB64, numB64, labelB64]);
+  return <a ref={ref} target="_blank" rel="noopener noreferrer" className={className} />;
+}
 
 const IMPACT_STATS = [
   { value: '31+', label: { mr: 'वर्षांचे सामाजिक कार्य', en: 'Years of Social Work' } },
@@ -17,8 +56,38 @@ const DONATION_USES = [
   { icon: '💬', label: { mr: 'प्रबोधन कार्यक्रम', en: 'Enlightenment Programs' }, desc: { mr: 'व्याख्यानमाला, अर्थसाक्षरता', en: 'Lecture series, financial literacy' } },
 ];
 
+const BANK = {
+  name:       'Sanjivani Parivar Seva Sanstha',
+  bank:       'Bassein Catholic Co-Operative Bank',
+  type:       'Current',
+  branch:     'Gass Branch, Nalasopara (W)',
+  accountB64: 'MDIxMTEwMTAwMDAwMzcx',
+  ifscB64:    'QkFDQjAwMDAwMjE=',
+  upiIdB64:   'MDIxMTEwMTAwMDAwMzcxQEJBQ0IwMDAwMDIxLmlmc2MubnBjaQ==',
+  waNumB64:   'OTE5NzYyNDU0NzMw',
+  waDispB64:  'KzkxIDk3NjI0IDU0NzMw',
+};
+
+const WA_PREFIX_B64 = btoa('https://wa.me/');
+
+const ACC_INFO = [
+  { label: { mr: 'खाते नाव',     en: 'Account Name'   }, value: BANK.name,   b64: null             },
+  { label: { mr: 'बँकेचे नाव',   en: 'Bank Name'      }, value: BANK.bank,   b64: null             },
+  { label: { mr: 'खाते प्रकार',  en: 'Account Type'   }, value: BANK.type,   b64: null             },
+  { label: { mr: 'खाते क्रमांक', en: 'Account Number' }, value: null,        b64: BANK.accountB64  },
+  { label: { mr: 'IFSC कोड',    en: 'IFSC Code'      }, value: null,        b64: BANK.ifscB64     },
+  { label: { mr: 'शाखा',         en: 'Branch'         }, value: BANK.branch, b64: null             },
+];
+                    
 function PageContent() {
   const t = useT();
+  const [upiQr, setUpiQr] = useState('');
+  const [upiId, setUpiId] = useState('');
+  useEffect(() => {
+    const id = atob(BANK.upiIdB64);
+    setUpiId(id);
+    setUpiQr(`upi://pay?pa=${id}&pn=${encodeURIComponent(BANK.name)}&cu=INR`);
+  }, []);
 
   return (
     <>
@@ -100,23 +169,20 @@ function PageContent() {
                     </h2>
                   </div>
                   <div className="space-y-3 text-sm">
-                    {[
-                      { label: { mr: 'खाते नाव',     en: 'Account Name'   }, value: 'Sanjeevani Parivar' },
-                      { label: { mr: 'बँकेचे नाव',   en: 'Bank Name'      }, value: '—' },
-                      { label: { mr: 'खाते क्रमांक', en: 'Account Number' }, value: '—' },
-                      { label: { mr: 'IFSC कोड',    en: 'IFSC Code'      }, value: '—' },
-                      { label: { mr: 'शाखा',         en: 'Branch'         }, value: 'Vasai' },
-                    ].map((row) => (
+                    {ACC_INFO.map((row) => (
                       <div key={row.label.en} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
                         <span className="text-gray-500">{t(row.label)}</span>
-                        <span className="font-semibold text-gray-800">{row.value}</span>
+                        {row.b64
+                          ? <ProtectedText b64={row.b64} className="font-semibold text-gray-800" />
+                          : <span className="font-semibold text-gray-800">{row.value}</span>
+                        }
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* UPI */}
-                <div className="rounded-2xl border border-gray-100 p-7 mb-5">
+                {/* <div className="rounded-2xl border border-gray-100 p-7 mb-5">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <DeviceMobileIcon className="w-5 h-5 text-primary" />
@@ -126,22 +192,38 @@ function PageContent() {
                     </h2>
                   </div>
                   <div className="flex items-center gap-6">
-                    <div
-                      className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0"
-                      style={{ background: '#FFFDE7' }}
-                    >
-                      <span className="text-xs text-gray-400 text-center px-2">
-                        {t({ mr: 'QR कोड लवकरच', en: 'QR Code coming soon' })}
-                      </span>
+                    <div className="shrink-0 p-2 rounded-xl border border-gray-100 bg-white">
+                      {upiQr && <QRCodeSVG value={upiQr} size={112} bgColor="#ffffff" fgColor="#C41E3A" level="M" />}
                     </div>
                     <div className="text-sm text-gray-500 leading-relaxed">
                       <p className="font-semibold text-gray-800 mb-1">UPI ID</p>
-                      <p className="font-mono text-primary text-base">—</p>
+                      <p className="font-mono text-primary text-sm break-all">{upiId}</p>
                       <p className="mt-3 text-xs">
                         {t({ mr: 'Google Pay, PhonePe, Paytm किंवा कोणत्याही UPI App द्वारे', en: 'Via Google Pay, PhonePe, Paytm or any UPI app' })}
                       </p>
                     </div>
                   </div>
+                </div> */}
+
+                {/* Transaction note */}
+                <div className="rounded-2xl p-5 flex items-start gap-3 bg-amber-50 border border-amber-100">
+                  <span className="text-lg shrink-0">📋</span>
+                  <p className="text-sm text-amber-900 leading-relaxed">
+                    {t({
+                      mr: 'देणगी केल्यानंतर व्यवहाराचा तपशील (screenshot / UTR) WhatsApp वर पाठवा: ',
+                      en: 'After donating, please send the transaction details (screenshot / UTR) on WhatsApp: ',
+                    })}
+                    <ProtectedLink
+                      hrefPrefixB64={WA_PREFIX_B64}
+                      numB64={BANK.waNumB64}
+                      labelB64={BANK.waDispB64}
+                      className="font-bold text-amber-800 underline underline-offset-2"
+                    />
+                    {t({
+                      mr: ' — पावती व नोंदणीसाठी.',
+                      en: ' — for receipt and accounting.',
+                    })}
+                  </p>
                 </div>
 
                 {/* 80G */}

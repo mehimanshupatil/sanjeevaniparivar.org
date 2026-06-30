@@ -221,7 +221,7 @@ export default function Navbar() {
                     isActive('/team') ? 'text-primary bg-accent-light' : 'text-gray-700'
                   )}
                 >
-                  {t({ mr: 'आमचा परिवार', en: 'Team' })}
+                  {t({ mr: 'आपला परिवार', en: 'Team' })}
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
@@ -369,7 +369,7 @@ function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () =
         <li>
           <a href="/team" onClick={closeMenu}
              className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/team' ? 'bg-accent-light text-primary' : 'text-gray-700 hover:bg-accent-light hover:text-primary')}>
-            {t({ mr: 'आमचा परिवार', en: 'Team' })}
+            {t({ mr: 'आपला परिवार', en: 'Team' })}
           </a>
         </li>
         <li>
