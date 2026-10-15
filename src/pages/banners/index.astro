@@ -1,0 +1,35 @@
+---
+// /banners/ — every edition, newest year first, linking to its preview/download page.
+import BannerPreviewLayout from '@/layouts/BannerPreviewLayout.astro';
+import { allBanners, FORMATS } from '@/banners/resolve';
+
+const banners = await allBanners();
+const years = [...new Set(banners.map((b) => b.year))].sort((a, z) => z - a);
+---
+<BannerPreviewLayout title="निमंत्रणे व बॅनर">
+  <h1 class="text-3xl font-extrabold text-gray-900">निमंत्रणे व बॅनर</h1>
+  <p class="mt-2 text-gray-600">प्रत्येक कार्यक्रमाची WhatsApp निमंत्रणे व छपाईसाठीच्या फाइल्स.</p>
+
+  {years.map((year) => (
+    <section class="mt-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">{year}</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {banners.filter((b) => b.year === year).map((b) => {
+          const first = b.formats[0];
+          const f = FORMATS[first];
+          return (
+            <a href={`/banners/${b.id}/`} class="group rounded-2xl bg-white border border-gray-100 p-3 hover:shadow-md transition-shadow">
+              <div class="rounded-lg overflow-hidden bg-gray-100" style={`aspect-ratio: ${f.width} / ${f.height}`}>
+                <img src={`/banners/${b.id}/${first}.png`} alt="" loading="lazy" class="w-full h-full object-contain"
+                     onerror="this.remove()" />
+              </div>
+              <p class="mt-3 font-bold text-gray-900 group-hover:text-primary">{b.fullTitle}</p>
+              <p class="text-sm text-gray-500">{b.days[0].date}</p>
+              <p class="text-xs text-gray-400 mt-1">{b.formats.map((id) => FORMATS[id].label).join(' · ')}</p>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+</BannerPreviewLayout>

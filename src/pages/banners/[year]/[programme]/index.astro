@@ -1,0 +1,114 @@
+---
+// /banners/2026/grahak-peth/ — every format's rendered PNG/PDF for one edition, to preview and download.
+// Images are written by scripts/render-banners.mjs after `astro build`; in `pnpm dev` the
+// live banner page is shown instead.
+import BannerPreviewLayout from '@/layouts/BannerPreviewLayout.astro';
+import { allBanners, FORMATS, type Banner } from '@/banners/resolve';
+
+export async function getStaticPaths() {
+  const banners = await allBanners();
+  return banners.map((banner) => {
+    const [year, programme] = banner.id.split('/');
+    return { params: { year, programme }, props: { banner } };
+  });
+}
+
+interface Props {
+  banner: Banner;
+}
+const { banner: b } = Astro.props;
+const base = `/banners/${b.id}`;
+/** Saved file name, e.g. grahak-peth-2026-whatsapp.png — says what it is once downloaded. */
+const fileName = (format: string, suffix: string) => `${b.programme}-${b.year}-${format}${suffix}`;
+const outputs = b.formats.map((id) => {
+  const f = FORMATS[id];
+  return {
+    id,
+    label: f.label,
+    size: `${f.width} × ${f.height}`,
+    width: f.width,
+    height: f.height,
+    page: `${base}/${id}/`,
+    files: [
+      { href: `${base}/${id}.png`, name: fileName(id, '.png'), label: 'PNG', note: 'WhatsApp / सोशल मीडिया' },
+      { href: `${base}/${id}@2x.png`, name: fileName(id, '-hd.png'), label: 'PNG HD', note: `छपाई (${f.width * 2} × ${f.height * 2})` },
+      { href: `${base}/${id}.pdf`, name: fileName(id, '.pdf'), label: 'PDF', note: 'छपाई' },
+    ],
+  };
+});
+---
+<BannerPreviewLayout title={b.fullTitle}>
+  <Fragment slot="crumbs">
+    <span class="text-gray-300">/</span>
+    <span class="text-gray-500">{b.fullTitle}</span>
+  </Fragment>
+
+  <h1 class="text-3xl font-extrabold text-gray-900">{b.fullTitle}</h1>
+  <div class="mt-3 flex flex-col gap-1 text-gray-600">
+    {b.days.map((d) => <p><span class="font-semibold text-gray-800">{d.date}</span> · {d.time}</p>)}
+    <p>{b.venue.join(' ')}</p>
+  </div>
+
+  <div class="mt-10 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+    {outputs.map((o) => (
+      <section class="rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
+        <div class="flex items-baseline justify-between gap-2">
+          <h2 class="font-bold text-gray-900">{o.label}</h2>
+          <span class="text-xs font-mono text-gray-400">{o.size}</span>
+        </div>
+
+        <a href={o.files[0].href} target="_blank" class="block rounded-lg overflow-hidden border border-gray-100 bg-gray-100"
+           style={`aspect-ratio: ${o.width} / ${o.height}`} data-preview data-page={o.page} data-width={o.width}>
+          <img src={o.files[0].href} alt={`${b.fullTitle} — ${o.label}`} loading="lazy" class="w-full h-full object-contain" />
+        </a>
+        <p class="hidden text-xs text-gray-500" data-missing>
+          अजून रेंडर झालेले नाही — <code>pnpm build && pnpm banners</code> चालवा. खाली थेट पान:
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          {o.files.map((f) => (
+            <a href={f.href} download={f.name} data-file class="inline-flex flex-col rounded-lg border border-gray-200 px-3 py-2 hover:border-primary hover:text-primary">
+              <span class="text-sm font-semibold">{f.label}</span>
+              <span class="text-xs text-gray-500">{f.note}</span>
+            </a>
+          ))}
+        </div>
+        <a href={o.page} class="text-sm text-primary font-semibold hover:underline">थेट पान पहा →</a>
+      </section>
+    ))}
+  </div>
+</BannerPreviewLayout>
+
+<script>
+  // In `pnpm dev` the PNGs don't exist yet: swap in the live banner page, scaled down.
+  document.querySelectorAll<HTMLAnchorElement>('[data-preview]').forEach((link) => {
+    const img = link.querySelector('img')!;
+    const showLive = () => {
+      const missing = link.parentElement!.querySelector('[data-missing]')!;
+      missing.classList.remove('hidden');
+      const frame = document.createElement('iframe');
+      frame.src = link.dataset.page!;
+      frame.title = 'live preview';
+      const width = Number(link.dataset.width);
+      const scale = link.clientWidth / width;
+      Object.assign(frame.style, { border: '0', pointerEvents: 'none', transformOrigin: '0 0', width: `${width}px`, height: `${link.clientHeight / scale}px`, transform: `scale(${scale})` });
+      link.replaceChildren(frame);
+      link.href = link.dataset.page!; // the PNG doesn't exist, so open the live page instead
+    };
+    if (img.complete && img.naturalWidth === 0) showLive();
+    else img.addEventListener('error', showLive);
+  });
+
+  // A missing file answers with an HTML 404 page, which `download` would save as the file.
+  // Disable those buttons instead.
+  document.querySelectorAll<HTMLAnchorElement>('[data-file]').forEach(async (a) => {
+    const res = await fetch(a.href, { method: 'HEAD' }).catch(() => null);
+    const isHtml = res?.headers.get('content-type')?.includes('text/html');
+    if (res?.ok && !isHtml) return;
+    a.removeAttribute('href');
+    a.removeAttribute('download');
+    a.setAttribute('aria-disabled', 'true');
+    a.title = 'अजून रेंडर झालेले नाही';
+    Object.assign(a.style, { opacity: '0.4', cursor: 'not-allowed' });
+  });
+</script>

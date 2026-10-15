@@ -10,6 +10,8 @@ Every programme's WhatsApp invitation and printed banners are built from the sam
 4. Push to `main`. The deploy renders the images and publishes them at
    `sanjeevaniparivar.org/banners/2027/grahak-peth/whatsapp.png` (also `@2x.png` for print, and `.pdf`).
 
+Preview and download every format of an edition at `/banners/2027/grahak-peth/`; `/banners/` lists all editions. In `pnpm dev` the images don't exist yet, so the live banner is shown instead.
+
 Render locally: `pnpm build && pnpm banners` (writes into `dist/banners/…`). First time only: `pnpm exec playwright install chromium`.
 
 Weekdays, Marathi numerals, the year and "सकाळी / दुपारी / रात्री" are generated; never type them. The build fails with a clear message if a date or time is malformed, the programme name is misspelt, or the dates don't match the year folder. Rendering fails if text overflows the banner.

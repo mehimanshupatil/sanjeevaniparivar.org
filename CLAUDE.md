@@ -39,6 +39,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/team` | `TeamPage.tsx` — member names are `[नाव]` placeholders |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
 | `/banners/[year]/[programme]/[format]` | Bare banner pages rendered to PNG/PDF after build (see Banners below) |
+| `/banners/`, `/banners/[year]/[programme]/` | Preview + download pages for rendered banners (noindex), `BannerPreviewLayout.astro` |
 
 ## Homepage section order (App.tsx)
 HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTeaser → SocialSection → ContactSection → Footer + BackToTop
@@ -60,6 +61,7 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 - Render: `pnpm build && pnpm banners` → `dist/banners/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:banners` (strict) before deploy
 - Banner pages never import `global.css`. Banner Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc.
 - Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
+- Type-check with `pnpm check` (astro check, also in CI). TypeScript is pinned to 6 — Astro's tooling doesn't support 7 yet
 - Possible next steps (ask before starting): landscape print template with bleed, 1080×1080 square post, more themes (Ganeshotsav, Navratri, Gudi Padwa, Sankranti), event page + WhatsApp text from the same YAML
 
 ## Coding preferences

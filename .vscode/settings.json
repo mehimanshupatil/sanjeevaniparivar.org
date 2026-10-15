@@ -1,0 +1,6 @@
+{
+  // Use the project's TypeScript 6: Astro's language tools don't support TypeScript 7 yet,
+  // which shows false "JSX.IntrinsicElements" errors in .astro files.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

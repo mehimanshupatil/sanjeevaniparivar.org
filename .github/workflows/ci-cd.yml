@@ -5,64 +5,89 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch:
 
-env:
-  CI: false
+# A newer push to the same branch cancels the older run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    permissions:
-      contents: "read"
-      id-token: "write"
-      pages: "write"
-      actions: "write"
-      checks: "write"
-      deployments: "write"
-    strategy:
-      matrix:
-        node-version: [24]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7
+
+      # Installs pnpm (version from package.json "packageManager"), Node.js,
+      # and runs `pnpm install` with the pnpm store cached between runs.
+      - name: Install pnpm, Node.js and dependencies
+        uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
         with:
-          version: 10
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        # Using npm ci is generally faster than running npm i because it caches dependencies
-        run: |
-          pnpm install
+          runtime: node@24
+          cache: true
+
       - name: Test
         run: pnpm test
-      - name: Build the app
-        run: |
-          pnpm run build
-      # Banner pages are built above; this screenshots them into dist/banners/**
-      # (PNG + PDF), so they deploy with the site. Fails if a banner overflows.
-      - name: Install Chromium for banners
+
+      - name: Type-check (.astro, .ts, .tsx)
+        run: pnpm check
+
+      - name: Build site
+        run: pnpm run build
+
+      # Chromium for rendering banners, cached per Playwright version.
+      - name: Get Playwright version
+        id: playwright
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        id: chromium-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chromium system libraries
+        if: steps.chromium-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      # Screenshots the built banner pages into dist/banners/** (PNG + PDF).
+      # Fails if a banner's text overflows or an image doesn't load.
       - name: Render banners
         run: pnpm run build:banners
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      # Lets PR reviewers download and check the rendered banners.
+      - name: Upload banners for review
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v7
         with:
-          # Upload build directory content
-          path: "dist/"
+          name: banners
+          path: |
+            dist/banners/**/*.png
+            dist/banners/**/*.pdf
+
+      - name: Upload site for Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/
+
+  # Deploys only from main, never from a pull request.
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
