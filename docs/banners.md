@@ -10,6 +10,8 @@ Every programme's WhatsApp invitation and printed banners are built from the sam
 4. Push to `main`. The deploy renders the images and publishes them at
    `sanjeevaniparivar.org/banners/2027/grahak-peth/whatsapp.png` (also `@2x.png` for print, and `.pdf`).
 
+The same works for every programme (e.g. `editions/2025/akashkandil-karyashala.yaml`). If the date isn't fixed yet, add `draft: true` to the new edition: it shows in `pnpm dev` but isn't published until you remove the line.
+
 Preview and download every format of an edition at `/banners/2027/grahak-peth/`; `/banners/` lists all editions. In `pnpm dev` the images don't exist yet, so the live banner is shown instead.
 
 Render locally: `pnpm build && pnpm banners` (writes into `dist/banners/…`). First time only: `pnpm exec playwright install chromium`.
@@ -27,10 +29,10 @@ Each programme has a `type`, and every programme of that type uses the same temp
 
 A template has one layout per format:
 
-| Format | Size | Use | Fair layout |
+| Format | Size | Use | Layout file in each type folder |
 |---|---|---|---|
-| `whatsapp` | 1080×1920 (9:16) | WhatsApp card; also works as an Instagram or WhatsApp story | `Whatsapp.astro`, every section |
-| `instagram` | 1080×1350 (4:5) | Instagram feed post | `Instagram.astro`, compact sizes, no intro or closing paragraphs (put those in the post caption) |
+| `whatsapp` | 1080×1920 (9:16) | WhatsApp card; also works as an Instagram or WhatsApp story | `Whatsapp.tsx`, every section |
+| `instagram` | 1080×1350 (4:5) | Instagram feed post | `Instagram.tsx`, compact sizes; leaves out long paragraphs for the post caption (fair: intro + closing; workshop: intro + the registration sentence) |
 
 A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The build fails if its type has no layout for one of them.
 
@@ -51,8 +53,10 @@ A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The bu
 | `src/banners/logos.ts` + `public/banners/assets/logos/` | Partner logos by id | New partner |
 | `src/banners/templates/<type>/` + `templates/index.ts` | One React layout per format (`Whatsapp.tsx`, …) + `sample.ts` for each programme type | New type or format |
 | `src/banners/formats.ts` | Format sizes and labels | New format |
-| `src/banners/blocks/` | Shared React pieces: frame, logos row, organisers, title, date band, list, closing, footer, decoration row | Rarely |
+| `src/banners/blocks/` | Shared React pieces: `Frame`, `HeaderLogos`, `Organisers`, `TitleBlock`, `WhenWhere` (date band), `ItemsList`, `NumberedList`, `NoteBox`, `Contacts`, `Closing`, `FooterLine`, `DecorRow` | Rarely |
 | `src/banners/banner.ts`, `draft.ts` | Merging programme + edition into a banner; the editor's form ↔ YAML (tested) | Rarely |
+| `src/banners/fit.ts` | Shrinks long titles to fit between the side ornaments | Rarely |
+| `src/banners/LiveBanner.tsx`, `src/components/banners/TemplateEditor.tsx` | Live preview on sample pages; the try-out editor form | New type's fields |
 | `src/lib/marathi.ts` | Dates, times, numerals, list joining (tested: `pnpm test`) | Rarely |
 
 An edition can override any programme wording for one year by repeating the field (e.g. `items:`). Lists are replaced whole.
@@ -68,25 +72,26 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.
 - **New partner logo**: add a transparent PNG to `public/banners/assets/logos/` (or reuse an existing public file, as the Sanjeevani logo reuses `/assets/brand/sanjeevani-parivar-symbol.png`) and register its path in `src/banners/logos.ts`.
 - **New theme**: add `src/banners/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow`. Leave a slot out to keep it empty. Optional: `fonts` (a Google Fonts title font + weight, replacing Rozha One) and `palette` (colours for numbered-point circles).
+- **New format** (square post, flex banner): add its size to `src/banners/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
+- **New programme type** (lecture series, competition, camp): add `src/banners/templates/<type>/` with a React layout per format built from the shared blocks plus a block for its middle section, and a `sample.ts`; register it (label, description, layouts, sample, `editorSections`) in `templates/index.ts`; add the type and its fields to the `programmes` schema in `src/content.config.ts`, and to `Banner` in `banner.ts`. It then appears in the gallery automatically; for fields the editor doesn't know yet, add them to `draft.ts` (and its round-trip test) and a section to `TemplateEditor.tsx`.
 
-Themes today:
+### Themes
 
 | Theme | Used by | Look |
 |---|---|---|
 | `diwali` | ग्राहक पेठ | cream paper, kumkum/maroon/marigold, mango-leaf toran, star akashkandil, diyas, Rozha One |
 | `kalaDalan` | आकाशकंदील कार्यशाळा (children) | off-white paper, kshetra colours + marigold, paper-flag bunting (पताका), paper box-lanterns, शिक्षण-blue band, Baloo 2 titles, numbered circles |
-- **New format** (square post, flex banner): add its size to `src/banners/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
-- **New programme type** (lecture series, competition, camp): add `src/banners/templates/<type>/` with a React layout per format built from the shared blocks plus a block for its middle section, and a `sample.ts`; register it (label, description, layouts, sample) in `templates/index.ts`; add the type and its fields to the `programmes` schema in `src/content.config.ts`. It then appears in the gallery automatically; extend the editor form (`src/components/banners/TemplateEditor.tsx`) for its fields.
 
-Styling is Tailwind, from `src/banners/banner.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`BannerLayout.astro`). Rendering fails if any of them doesn't load, so a banner is never drawn in a fallback font.
+Styling is Tailwind, from `src/banners/banner.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`BannerLayout.astro`). Rendering fails if any of them doesn't load, so a banner is never drawn in a fallback font.
 
 ## Design rules
 
 - Traditional Marathi invitation look, not glossy or "AI-ish": no gradients, glows or emoji, and no Inter/Roboto/Arial.
 - Diwali palette: paper cream `#FBF1DC` with a faint paisley pattern, kumkum `#9C1C1C`, maroon `#6A1414`, marigold text `#B8650C`, ink `#2A1810`.
 - Children's workshops (`kalaDalan`): playful but still flat and traditional, built from the site's kshetra colours (शिक्षण blue `#1565C0`, crimson `#C2185B`, green `#2E7D32`, purple `#6A1B9A`) plus marigold `#F59E0B` on off-white `#FFFCF5`; Baloo 2 for titles.
-- Type: Rozha One for big titles, Tiro Devanagari Marathi for headings and ornaments, Mukta for body. `<html lang="mr">` so ल and श use Marathi forms.
+- Type: Rozha One for big titles (Baloo 2 in the children's `kalaDalan` theme), Tiro Devanagari Marathi for headings and ornaments, Mukta for body. `<html lang="mr">` so ल and श use Marathi forms.
 - Fair WhatsApp layout, top to bottom: toran → logos either side of "॥ सस्नेह निमंत्रण ॥" + tagline → organisers line (names bold) → title with mandala behind and akashkandil either side → intro → maroon दिनांक/स्थळ band → items in two columns with marigold bullets + "आणि बरेच काही…" → closing paragraphs → footer line between gold rules → row of diyas.
+- Workshop WhatsApp layout, top to bottom: top border → logo + "॥ संजीवनी कलादालन ॥" → title with lanterns either side → intro → दिनांक/स्थळ band → "महत्त्वाची माहिती" numbered terms → वि. सू. note box → संपर्क (registration line, names + numbers in two columns) → bottom row.
 - Samved Jagran Manch (सामवेद जागरण मंच) has no logo, so it appears only in the organisers line. Spell it जैमुनी सहकारी पतपेढी मर्यादित, as on its seal.
 - A Ganesh image at the top was considered and declined. Don't add it unless asked.
 
