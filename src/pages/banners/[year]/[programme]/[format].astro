@@ -30,6 +30,6 @@ const { banner, format } = Astro.props;
 const Layout = TEMPLATES[banner.type].layouts[format]!;
 const size = FORMATS[format];
 ---
-<BannerLayout title={`${banner.fullTitle} — ${size.label}`} colors={banner.theme.colors}>
+<BannerLayout title={`${banner.fullTitle} — ${size.label}`} theme={banner.theme}>
   <Layout banner={banner} format={size} />
 </BannerLayout>

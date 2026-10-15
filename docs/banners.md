@@ -23,6 +23,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 | Type | Programmes | Middle section | Template |
 |---|---|---|---|
 | `fair` | ग्राहक पेठ | list of attractions (`items`) | `src/banners/templates/fair/` |
+| `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/banners/templates/workshop/` |
 
 A template has one layout per format:
 
@@ -56,13 +57,24 @@ A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The bu
 
 An edition can override any programme wording for one year by repeating the field (e.g. `items:`). Lists are replaced whole.
 
-In text, `{{ fullTitle }}` becomes the title plus the Marathi year, and `{{ year }}` the Marathi year.
+In text, `{{ fullTitle }}` becomes the title plus the Marathi year, `{{ year }}` the Marathi year, and `{{ yearsRunning }}` the number of years since the programme's `startedYear` (e.g. "गेली {{ yearsRunning }} वर्षे" → "गेली ८ वर्षे" in 2025).
+
+Phone numbers in `contacts` are written in ordinary digits (`phone: "9028265426"`, so they stay dialable) and shown in Marathi numerals on the banner.
+
+An edition with `draft: true` (e.g. next year's, before the date is fixed) shows in `pnpm dev` but is never built or published. Remove the line once the details are confirmed.
 
 ### Extending
 
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.
 - **New partner logo**: add a transparent PNG to `public/banners/assets/logos/` (or reuse an existing public file, as the Sanjeevani logo reuses `/assets/brand/sanjeevani-parivar-symbol.png`) and register its path in `src/banners/logos.ts`.
-- **New theme**: add `src/banners/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow`. Leave a slot out to keep it empty.
+- **New theme**: add `src/banners/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow`. Leave a slot out to keep it empty. Optional: `fonts` (a Google Fonts title font + weight, replacing Rozha One) and `palette` (colours for numbered-point circles).
+
+Themes today:
+
+| Theme | Used by | Look |
+|---|---|---|
+| `diwali` | ग्राहक पेठ | cream paper, kumkum/maroon/marigold, mango-leaf toran, star akashkandil, diyas, Rozha One |
+| `kalaDalan` | आकाशकंदील कार्यशाळा (children) | off-white paper, kshetra colours + marigold, paper-flag bunting (पताका), paper box-lanterns, शिक्षण-blue band, Baloo 2 titles, numbered circles |
 - **New format** (square post, flex banner): add its size to `src/banners/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
 - **New programme type** (lecture series, competition, camp): add `src/banners/templates/<type>/` with a React layout per format built from the shared blocks plus a block for its middle section, and a `sample.ts`; register it (label, description, layouts, sample) in `templates/index.ts`; add the type and its fields to the `programmes` schema in `src/content.config.ts`. It then appears in the gallery automatically; extend the editor form (`src/components/banners/TemplateEditor.tsx`) for its fields.
 
@@ -72,6 +84,7 @@ Styling is Tailwind, from `src/banners/banner.css`, separate from the site's `gl
 
 - Traditional Marathi invitation look, not glossy or "AI-ish": no gradients, glows or emoji, and no Inter/Roboto/Arial.
 - Diwali palette: paper cream `#FBF1DC` with a faint paisley pattern, kumkum `#9C1C1C`, maroon `#6A1414`, marigold text `#B8650C`, ink `#2A1810`.
+- Children's workshops (`kalaDalan`): playful but still flat and traditional, built from the site's kshetra colours (शिक्षण blue `#1565C0`, crimson `#C2185B`, green `#2E7D32`, purple `#6A1B9A`) plus marigold `#F59E0B` on off-white `#FFFCF5`; Baloo 2 for titles.
 - Type: Rozha One for big titles, Tiro Devanagari Marathi for headings and ornaments, Mukta for body. `<html lang="mr">` so ल and श use Marathi forms.
 - Fair WhatsApp layout, top to bottom: toran → logos either side of "॥ सस्नेह निमंत्रण ॥" + tagline → organisers line (names bold) → title with mandala behind and akashkandil either side → intro → maroon दिनांक/स्थळ band → items in two columns with marigold bullets + "आणि बरेच काही…" → closing paragraphs → footer line between gold rules → row of diyas.
 - Samved Jagran Manch (सामवेद जागरण मंच) has no logo, so it appears only in the organisers line. Spell it जैमुनी सहकारी पतपेढी मर्यादित, as on its seal.

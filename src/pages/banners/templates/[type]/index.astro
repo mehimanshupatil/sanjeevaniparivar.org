@@ -26,5 +26,5 @@ const formats = (Object.keys(t.layouts) as FormatId[]).map((id) => ({ id, ...FOR
     डावीकडे आपल्या कार्यक्रमाचा मजकूर लिहा; उजवीकडे बॅनर लगेच बदलेल. आपण लिहिलेले फक्त याच ब्राउझरमध्ये राहते.
   </p>
 
-  <TemplateEditor client:load type={type} templateLabel={t.label} formats={formats} sample={t.sample} />
+  <TemplateEditor client:load type={type} templateLabel={t.label} formats={formats} sample={t.sample} sections={t.editorSections} />
 </BannerPreviewLayout>

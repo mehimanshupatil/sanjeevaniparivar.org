@@ -11,7 +11,7 @@
 @theme {
   --font-*: initial;
   --font-body: "Mukta", "Noto Sans Devanagari", sans-serif;
-  --font-display: "Rozha One", serif;      /* big titles */
+  --font-display: var(--theme-display, "Rozha One"), serif;  /* big titles; a theme can set its own */
   --font-ornate: "Tiro Devanagari Marathi", serif;  /* headings, ornaments */
 }
 
@@ -34,4 +34,9 @@
 @layer base {
   /* Browser default line-height, not Tailwind's 1.5: banner sizes were tuned against it. */
   html { line-height: normal; }
+}
+
+/* Weight for the display font: Rozha One has one weight (400); a theme like kalaDalan sets 800. */
+@utility font-display-weight {
+  font-weight: var(--theme-display-weight, 400);
 }

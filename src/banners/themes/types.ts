@@ -25,7 +25,17 @@ export interface ThemeDecor {
   bottomRow?: string;   // repeated ornament along the bottom (diya)
 }
 
+/** Google Fonts family for big titles (and the venue); default Rozha One. */
+export interface ThemeFonts {
+  display: string;
+  /** Weight to use for the display font, e.g. 800 for Baloo 2 (Rozha One has only 400) */
+  displayWeight: number;
+}
+
 export interface BannerTheme {
   colors: ThemeColors;
   decor: ThemeDecor;
+  fonts?: ThemeFonts;
+  /** Colours for numbered-point circles, cycled in order; without it points are "१)" text */
+  palette?: string[];
 }

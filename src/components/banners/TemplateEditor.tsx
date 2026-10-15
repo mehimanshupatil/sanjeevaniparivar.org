@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { draftFromSample, draftToEntries, programmeYaml, editionYaml, type Draft } from '@/banners/draft';
 import type { EditionData, Entry, ProgrammeData } from '@/banners/banner';
 import type { StatusMessage } from '@/banners/LiveBanner';
+import type { EditorSection } from '@/banners/templates';
 
 interface FormatInfo { id: string; label: string; width: number; height: number }
 
@@ -21,6 +22,7 @@ interface Props {
   templateLabel: string;
   formats: FormatInfo[];
   sample: { programme: Entry<ProgrammeData>; edition: Entry<EditionData> };
+  sections: EditorSection[];
 }
 
 const storageKey = (type: string) => `banner-draft:${type}`;
@@ -34,7 +36,7 @@ function loadDraft(type: string, fallback: Draft): Draft {
   }
 }
 
-export default function TemplateEditor({ type, templateLabel, formats, sample }: Props) {
+export default function TemplateEditor({ type, templateLabel, formats, sample, sections }: Props) {
   const initial = useMemo(() => draftFromSample(sample.programme, sample.edition), [sample]);
   const [draft, setDraft] = useState<Draft>(initial);
   const [status, setStatus] = useState<Record<string, StatusMessage>>({});
@@ -97,7 +99,7 @@ export default function TemplateEditor({ type, templateLabel, formats, sample }:
           <Field label="कार्यक्रमाचे नाव"><Input value={draft.titleMain} onChange={(e) => set('titleMain', e.target.value)} /></Field>
           <Field label="निमंत्रण ओळ"><Input value={draft.invite} onChange={(e) => set('invite', e.target.value)} /></Field>
           <Field label="घोषवाक्य (ऐच्छिक)"><Input value={draft.tagline} onChange={(e) => set('tagline', e.target.value)} /></Field>
-          <Field label="आयोजक" hint="प्रत्येक ओळीत एक नाव">
+          <Field label="आयोजक (ऐच्छिक)" hint="प्रत्येक ओळीत एक नाव">
             <Textarea rows={3} value={draft.organisers} onChange={(e) => set('organisers', e.target.value)} />
           </Field>
           <Field label="प्रस्तावना (ऐच्छिक)"><Textarea rows={3} value={draft.intro} onChange={(e) => set('intro', e.target.value)} /></Field>
@@ -128,15 +130,53 @@ export default function TemplateEditor({ type, templateLabel, formats, sample }:
           </Field>
         </Section>
 
-        <Section title="आकर्षणे">
+        {sections.includes('items') && <Section title="आकर्षणे">
           <Field label="शीर्षक"><Input value={draft.itemsHeading} onChange={(e) => set('itemsHeading', e.target.value)} /></Field>
           <Field label="यादी" hint="प्रत्येक ओळीत एक">
             <Textarea rows={6} value={draft.items} onChange={(e) => set('items', e.target.value)} />
           </Field>
           <Field label="शेवटची ओळ (ऐच्छिक)"><Input value={draft.itemsMore} onChange={(e) => set('itemsMore', e.target.value)} /></Field>
-        </Section>
+        </Section>}
 
-        <Section title="समारोप">
+        {sections.includes('rules') && <Section title="माहिती / नियम">
+          <Field label="शीर्षक"><Input value={draft.rulesHeading} onChange={(e) => set('rulesHeading', e.target.value)} /></Field>
+          <Field label="मुद्दे" hint="प्रत्येक ओळीत एक; क्रमांक आपोआप येतात">
+            <Textarea rows={5} value={draft.rules} onChange={(e) => set('rules', e.target.value)} />
+          </Field>
+        </Section>}
+
+        {sections.includes('note') && <Section title="विशेष सूचना">
+          <div className="grid grid-cols-[6rem_1fr] gap-2">
+            <Field label="शीर्षक"><Input value={draft.noteLabel} onChange={(e) => set('noteLabel', e.target.value)} /></Field>
+            <Field label="सूचना (ऐच्छिक)"><Textarea rows={2} value={draft.noteText} onChange={(e) => set('noteText', e.target.value)} /></Field>
+          </div>
+        </Section>}
+
+        {sections.includes('contacts') && <Section title="संपर्क">
+          <Field label="शीर्षक"><Input value={draft.contactsHeading} onChange={(e) => set('contactsHeading', e.target.value)} /></Field>
+          <Field label="नोंदणीविषयी ओळ (ऐच्छिक)"><Textarea rows={2} value={draft.contactsIntro} onChange={(e) => set('contactsIntro', e.target.value)} /></Field>
+          {draft.contacts.map((c, i) => (
+            <div key={i} className="grid grid-cols-[1fr_1fr_auto] items-end gap-2">
+              <Field label={`नाव ${i + 1}`}>
+                <Input value={c.name} onChange={(e) => set('contacts', draft.contacts.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+              </Field>
+              <Field label="फोन">
+                <Input inputMode="tel" value={c.phone} placeholder="9028265426"
+                  onChange={(e) => set('contacts', draft.contacts.map((x, j) => (j === i ? { ...x, phone: e.target.value.replace(/[^0-9+ ]/g, '') } : x)))} />
+              </Field>
+              <Button type="button" variant="ghost" size="icon" aria-label="संपर्क काढा"
+                onClick={() => set('contacts', draft.contacts.filter((_, j) => j !== i))}><TrashIcon /></Button>
+            </div>
+          ))}
+          {draft.contacts.some((c) => !c.name.trim() || !/^\+?[0-9 ]{10,15}$/.test(c.phone.trim())) && (
+            <p className="text-sm text-destructive">प्रत्येक संपर्कासाठी नाव व पूर्ण फोन नंबर (१० अंक) भरा.</p>
+          )}
+          <p className="text-xs text-gray-500">फोन नंबर इंग्रजी अंकांत लिहा; बॅनरवर ते मराठी अंकांत येतात.</p>
+          <Button type="button" variant="outline" size="sm" className="self-start"
+            onClick={() => set('contacts', [...draft.contacts, { name: '', phone: '' }])}><PlusIcon /> संपर्क जोडा</Button>
+        </Section>}
+
+        {sections.includes('closing') && <Section title="समारोप">
           {draft.closing.map((c, i) => (
             <div key={i} className="flex flex-col gap-2 rounded-lg border border-gray-100 p-3">
               <Textarea rows={2} value={c.text} onChange={(e) => set('closing', draft.closing.map((x, j) => (j === i ? { ...x, text: e.target.value } : x)))} />
@@ -154,7 +194,7 @@ export default function TemplateEditor({ type, templateLabel, formats, sample }:
             onClick={() => set('closing', [...draft.closing, { text: '', emphasis: false }])}><PlusIcon /> परिच्छेद जोडा</Button>
           <p className="text-xs text-gray-500">{'{{ fullTitle }}'} लिहिल्यास तिथे कार्यक्रमाचे नाव व वर्ष येते.</p>
           <Field label="तळओळ (ऐच्छिक)"><Input value={draft.footer} onChange={(e) => set('footer', e.target.value)} /></Field>
-        </Section>
+        </Section>}
 
         <Section title="पाठवा">
           <Field label="कार्यक्रमाचे इंग्रजी नाव (फाइलसाठी)" hint="उदा. grahak-peth — माहीत नसल्यास तसेच राहू द्या">

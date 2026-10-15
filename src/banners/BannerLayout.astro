@@ -1,14 +1,25 @@
 ---
 // Bare page for one banner: no site navbar, no site CSS. Playwright screenshots #banner.
 import './banner.css';
-import type { ThemeColors } from './themes';
+import type { BannerTheme } from './themes';
 
 interface Props {
   title: string;
-  colors: ThemeColors;
+  theme: BannerTheme;
 }
-const { title, colors } = Astro.props;
-const vars = Object.entries(colors).map(([k, v]) => `--${k}: ${v};`).join(' ');
+const { title, theme } = Astro.props;
+const vars = [
+  ...Object.entries(theme.colors).map(([k, v]) => `--${k}: ${v};`),
+  ...(theme.fonts ? [`--theme-display: "${theme.fonts.display}";`, `--theme-display-weight: ${theme.fonts.displayWeight};`] : []),
+].join(' ');
+
+// Every family the banner uses; render-banners.mjs checks each one loaded (meta below).
+// A theme's own display font replaces Rozha One (browsers only download fonts in use).
+const display = theme.fonts
+  ? { family: theme.fonts.display, query: `family=${theme.fonts.display.replace(/ /g, '+')}:wght@${theme.fonts.displayWeight}` }
+  : { family: 'Rozha One', query: 'family=Rozha+One' };
+const families = ['Mukta', display.family, 'Tiro Devanagari Marathi'];
+const query = ['family=Mukta:wght@400;500;600;700', display.query, 'family=Tiro+Devanagari+Marathi'].join('&');
 ---
 <!doctype html>
 <html lang="mr">
@@ -21,8 +32,9 @@ const vars = Object.entries(colors).map(([k, v]) => `--${k}: ${v};`).join(' ');
     <!-- display=block: wait for each font rather than drawing a fallback first -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Rozha+One&family=Tiro+Devanagari+Marathi&display=block"
+      href={`https://fonts.googleapis.com/css2?${query}&display=block`}
     />
+    <meta name="banner-fonts" content={families.join(',')} />
     <style is:inline set:html={`:root { ${vars} }`}></style>
   </head>
   <body>

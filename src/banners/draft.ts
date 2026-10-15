@@ -21,10 +21,19 @@ export interface Draft {
   itemsMore: string;
   closing: { text: string; emphasis: boolean }[];
   footer: string;
+  rulesHeading: string;
+  /** One per line */
+  rules: string;
+  noteLabel: string;
+  noteText: string;
+  contactsHeading: string;
+  contactsIntro: string;
+  contacts: { name: string; phone: string }[];
 }
 
 const lines = (s: string) => s.split('\n').map((l) => l.trim()).filter(Boolean);
 const opt = (s: string) => (s.trim() ? s.trim() : undefined);
+const nonEmpty = <T,>(a: T[]) => (a.length ? a : undefined);
 
 export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<EditionData>): Draft {
   const p = programme.data;
@@ -34,7 +43,7 @@ export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<
     titleMain: p.title.main,
     invite: p.invite,
     tagline: p.tagline ?? '',
-    organisers: p.organisers.join('\n'),
+    organisers: (p.organisers ?? []).join('\n'),
     intro: p.intro ?? '',
     days: edition.data.days.map((d) => ({ date: d.date, from: d.from ?? '', to: d.to ?? '' })),
     venue: edition.data.venue.join('\n'),
@@ -43,6 +52,13 @@ export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<
     itemsMore: p.itemsMore ?? '',
     closing: (p.closing ?? []).map((c) => ({ text: c.text, emphasis: c.emphasis ?? false })),
     footer: p.footer ?? '',
+    rulesHeading: p.rulesHeading ?? '',
+    rules: (p.rules ?? []).join('\n'),
+    noteLabel: p.note?.label ?? 'वि. सू.',
+    noteText: p.note?.text ?? '',
+    contactsHeading: p.contactsHeading ?? '',
+    contactsIntro: p.contactsIntro ?? '',
+    contacts: (p.contacts ?? []).map((c) => ({ ...c })),
   };
 }
 
@@ -59,13 +75,22 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
       logos: sample.data.logos,
       invite: d.invite.trim(),
       tagline: opt(d.tagline),
-      organisers: lines(d.organisers).length ? lines(d.organisers) : ['—'],
+      organisers: lines(d.organisers).length ? lines(d.organisers) : undefined,
       intro: opt(d.intro),
       itemsHeading: opt(d.itemsHeading),
       items: lines(d.items).length ? lines(d.items) : undefined,
       itemsMore: opt(d.itemsMore),
-      closing: d.closing.filter((c) => c.text.trim()).map((c) => ({ text: c.text.trim(), ...(c.emphasis && { emphasis: true }) })),
+      closing: nonEmpty(d.closing.filter((c) => c.text.trim()).map((c) => ({ text: c.text.trim(), ...(c.emphasis && { emphasis: true }) }))),
       footer: opt(d.footer),
+      startedYear: sample.data.startedYear,
+      rulesHeading: opt(d.rulesHeading),
+      rules: lines(d.rules).length ? lines(d.rules) : undefined,
+      note: d.noteText.trim() ? { label: d.noteLabel.trim() || 'वि. सू.', text: d.noteText.trim() } : undefined,
+      contactsHeading: opt(d.contactsHeading),
+      contactsIntro: opt(d.contactsIntro),
+      // Only complete rows with a dialable number; the form flags the rest.
+      contacts: nonEmpty(d.contacts.filter((c) => c.name.trim() && /^\+?[0-9 ]{10,15}$/.test(c.phone.trim()))
+        .map((c) => ({ name: c.name.trim(), phone: c.phone.trim() }))),
     },
   };
   const edition: Entry<EditionData> = {
@@ -91,17 +116,22 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
   if (p.title.top) y += `  top: ${q(p.title.top)}\n`;
   y += `  main: ${q(p.title.main)}\n`;
   y += `type: ${p.type}\nkshetra: ${p.kshetra}\ntheme: ${p.theme}\nformats: [${p.formats.join(', ')}]\n`;
+  if (p.startedYear) y += `startedYear: ${p.startedYear}\n`;
   if (p.logos?.left || p.logos?.right) {
     y += 'logos:\n' + (p.logos.left ? `  left: ${p.logos.left}\n` : '') + (p.logos.right ? `  right: ${p.logos.right}\n` : '');
   }
   y += '\n' + field('invite', p.invite) + field('tagline', p.tagline) + '\n';
-  y += list('organisers', p.organisers) + field('organisersSuffix', p.organisersSuffix);
+  y += list('organisers', p.organisers ?? []) + field('organisersSuffix', p.organisersSuffix);
   y += field('intro', p.intro);
   y += field('itemsHeading', p.itemsHeading) + list('items', p.items ?? []) + field('itemsMore', p.itemsMore);
   if (p.closing?.length) {
     y += 'closing:\n' + p.closing.map((c) => `  - text: ${q(c.text)}\n${c.emphasis ? '    emphasis: true\n' : ''}`).join('');
   }
   y += field('footer', p.footer);
+  y += field('rulesHeading', p.rulesHeading) + list('rules', p.rules ?? []);
+  if (p.note) y += `note:\n  label: ${q(p.note.label)}\n  text: ${q(p.note.text)}\n`;
+  y += field('contactsHeading', p.contactsHeading) + field('contactsIntro', p.contactsIntro);
+  if (p.contacts?.length) y += 'contacts:\n' + p.contacts.map((c) => `  - { name: ${q(c.name)}, phone: ${q(c.phone)} }`).join('\n') + '\n';
   return y;
 }
 

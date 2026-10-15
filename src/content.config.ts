@@ -29,7 +29,7 @@ const blog = defineCollection({
 const programmeText = z.object({
   invite: z.string(),
   tagline: z.string().optional(),
-  organisers: z.array(z.string()).min(1),
+  organisers: z.array(z.string()).optional(),
   organisersSuffix: z.string().optional(),
   intro: z.string().optional(),
   itemsHeading: z.string().optional(),
@@ -37,6 +37,16 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  // workshop: numbered terms, a highlighted note, and who to contact to register
+  rulesHeading: z.string().optional(),
+  rules: z.array(z.string()).optional(),
+  note: z.object({ label: z.string(), text: z.string() }).optional(),
+  contactsHeading: z.string().optional(),
+  contactsIntro: z.string().optional(),
+  contacts: z.array(z.object({
+    name: z.string(),
+    phone: z.string().regex(/^\+?[0-9 ]{10,15}$/, 'Phone in ordinary digits, e.g. "9028265426" (shown in Marathi numerals on the banner)'),
+  })).optional(),
   theme: keysOf(THEMES),
   formats: z.array(keysOf(FORMATS)).min(1),
   logos: z.object({ left: keysOf(LOGOS).optional(), right: keysOf(LOGOS).optional() }).optional(),
@@ -46,8 +56,10 @@ const programmes = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/programmes' }),
   schema: programmeText.extend({
     title: z.object({ top: z.string().optional(), main: z.string() }),
-    type: z.enum(['fair']),  // one folder per type in src/banners/templates/
+    type: z.enum(['fair', 'workshop']),  // one folder per type in src/banners/templates/
     kshetra: KSHETRA,
+    /** First year the programme ran; text can say {{ yearsRunning }} (e.g. "गेली ८ वर्षे") */
+    startedYear: z.number().int().optional(),
   }),
 });
 
@@ -68,6 +80,8 @@ const editions = defineCollection({
         .refine((d) => Boolean(d.from) !== Boolean(d.note), 'Each day needs either "from" (and optional "to") or "note"'),
     ).min(1),
     venue: z.array(z.string()).min(1),
+    /** Not published: shown in `pnpm dev` only, until the details are confirmed */
+    draft: z.boolean().optional(),
   }),
 });
 

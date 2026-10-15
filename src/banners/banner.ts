@@ -34,6 +34,13 @@ export interface Banner {
   itemsMore?: string;
   closing: { text: string; emphasis: boolean }[];
   footer?: string;
+  rulesHeading?: string;
+  rules: string[];
+  note?: { label: string; text: string };
+  contactsHeading?: string;
+  contactsIntro?: string;
+  /** phone: digits for dialling; phoneMr: the same in Marathi numerals for display */
+  contacts: { name: string; phone: string; phoneMr: string }[];
   logos: { left?: BannerLogo; right?: BannerLogo };
   theme: BannerTheme;
   formats: FormatId[];
@@ -45,7 +52,7 @@ export interface Banner {
  */
 export function resolveBanner(edition: Entry<EditionData>, programme: Entry<ProgrammeData>): Banner {
   const p = programme.data;
-  const { programme: _ref, days, venue, ...overrides } = edition.data;
+  const { programme: _ref, days, venue, draft: _draft, ...overrides } = edition.data;
   const text = { ...p, ...stripUndefined(overrides) };
 
   const year = parseDate(days[0].date).getUTCFullYear();
@@ -54,7 +61,8 @@ export function resolveBanner(edition: Entry<EditionData>, programme: Entry<Prog
   }
   const yearMr = mrNum(year);
   const fullTitle = [p.title.top, p.title.main, yearMr].filter(Boolean).join(' ');
-  const fill = (s?: string) => (s == null ? s : fillPlaceholders(s, { fullTitle, year: yearMr }));
+  const yearsRunning = p.startedYear ? mrNum(year - p.startedYear) : '';
+  const fill = (s?: string) => (s == null ? s : fillPlaceholders(s, { fullTitle, year: yearMr, yearsRunning }));
 
   return {
     id: edition.id,
@@ -66,7 +74,7 @@ export function resolveBanner(edition: Entry<EditionData>, programme: Entry<Prog
     yearMr,
     invite: text.invite,
     tagline: fill(text.tagline),
-    organisers: text.organisers,
+    organisers: text.organisers ?? [],
     organisersSuffix: text.organisersSuffix ?? 'यांच्या संयुक्त विद्यमाने आयोजित',
     intro: fill(text.intro),
     days: days.map((d) => ({ date: formatDate(d.date), time: d.note ?? formatRange(d.from!, d.to) })),
@@ -76,6 +84,12 @@ export function resolveBanner(edition: Entry<EditionData>, programme: Entry<Prog
     itemsMore: text.itemsMore,
     closing: (text.closing ?? []).map((c) => ({ text: fill(c.text)!, emphasis: c.emphasis ?? false })),
     footer: fill(text.footer),
+    rulesHeading: text.rulesHeading,
+    rules: (text.rules ?? []).map((r) => fill(r)!),
+    note: text.note && { label: text.note.label, text: fill(text.note.text)! },
+    contactsHeading: text.contactsHeading,
+    contactsIntro: fill(text.contactsIntro),
+    contacts: (text.contacts ?? []).map((c) => ({ name: c.name, phone: c.phone.replace(/ /g, ''), phoneMr: mrNum(c.phone) })),
     logos: {
       left: text.logos?.left && LOGOS[text.logos.left],
       right: text.logos?.right && LOGOS[text.logos.right],

@@ -18,7 +18,7 @@ export default function FairInstagram({ banner: b, format }: TemplateProps) {
       {decor.top && <img src={decorUrl(decor.top)} alt="" className="w-full" />}
 
       <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} tagline={b.tagline} compact />
-      <Organisers names={b.organisers} suffix={b.organisersSuffix} compact />
+      {b.organisers.length > 0 && <Organisers names={b.organisers} suffix={b.organisersSuffix} compact />}
       <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} compact />
       <WhenWhere days={b.days} venue={b.venue} compact />
       {b.items.length > 0 && <ItemsList heading={b.itemsHeading} items={b.items} more={b.itemsMore} compact />}

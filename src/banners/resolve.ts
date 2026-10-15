@@ -5,7 +5,8 @@ import { FORMATS } from './formats';
 
 /** Every edition, resolved — for getStaticPaths. */
 export async function allBanners(): Promise<Banner[]> {
-  const editions = await getCollection('editions');
+  // Draft editions (unconfirmed details) are shown in `pnpm dev` only, never published.
+  const editions = await getCollection('editions', (e) => import.meta.env.DEV || !e.data.draft);
   return Promise.all(editions.map(async (e) => {
     const programme = await getEntry(e.data.programme);
     if (!programme) throw new Error(`${e.id}: unknown programme "${e.data.programme.id}"`);

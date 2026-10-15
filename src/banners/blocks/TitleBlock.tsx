@@ -29,8 +29,8 @@ export default function TitleBlock({ top, main, yearMr, decor, compact = false }
       </>}
       {/* data-fit: shrinks a long title to fit between the side ornaments (see fit.ts) */}
       <h1 className="w-full flex flex-col items-center font-normal">
-        {top && <span data-fit data-fit-reserve={reserve} className={cx(s.top, 'whitespace-nowrap font-display leading-[1.1] text-deep')}>{top}</span>}
-        <span data-fit data-fit-reserve={reserve} className={cx(s.main, 'mt-1 whitespace-nowrap font-display leading-[1.05] text-primary')}>{main}</span>
+        {top && <span data-fit data-fit-reserve={reserve} className={cx(s.top, 'whitespace-nowrap font-display font-display-weight leading-[1.1] text-deep')}>{top}</span>}
+        <span data-fit data-fit-reserve={reserve} className={cx(s.main, 'mt-1 whitespace-nowrap font-display font-display-weight leading-[1.05] text-primary')}>{main}</span>
       </h1>
       <div className="mt-1.5 flex items-center gap-[22px]">
         <i className={cx(s.rule, 'h-0.5 bg-gold')}></i>

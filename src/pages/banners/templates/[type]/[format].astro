@@ -19,6 +19,6 @@ const type = Astro.params.type as ProgrammeType;
 const format = Astro.params.format as FormatId;
 const { sample, label } = TEMPLATES[type];
 ---
-<BannerLayout title={`${label} — ${FORMATS[format].label} (नमुना)`} colors={THEMES[sample.programme.data.theme].colors}>
+<BannerLayout title={`${label} — ${FORMATS[format].label} (नमुना)`} theme={THEMES[sample.programme.data.theme]}>
   <LiveBanner client:load type={type} format={format} programme={sample.programme} edition={sample.edition} />
 </BannerLayout>

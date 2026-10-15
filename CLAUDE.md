@@ -57,7 +57,7 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 
 ## Banners
 - Invitation cards and banners for recurring programmes. Full guide, design rules and Marathi text standards: `docs/banners.md`. Decision: `docs/decisions/007-banners-as-astro-pages.md`
-- Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides)
+- Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides; `draft: true` = dev only, not published). Types: `fair` (ग्राहक पेठ), `workshop` (आकाशकंदील कार्यशाळा)
 - Code: `src/banners/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `banner.css`); route `src/pages/banners/[year]/[programme]/[format].astro` (noindex, not in sitemap)
 - Render: `pnpm build && pnpm banners` → `dist/banners/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:banners` (strict) before deploy
 - Banner pages never import `global.css`. Banner Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc.

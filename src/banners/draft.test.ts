@@ -3,17 +3,27 @@ import assert from 'node:assert/strict';
 import { parse } from 'yaml';
 import { draftFromSample, draftToEntries, programmeYaml, editionYaml } from './draft.ts';
 import * as sample from './templates/fair/sample.ts';
+import * as workshopSample from './templates/workshop/sample.ts';
 
 /** Drops undefined fields, as YAML has no way to write them. */
 const clean = (o: unknown) => JSON.parse(JSON.stringify(o));
 
-test('the generated YAML parses back to the same programme and edition', () => {
-  const { programme, edition } = draftToEntries(draftFromSample(sample.programme, sample.edition), sample.programme);
-  assert.deepEqual(parse(programmeYaml(programme)), clean(programme.data));
-  const parsedEdition = parse(editionYaml(edition));
-  assert.equal(parsedEdition.programme, programme.id);
-  assert.deepEqual(parsedEdition.days, clean(edition.data.days));
-  assert.deepEqual(parsedEdition.venue, edition.data.venue);
+for (const [type, s] of [['fair', sample], ['workshop', workshopSample]] as const) {
+  test(`${type}: the generated YAML parses back to the same programme and edition`, () => {
+    const { programme, edition } = draftToEntries(draftFromSample(s.programme, s.edition), s.programme);
+    assert.deepEqual(parse(programmeYaml(programme)), clean(programme.data));
+    const parsedEdition = parse(editionYaml(edition));
+    assert.equal(parsedEdition.programme, programme.id);
+    assert.deepEqual(parsedEdition.days, clean(edition.data.days));
+    assert.deepEqual(parsedEdition.venue, edition.data.venue);
+  });
+}
+
+test('workshop: incomplete contact rows are left out', () => {
+  const draft = draftFromSample(workshopSample.programme, workshopSample.edition);
+  draft.contacts = [{ name: 'अ', phone: '9028265426' }, { name: '', phone: '9000000000' }, { name: 'ब', phone: '12' }];
+  const { programme } = draftToEntries(draft, workshopSample.programme);
+  assert.deepEqual(programme.data.contacts, [{ name: 'अ', phone: '9028265426' }]);
 });
 
 test('text with quotes, colons and placeholders survives', () => {
