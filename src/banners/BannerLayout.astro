@@ -1,0 +1,24 @@
+---
+// Bare page for one banner: no site navbar, no site CSS. Playwright screenshots #banner.
+import './banner.css';
+import type { ThemeColors } from './themes';
+
+interface Props {
+  title: string;
+  colors: ThemeColors;
+}
+const { title, colors } = Astro.props;
+const vars = Object.entries(colors).map(([k, v]) => `--${k}: ${v};`).join(' ');
+---
+<!doctype html>
+<html lang="mr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+    <style is:inline set:html={`:root { ${vars} }`}></style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

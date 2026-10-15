@@ -1,0 +1,48 @@
+---
+// 1080×1920 invitation card for WhatsApp. Blocks are spread top-to-bottom to fill the frame.
+import type { Banner } from '../resolve';
+import type { BannerFormat } from './index';
+import { decorUrl } from '../assets';
+import HeaderLogos from '../blocks/HeaderLogos.astro';
+import Organisers from '../blocks/Organisers.astro';
+import TitleBlock from '../blocks/TitleBlock.astro';
+import WhenWhere from '../blocks/WhenWhere.astro';
+import ItemsList from '../blocks/ItemsList.astro';
+import Closing from '../blocks/Closing.astro';
+import FooterLine from '../blocks/FooterLine.astro';
+import DecorRow from '../blocks/DecorRow.astro';
+
+interface Props {
+  banner: Banner;
+  format: BannerFormat;
+}
+const { banner: b, format } = Astro.props;
+const { decor } = b.theme;
+---
+<main
+  id="banner"
+  class="overflow-hidden bg-ground bg-[length:96px_96px] p-[22px] font-body text-ink"
+  style={{
+    width: `${format.width}px`,
+    height: `${format.height}px`,
+    backgroundImage: decor.pattern ? `url("${decorUrl(decor.pattern)}")` : undefined,
+  }}
+>
+  <div class="h-full border-[3px] border-deep p-1.5">
+    <div id="content" class="relative h-full flex flex-col items-center justify-between border border-gold px-[38px] pb-[26px]">
+      {decor.top && <img src={decorUrl(decor.top)} alt="" class="w-full" />}
+
+      <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} tagline={b.tagline} />
+      <Organisers names={b.organisers} suffix={b.organisersSuffix} />
+      <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} />
+
+      {b.intro && <p class="max-w-[880px] text-center text-[24px] leading-[1.55]">{b.intro}</p>}
+
+      <WhenWhere days={b.days} venue={b.venue} />
+      {b.items.length > 0 && <ItemsList heading={b.itemsHeading} items={b.items} more={b.itemsMore} />}
+      <Closing paragraphs={b.closing} />
+      {b.footer && <FooterLine text={b.footer} />}
+      {decor.bottomRow && <DecorRow file={decor.bottomRow} />}
+    </div>
+  </div>
+</main>

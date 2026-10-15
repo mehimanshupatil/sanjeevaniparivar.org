@@ -27,3 +27,21 @@ _Avoid_: Founding, establishment
 **Service Area**:
 The place the organisation serves, named "Vasai" (वसई) in public text. The registered address in Nalasopara (W), within Vasai taluka, appears only with the Legal Name.
 _Avoid_: Nalasopara as the public location
+
+## Banners
+
+**Programme**:
+A recurring community event the organisation runs, described once: its title, organisers, partner logos and standard wording (e.g. सामवेदी ब्राह्मण ग्राहक पेठ).
+_Avoid_: Event, template
+
+**Edition**:
+One year's occurrence of a Programme: its dates, venue and any wording that differs that year.
+_Avoid_: Event, instance, version
+
+**Format**:
+One output shape of an Edition's invitation, such as the WhatsApp card or a printed flex banner.
+_Avoid_: Template, size
+
+**Theme**:
+The colours and decorations a Programme's banners use, such as Diwali.
+_Avoid_: Skin, style

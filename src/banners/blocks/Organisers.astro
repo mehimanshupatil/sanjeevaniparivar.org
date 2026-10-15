@@ -1,0 +1,12 @@
+---
+// "A, B आणि C यांच्या संयुक्त विद्यमाने आयोजित" with each name bold
+interface Props {
+  names: string[];
+  suffix: string;
+}
+const { names, suffix } = Astro.props;
+const sep = (i: number) => (i === 0 ? '' : i === names.length - 1 ? ' आणि ' : ', ');
+---
+<p class="max-w-[860px] text-center text-[23px] leading-[1.5] text-ink-soft">
+  {names.map((n, i) => <>{sep(i)}<strong class="font-bold text-deep">{n}</strong></>)}{' '}{suffix}
+</p>

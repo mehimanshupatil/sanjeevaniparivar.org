@@ -1,0 +1,32 @@
+---
+// /banners/2026/grahak-peth/whatsapp/ — one bare page per edition × format.
+// scripts/render-banners.mjs screenshots these after `astro build`.
+import BannerLayout from '@/banners/BannerLayout.astro';
+import Portrait from '@/banners/formats/Portrait.astro';
+import { allBanners, FORMATS, type Banner } from '@/banners/resolve';
+import type { FormatId } from '@/banners/formats';
+
+/** Which layout draws each format. */
+const LAYOUTS = { whatsapp: Portrait } satisfies Record<FormatId, unknown>;
+
+export async function getStaticPaths() {
+  const banners = await allBanners();
+  return banners.flatMap((banner) =>
+    banner.formats.map((format) => {
+      const [year, programme] = banner.id.split('/');
+      return { params: { year, programme, format }, props: { banner, format } };
+    }),
+  );
+}
+
+interface Props {
+  banner: Banner;
+  format: FormatId;
+}
+const { banner, format } = Astro.props;
+const Layout = LAYOUTS[format];
+const size = FORMATS[format];
+---
+<BannerLayout title={`${banner.fullTitle} — ${size.label}`} colors={banner.theme.colors}>
+  <Layout banner={banner} format={size} />
+</BannerLayout>

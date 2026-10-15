@@ -1,0 +1,43 @@
+/*
+ * Banner stylesheet — separate from the site's global.css so site fonts,
+ * the 18px base size and brand colours never leak into a banner.
+ * Only files under src/banners/ are scanned for classes.
+ */
+@import "tailwindcss" source(none);
+@source "./";
+
+/* Fonts are committed (SIL OFL) so Marathi letterforms render the same on every machine. */
+@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
+@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-SemiBold.ttf"); font-weight: 600; }
+@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "Rozha One"; src: url("/banners/assets/fonts/RozhaOne-Regular.ttf"); }
+@font-face { font-family: "Tiro Devanagari Marathi"; src: url("/banners/assets/fonts/TiroDevanagariMarathi-Regular.ttf"); }
+
+@theme {
+  --font-*: initial;
+  --font-body: "Mukta", "Noto Sans Devanagari", sans-serif;
+  --font-display: "Rozha One", serif;      /* big titles */
+  --font-ornate: "Tiro Devanagari Marathi", serif;  /* headings, ornaments */
+}
+
+/* Theme colours are set per banner as CSS variables (see formats/*.astro). */
+@theme inline {
+  --color-*: initial;
+  --color-ground: var(--ground);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--inkSoft);
+  --color-primary: var(--primary);
+  --color-deep: var(--deep);
+  --color-gold: var(--gold);
+  --color-band-text: var(--bandText);
+  --color-band-soft: var(--bandSoft);
+  --color-band-accent: var(--bandAccent);
+  --color-marigold: var(--marigold);
+  --color-marigold-edge: var(--marigoldEdge);
+}
+
+@layer base {
+  /* Browser default line-height, not Tailwind's 1.5: banner sizes were tuned against it. */
+  html { line-height: normal; }
+}

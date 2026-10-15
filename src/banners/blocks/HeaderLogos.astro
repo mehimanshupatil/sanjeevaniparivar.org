@@ -1,0 +1,32 @@
+---
+// Top row: left logo · invitation line + tagline · right logo
+import type { BannerLogo } from '../logos';
+import { logoUrl } from '../assets';
+
+interface Props {
+  left?: BannerLogo;
+  right?: BannerLogo;
+  invite: string;
+  tagline?: string;
+}
+const { left, right, invite, tagline } = Astro.props;
+const size = (l: BannerLogo) => (l.shape === 'seal' ? 'size-[128px]' : 'size-[120px]');
+---
+<header class="w-full flex items-center justify-between gap-6 -mt-2">
+  {left && (
+    <figure class="w-[170px] flex flex-col items-center gap-1.5 text-center">
+      <img src={logoUrl(left.file)} alt={left.caption} class:list={[size(left), 'object-contain']} />
+      <figcaption class="text-[17px] font-semibold leading-[1.25] text-deep">{left.caption}</figcaption>
+    </figure>
+  )}
+  <div class="flex-1 flex flex-col items-center gap-2.5 text-center">
+    <p class="font-ornate text-[34px] tracking-[1px] text-primary">{invite}</p>
+    {tagline && <p class="text-[23px] font-medium text-ink-soft">{tagline}</p>}
+  </div>
+  {right && (
+    <figure class="w-[170px] flex flex-col items-center gap-1.5 text-center">
+      <img src={logoUrl(right.file)} alt={right.caption} class:list={[size(right), 'object-contain']} />
+      <figcaption class="text-[17px] font-semibold leading-[1.25] text-deep">{right.caption}</figcaption>
+    </figure>
+  )}
+</header>

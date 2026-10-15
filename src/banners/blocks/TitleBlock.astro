@@ -1,0 +1,34 @@
+---
+// Title with optional ornament behind (titleBack) and either side (titleSides), then the year
+import type { ThemeDecor } from '../themes';
+import { decorUrl } from '../assets';
+
+interface Props {
+  top?: string;
+  main: string;
+  yearMr: string;
+  decor: ThemeDecor;
+}
+const { top, main, yearMr, decor } = Astro.props;
+---
+<section class="relative z-0 w-full flex flex-col items-center text-center">
+  {decor.titleBack && (
+    <img src={decorUrl(decor.titleBack)} alt=""
+      class="absolute -z-1 left-1/2 top-1/2 size-[640px] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-[0.11]" />
+  )}
+  {decor.titleSides && <>
+    <img src={decorUrl(decor.titleSides)} alt="" class="absolute -top-[34px] -left-[6px] w-[110px] h-[280px]" />
+    <img src={decorUrl(decor.titleSides)} alt="" class="absolute -top-[34px] -right-[6px] w-[110px] h-[280px]" />
+  </>}
+  <h1 class="flex flex-col items-center font-normal">
+    {top && <span class="font-display text-[76px] leading-[1.1] text-deep">{top}</span>}
+    <span class="mt-1 font-display text-[156px] leading-[1.05] text-primary">{main}</span>
+  </h1>
+  <div class="mt-1.5 flex items-center gap-[22px]">
+    <i class="w-[150px] h-0.5 bg-gold"></i>
+    <i class="size-2.5 rotate-45 bg-gold"></i>
+    <span class="font-ornate text-[60px] leading-none text-gold">{yearMr}</span>
+    <i class="size-2.5 rotate-45 bg-gold"></i>
+    <i class="w-[150px] h-0.5 bg-gold"></i>
+  </div>
+</section>

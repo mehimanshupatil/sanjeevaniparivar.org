@@ -1,0 +1,31 @@
+/** Colour slots every banner template uses. Each theme fills all of them. */
+export interface ThemeColors {
+  ground: string;       // paper / background
+  ink: string;          // body text
+  inkSoft: string;      // secondary text
+  primary: string;      // titles, headings
+  deep: string;         // frame, date band, emphasis
+  gold: string;         // rules, year
+  bandText: string;     // text on the date band
+  bandSoft: string;     // softer text on the date band
+  bandAccent: string;   // headings and icons on the date band
+  marigold: string;     // bullets, dots
+  marigoldEdge: string;
+}
+
+/**
+ * Named places a template can decorate. Each is an SVG file in
+ * public/banners/assets/decor/. A theme leaves a slot out to keep it empty.
+ */
+export interface ThemeDecor {
+  pattern?: string;     // faint background pattern
+  top?: string;         // full-width border at the top (toran)
+  titleBack?: string;   // large faint ornament behind the title (mandala)
+  titleSides?: string;  // hanging ornaments either side of the title (akashkandil)
+  bottomRow?: string;   // repeated ornament along the bottom (diya)
+}
+
+export interface BannerTheme {
+  colors: ThemeColors;
+  decor: ThemeDecor;
+}

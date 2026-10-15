@@ -1,0 +1,10 @@
+---
+// Closing paragraphs; `emphasis` ones are bold and deep-coloured
+interface Props {
+  paragraphs: { text: string; emphasis: boolean }[];
+}
+const { paragraphs } = Astro.props;
+---
+<section class="max-w-[900px] flex flex-col items-center gap-3 text-center text-[23px] leading-[1.55]">
+  {paragraphs.map((c) => <p class:list={[c.emphasis && 'font-bold text-deep']}>{c.text}</p>)}
+</section>

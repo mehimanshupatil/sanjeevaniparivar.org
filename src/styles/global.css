@@ -1,6 +1,7 @@
  
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@source not "../banners"; /* banners have their own stylesheet: src/banners/banner.css */
 
  
 /* ── Tailwind v4 theme tokens (replaces tailwind.config.mjs theme key) ─── */

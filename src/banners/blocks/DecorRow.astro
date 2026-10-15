@@ -1,0 +1,16 @@
+---
+// A row of one ornament (e.g. diyas) with marigold dots between
+import { decorUrl } from '../assets';
+
+interface Props {
+  file: string;
+  count?: number;
+}
+const { file, count = 7 } = Astro.props;
+---
+<div class="w-full flex items-end justify-between px-2.5" aria-hidden="true">
+  {Array.from({ length: count }, (_, i) => <>
+    {i > 0 && <i class="mb-1.5 size-[14px] flex-none rounded-full border-[3px] border-marigold-edge bg-marigold"></i>}
+    <img src={decorUrl(file)} alt="" class="w-[84px] h-[74px]" />
+  </>)}
+</div>

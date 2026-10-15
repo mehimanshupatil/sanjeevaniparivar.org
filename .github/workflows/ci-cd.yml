@@ -42,9 +42,17 @@ jobs:
         # Using npm ci is generally faster than running npm i because it caches dependencies
         run: |
           pnpm install
+      - name: Test
+        run: pnpm test
       - name: Build the app
         run: |
           pnpm run build
+      # Banner pages are built above; this screenshots them into dist/banners/**
+      # (PNG + PDF), so they deploy with the site. Fails if a banner overflows.
+      - name: Install Chromium for banners
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Render banners
+        run: pnpm run build:banners
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

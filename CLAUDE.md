@@ -38,6 +38,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/gallery` | `GalleryPage.tsx` |
 | `/team` | `TeamPage.tsx` — member names are `[नाव]` placeholders |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
+| `/banners/[year]/[programme]/[format]` | Bare banner pages rendered to PNG/PDF after build (see Banners below) |
 
 ## Homepage section order (App.tsx)
 HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTeaser → SocialSection → ContactSection → Footer + BackToTop
@@ -51,6 +52,15 @@ HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTe
 
 ## Social links (src/lib/social.ts)
 YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB180VycBzFxlju1O`)
+
+## Banners
+- Invitation cards and banners for recurring programmes. Full guide, design rules and Marathi text standards: `docs/banners.md`. Decision: `docs/decisions/007-banners-as-astro-pages.md`
+- Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides)
+- Code: `src/banners/` (blocks, formats, themes, logos, `banner.css`); route `src/pages/banners/[year]/[programme]/[format].astro` (noindex, not in sitemap)
+- Render: `pnpm build && pnpm banners` → `dist/banners/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:banners` (strict) before deploy
+- Banner pages never import `global.css`. Banner Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc.
+- Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
+- Possible next steps (ask before starting): landscape print template with bleed, 1080×1080 square post, more themes (Ganeshotsav, Navratri, Gudi Padwa, Sankranti), event page + WhatsApp text from the same YAML
 
 ## Coding preferences
 - **mailto links**: use `document.createElement('a'); a.href = ...; a.click()` — not `window.location.href`
