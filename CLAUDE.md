@@ -37,6 +37,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/donate` | `DonatePage.tsx` — bank/UPI still placeholder `—` |
 | `/gallery` | `GalleryPage.tsx` |
 | `/team` | `TeamPage.tsx` — member names are `[नाव]` placeholders |
+| `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
 
 ## Homepage section order (App.tsx)
 HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTeaser → SocialSection → ContactSection → Footer + BackToTop

@@ -57,6 +57,7 @@ export async function getStaticPaths() {
     { params: { slug: 'page/donate' }, props: { title: 'देणगी', subtitle: 'परिवर्तनाचा भाग व्हा', color: PRIMARY } },
     { params: { slug: 'page/gallery' }, props: { title: 'चित्रदालन', subtitle: 'आमचा फोटो प्रवास', color: PRIMARY } },
     { params: { slug: 'page/team' }, props: { title: 'आमची टीम', subtitle: 'संजीवनी परिवार', color: PRIMARY } },
+    { params: { slug: 'page/brand' }, props: { title: 'ब्रँड मार्गदर्शक', subtitle: 'लोगो, रंग व नाव', color: PRIMARY } },
     { params: { slug: 'page/events' }, props: { title: 'कार्यक्रम', subtitle: 'आगामी व मागील कार्यक्रम', color: PRIMARY } },
     { params: { slug: 'page/blog' }, props: { title: 'ब्लॉग', subtitle: 'आमच्या कार्याच्या कहाण्या', color: PRIMARY } },
 

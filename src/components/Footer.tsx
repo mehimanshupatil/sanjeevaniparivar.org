@@ -58,6 +58,7 @@ export default function Footer() {
                 { href: '/gallery', label: { mr: 'चित्रदालन',   en: 'Gallery'  } },
                 { href: '/team',    label: { mr: 'आपला परिवार', en: 'Team'     } },
                 { href: '/donate',  label: { mr: 'देणगी द्या',  en: 'Donate'   } },
+                { href: '/brand',   label: { mr: 'ब्रँड',        en: 'Brand'    } },
               ].map((l) => (
                 <li key={l.href}>
                   <a href={l.href} className="text-sm text-white/50 hover:text-gold transition-colors">
