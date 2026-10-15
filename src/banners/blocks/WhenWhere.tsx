@@ -1,0 +1,45 @@
+// Date & venue band: दिनांक (one block per day) | स्थळ
+import { Fragment } from 'react';
+import { cx } from '../cx';
+
+interface Props {
+  days: { date: string; time: string }[];
+  venue: string[];
+  compact?: boolean;
+}
+
+export default function WhenWhere({ days, venue, compact = false }: Props) {
+  const s = compact
+    ? { band: 'px-8 py-6', heading: 'mb-2.5 text-[26px]', icon: 'size-[26px]', hr: 'my-2.5', day: 'text-[24px]', time: 'text-[20px]', venue: 'text-[38px]' }
+    : { band: 'px-9 py-[30px]', heading: 'mb-3.5 text-[30px]', icon: 'size-[30px]', hr: 'my-3.5', day: 'text-[26px]', time: 'text-[22px]', venue: 'text-[44px]' };
+  const heading = cx(s.heading, 'flex items-center gap-3 font-ornate font-normal text-band-accent');
+  const icon = cx(s.icon, 'fill-none stroke-band-accent stroke-[1.8]');
+  return (
+    <section className={cx(s.band, 'w-full grid grid-cols-2 gap-8 rounded-[6px] bg-deep text-band-text')}>
+      <div>
+        <h2 className={heading}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" className={icon} strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" />
+          </svg>दिनांक
+        </h2>
+        {days.map((d, i) => (
+          <Fragment key={i}>
+            {i > 0 && <hr className={cx(s.hr, 'h-px border-0 bg-band-accent/45')} />}
+            <p className={cx(s.day, 'font-bold')}>{d.date}</p>
+            <p className={cx(s.time, 'text-band-soft')}>{d.time}</p>
+          </Fragment>
+        ))}
+      </div>
+      <div className="border-l border-band-accent/45 pl-8">
+        <h2 className={heading}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" className={icon} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" />
+          </svg>स्थळ
+        </h2>
+        <p className={cx(s.venue, 'font-display leading-[1.2]')}>
+          {venue.map((line, i) => <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>)}
+        </p>
+      </div>
+    </section>
+  );
+}

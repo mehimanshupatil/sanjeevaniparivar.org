@@ -1,9 +1,0 @@
----
-// Closing line between two gold rules
-interface Props {
-  text: string;
-  compact?: boolean;
-}
-const { text, compact = false } = Astro.props;
----
-<p class:list={['w-full border-y-2 border-gold text-center font-ornate text-primary', compact ? 'py-3 text-[28px]' : 'py-4 text-[34px]']}>{text}</p>

@@ -27,5 +27,10 @@ const vars = Object.entries(colors).map(([k, v]) => `--${k}: ${v};`).join(' ');
   </head>
   <body>
     <slot />
+    <script>
+      // Fit long titles to their row, then mark the page ready for screenshots.
+      import { fitWhenReady } from './fit';
+      fitWhenReady();
+    </script>
   </body>
 </html>

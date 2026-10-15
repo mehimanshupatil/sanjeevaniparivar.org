@@ -53,14 +53,14 @@ async function render(browser, origin, route) {
 
   const page = await browser.newPage();
   await page.goto(origin + route, { waitUntil: 'load' });
-  await page.evaluate(() => document.fonts.ready);
+  await page.waitForSelector('html[data-banner-ready]'); // fonts loaded + long titles fitted (src/banners/fit.ts)
   const size = await page.locator('#banner').evaluate((el) => ({ width: el.offsetWidth, height: el.offsetHeight }));
   await page.close();
 
   for (const [suffix, scale] of [['', 1], ['@2x', 2]]) {
     const p = await browser.newPage({ viewport: size, deviceScaleFactor: scale });
     await p.goto(origin + route, { waitUntil: 'load' });
-    await p.evaluate(() => document.fonts.ready);
+    await p.waitForSelector('html[data-banner-ready]');
     if (scale === 1) {
       const over = await p.evaluate(() => {
         const el = document.getElementById('content');

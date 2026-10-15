@@ -1,0 +1,61 @@
+---
+// /banners/templates/ — every banner template, in every format, with sample content.
+// A shared link for trust members (not linked from the site, not indexed).
+import BannerPreviewLayout from '@/layouts/BannerPreviewLayout.astro';
+import { TEMPLATES } from '@/banners/templates';
+import { FORMATS, type FormatId } from '@/banners/formats';
+
+const PREVIEW_WIDTH = 240;
+const types = Object.entries(TEMPLATES).map(([type, t]) => ({
+  type,
+  label: t.label,
+  description: t.description,
+  formats: (Object.keys(t.layouts) as FormatId[]).map((id) => ({ id, ...FORMATS[id] })),
+}));
+---
+<BannerPreviewLayout title="बॅनर साचे">
+  <Fragment slot="crumbs">
+    <span class="text-gray-300">/</span>
+    <span class="text-gray-500">साचे</span>
+  </Fragment>
+
+  <h1 class="text-3xl font-extrabold text-gray-900">बॅनर साचे</h1>
+  <p class="mt-2 max-w-2xl text-gray-600">
+    प्रत्येक प्रकारच्या कार्यक्रमासाठी एक साचा. दरवर्षी फक्त तपशील बदलतात, रचना तीच राहते.
+    खाली नमुना मजकुरासह सर्व साचे दिसतील. "वापरून पहा" वर आपल्या कार्यक्रमाचा मजकूर लिहून बॅनर कसा दिसेल ते पाहा.
+  </p>
+
+  {types.map((t) => (
+    <section class="mt-10 rounded-2xl bg-white border border-gray-100 p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">{t.label}</h2>
+          <p class="mt-1 text-gray-600">{t.description}</p>
+        </div>
+        <a href={`/banners/templates/${t.type}/`}
+           class="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white hover:bg-primary-dark">
+          वापरून पहा →
+        </a>
+      </div>
+      <div class="mt-6 flex flex-wrap items-start gap-6">
+        {t.formats.map((f) => {
+          const scale = PREVIEW_WIDTH / f.width;
+          return (
+            <figure class="flex flex-col gap-2">
+              <a href={`/banners/templates/${t.type}/${f.id}/`} target="_blank"
+                 class="relative block overflow-hidden rounded-lg border border-gray-200"
+                 style={`width: ${PREVIEW_WIDTH}px; height: ${Math.round(f.height * scale)}px`}>
+                <iframe src={`/banners/templates/${t.type}/${f.id}/`} title={`${t.label} — ${f.label}`} loading="lazy"
+                        class="pointer-events-none absolute left-0 top-0 border-0"
+                        style={`width: ${f.width}px; height: ${f.height}px; transform: scale(${scale}); transform-origin: 0 0`}></iframe>
+              </a>
+              <figcaption class="text-sm text-gray-600">
+                {f.label} <span class="font-mono text-xs text-gray-400">{f.width} × {f.height}</span>
+              </figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+</BannerPreviewLayout>

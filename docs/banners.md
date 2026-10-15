@@ -33,6 +33,13 @@ A template has one layout per format:
 
 A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The build fails if its type has no layout for one of them.
 
+## Template gallery and try-out editor (for trust members)
+
+- `/banners/templates/` shows every template in every format, filled with sample content. Share this link; it isn't linked from the site or indexed.
+- `/banners/templates/<type>/` ("वापरून पहा") lets a member type their programme's details into a Marathi form and see every format update live, with a warning if text doesn't fit. Nothing is saved on the site (the draft stays in their browser). "कॉपी करा" / "WhatsApp वर पाठवा" sends you the programme + edition YAML to add to `src/content/`.
+- Each type's sample lives in `src/banners/templates/<type>/sample.ts`, deliberately near the template's limits. Sample pages are rendered in CI too, so a template change that makes the sample overflow fails the build.
+- Long titles shrink to fit between the side ornaments (`src/banners/fit.ts`, marked `data-fit`); render waits for `html[data-banner-ready]`.
+
 ## How it fits together
 
 | File | What it holds | Changes |
@@ -41,9 +48,10 @@ A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The bu
 | `src/content/editions/<year>/<name>.yaml` | Dates, venue, and any wording that differs this year | Every year |
 | `src/banners/themes/*.ts` | Colours and which decoration goes in which slot | New theme |
 | `src/banners/logos.ts` + `public/banners/assets/logos/` | Partner logos by id | New partner |
-| `src/banners/templates/<type>/` + `templates/index.ts` | One layout per format for each programme type | New type or format |
+| `src/banners/templates/<type>/` + `templates/index.ts` | One React layout per format (`Whatsapp.tsx`, …) + `sample.ts` for each programme type | New type or format |
 | `src/banners/formats.ts` | Format sizes and labels | New format |
-| `src/banners/blocks/` | Shared pieces: frame, logos row, organisers, title, date band, list, closing, footer, decoration row | Rarely |
+| `src/banners/blocks/` | Shared React pieces: frame, logos row, organisers, title, date band, list, closing, footer, decoration row | Rarely |
+| `src/banners/banner.ts`, `draft.ts` | Merging programme + edition into a banner; the editor's form ↔ YAML (tested) | Rarely |
 | `src/lib/marathi.ts` | Dates, times, numerals, list joining (tested: `pnpm test`) | Rarely |
 
 An edition can override any programme wording for one year by repeating the field (e.g. `items:`). Lists are replaced whole.
@@ -55,8 +63,8 @@ In text, `{{ fullTitle }}` becomes the title plus the Marathi year, and `{{ year
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.
 - **New partner logo**: add a transparent PNG to `public/banners/assets/logos/` (or reuse an existing public file, as the Sanjeevani logo reuses `/assets/brand/sanjeevani-parivar-symbol.png`) and register its path in `src/banners/logos.ts`.
 - **New theme**: add `src/banners/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow`. Leave a slot out to keep it empty.
-- **New format** (square post, flex banner): add its size to `src/banners/formats.ts`, write `templates/<type>/<Format>.astro` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
-- **New programme type** (lecture series, competition, camp): add `src/banners/templates/<type>/` with a layout per format built from the shared blocks plus a block for its middle section, register it in `templates/index.ts`, and add the type and its fields to the `programmes` schema in `src/content.config.ts`.
+- **New format** (square post, flex banner): add its size to `src/banners/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
+- **New programme type** (lecture series, competition, camp): add `src/banners/templates/<type>/` with a React layout per format built from the shared blocks plus a block for its middle section, and a `sample.ts`; register it (label, description, layouts, sample) in `templates/index.ts`; add the type and its fields to the `programmes` schema in `src/content.config.ts`. It then appears in the gallery automatically; extend the editor form (`src/components/banners/TemplateEditor.tsx`) for its fields.
 
 Styling is Tailwind, from `src/banners/banner.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`BannerLayout.astro`). Rendering fails if any of them doesn't load, so a banner is never drawn in a fallback font.
 

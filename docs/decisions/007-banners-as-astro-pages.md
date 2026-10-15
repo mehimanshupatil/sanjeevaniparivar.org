@@ -9,7 +9,7 @@ Each programme needs a WhatsApp invitation and printed banners every year. A fir
 Banners are Astro pages in this site: `/banners/<year>/<programme>/<format>/`.
 
 - Content is two YAML collections: `programmes` (fixed) and `editions` (one per year), validated by schemas in `src/content.config.ts`.
-- Layouts are Astro components built from shared blocks in `src/banners/blocks/`, styled with Tailwind from a separate `src/banners/banner.css`.
+- Layouts are React components built from shared blocks in `src/banners/blocks/`, styled with Tailwind from a separate `src/banners/banner.css`. Astro renders them to static HTML for real banners; the template try-out editor renders the same components live in the browser (that's why they're React, not `.astro`).
 - After `astro build`, `scripts/render-banners.mjs` screenshots each page with Playwright into `dist/banners/` (PNG 1×, PNG 2×, PDF), so images deploy with the site. Playwright is a pinned dev dependency.
 
 ## Considered Options
@@ -22,3 +22,4 @@ Banners are Astro pages in this site: `/banners/<year>/<programme>/<format>/`.
 - Banner pages must not import `src/styles/global.css`; site fonts, the 18px base size and brand colours would shift the layout. `global.css` excludes `src/banners` from its Tailwind scan.
 - Banner fonts load from Google Fonts like the site's (the first version committed TTFs; switched to the CDN to keep binaries out of the repo). Rendering needs network access, and `render-banners.mjs` fails if any banner font doesn't load. Google may update font files, so renders can shift slightly between years; check overflow warnings.
 - Banner pages are `noindex` and excluded from the sitemap; they're render targets, not site pages.
+- Banner pages carry one small script (`fit.ts`) that shrinks long titles to fit; rendering waits for it.

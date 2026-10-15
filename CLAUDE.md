@@ -40,6 +40,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
 | `/banners/[year]/[programme]/[format]` | Bare banner pages rendered to PNG/PDF after build (see Banners below) |
 | `/banners/`, `/banners/[year]/[programme]/` | Preview + download pages for rendered banners (noindex), `BannerPreviewLayout.astro` |
+| `/banners/templates/`, `/banners/templates/[type]/` | Template gallery + try-out editor for trust members (`TemplateEditor.tsx`), sample pages at `/banners/templates/[type]/[format]/` |
 
 ## Homepage section order (App.tsx)
 HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTeaser → SocialSection → ContactSection → Footer + BackToTop
@@ -57,7 +58,7 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 ## Banners
 - Invitation cards and banners for recurring programmes. Full guide, design rules and Marathi text standards: `docs/banners.md`. Decision: `docs/decisions/007-banners-as-astro-pages.md`
 - Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides)
-- Code: `src/banners/` (templates per programme type, shared blocks, formats, themes, logos, `banner.css`); route `src/pages/banners/[year]/[programme]/[format].astro` (noindex, not in sitemap)
+- Code: `src/banners/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `banner.css`); route `src/pages/banners/[year]/[programme]/[format].astro` (noindex, not in sitemap)
 - Render: `pnpm build && pnpm banners` → `dist/banners/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:banners` (strict) before deploy
 - Banner pages never import `global.css`. Banner Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc.
 - Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
