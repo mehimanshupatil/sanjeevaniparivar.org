@@ -1,7 +1,7 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { KSHETRAS } from '@/content/kshetras';
-import SectionHeader from './ui/SectionHeader';
+import SectionHeader from './common/SectionHeader';
 
 const VALUES = [
   { icon: '🎯', label: tr.about.missionLabel, val: tr.about.missionVal },
@@ -20,7 +20,7 @@ export default function AboutSection() {
   const t = useT();
 
   return (
-    <section id="about" className="py-20 bg-accent-light">
+    <section id="about" className="py-20 bg-gold-light">
       <div className="max-w-6xl mx-auto px-6">
         <SectionHeader
           tag={t(tr.about.tag)}

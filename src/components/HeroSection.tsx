@@ -1,6 +1,6 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
-import LogoImage from './ui/LogoImage';
+import LogoImage from './common/LogoImage';
 
 export default function HeroSection() {
   const t = useT();

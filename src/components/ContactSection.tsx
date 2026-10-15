@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
-import SectionHeader from './ui/SectionHeader';
+import SectionHeader from './common/SectionHeader';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';

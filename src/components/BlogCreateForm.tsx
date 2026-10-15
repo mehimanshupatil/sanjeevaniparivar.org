@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const GITHUB_OWNER = 'mehimanshupatil';
@@ -289,11 +290,9 @@ export default function BlogCreateForm() {
         </div>
 
         <label className="flex items-center gap-2 cursor-pointer w-fit">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={f.draft}
-            onChange={(e) => update(d => { d.draft = e.target.checked; })}
-            className="w-4 h-4 accent-primary"
+            onCheckedChange={(checked) => update(d => { d.draft = checked; })}
           />
           <span className="text-sm text-gray-600">Draft (website वर दिसणार नाही)</span>
         </label>

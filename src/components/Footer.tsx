@@ -1,7 +1,7 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { SOCIAL_LINKS } from '@/lib/social';
-import LogoImage from './ui/LogoImage';
+import LogoImage from './common/LogoImage';
 
 export default function Footer() {
   const t = useT();
@@ -14,11 +14,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-full border-2 border-secondary/40 overflow-hidden bg-accent-light flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full border-2 border-secondary/40 overflow-hidden bg-gold-light flex items-center justify-center">
                 <LogoImage className="w-12 h-12 object-contain p-1" />
               </div>
               <div className="flex flex-col leading-tight">
-                <strong className="text-lg font-extrabold text-accent">{t(f.orgName)}</strong>
+                <strong className="text-lg font-extrabold text-gold">{t(f.orgName)}</strong>
                 <span className="text-xs text-secondary-light">{t(f.tagline)}</span>
               </div>
             </div>
@@ -38,7 +38,7 @@ export default function Footer() {
                 { href: '/prabodhana', label: tr.nav.enlightenment },
               ].map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="text-sm text-white/50 hover:text-accent transition-colors">
+                  <a href={l.href} className="text-sm text-white/50 hover:text-gold transition-colors">
                     {t(l.label)}
                   </a>
                 </li>
@@ -60,7 +60,7 @@ export default function Footer() {
                 { href: '/donate',  label: { mr: 'देणगी द्या',  en: 'Donate'   } },
               ].map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="text-sm text-white/50 hover:text-accent transition-colors">
+                  <a href={l.href} className="text-sm text-white/50 hover:text-gold transition-colors">
                     {t(l.label)}
                   </a>
                 </li>

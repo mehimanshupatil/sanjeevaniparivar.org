@@ -1,7 +1,7 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { SOCIAL_LINKS, WEBSITE_LINK } from '@/lib/social';
-import SectionHeader from './ui/SectionHeader';
+import SectionHeader from './common/SectionHeader';
 
 export default function SocialSection() {
   const t = useT();

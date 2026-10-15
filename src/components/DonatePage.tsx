@@ -231,8 +231,8 @@ function PageContent() {
                   className="rounded-2xl p-6 flex items-start gap-4"
                   style={{ background: '#FFFDE7' }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center shrink-0">
-                    <Receipt className="w-5 h-5 text-accent-dark" strokeWidth={1.5} />
+                  <div className="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center shrink-0">
+                    <Receipt className="w-5 h-5 text-gold-dark" strokeWidth={1.5} />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-gray-800 mb-1">

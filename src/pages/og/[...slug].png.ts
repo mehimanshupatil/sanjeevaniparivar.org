@@ -6,20 +6,34 @@ import { resolve } from 'node:path';
 import { getCollection } from 'astro:content';
 import { KSHETRAS } from '@/content/kshetras';
 
-const fontDeva400 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-400-normal.woff'));
-const fontDeva700 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-700-normal.woff'));
-const fontInter400 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-400-normal.woff'));
-const fontInter700 = readFileSync(resolve(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-700-normal.woff'));
+// Fetch full TTFs from Google Fonts at build time. Non-browser user agents get
+// one unsubsetted .ttf per weight instead of unicode-range woff2 slices.
+async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuffer> {
+  const cssUrl = `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, '+')}:wght@${weight}`;
+  const css = await (await fetch(cssUrl)).text();
+  const fontUrl = css.match(/src: url\((.+?)\)/)?.[1];
+  if (!fontUrl) throw new Error(`No font URL for ${family} ${weight} in ${cssUrl}`);
+  return (await fetch(fontUrl)).arrayBuffer();
+}
+
+const [fontDeva400, fontDeva700, fontInter400, fontInter700] = await Promise.all([
+  loadGoogleFont('Noto Sans Devanagari', 400),
+  loadGoogleFont('Noto Sans Devanagari', 700),
+  loadGoogleFont('Inter', 400),
+  loadGoogleFont('Inter', 700),
+]);
 const logoData = readFileSync(resolve(process.cwd(), 'public/assets/logo.jpg'));
 const logoDataUri = `data:image/png;base64,${logoData.toString('base64')}`;
 
 // Load fonts once into a shared renderer with distinct family names so CSS
 // font-family fallback ('Deva', 'Inter') picks the right font per script
-const renderer = new Renderer({ loadDefaultFonts: false });
-renderer.loadFontSync({ name: 'Deva', data: fontDeva400, weight: 400, style: 'normal' });
-renderer.loadFontSync({ name: 'Deva', data: fontDeva700, weight: 700, style: 'normal' });
-renderer.loadFontSync({ name: 'Inter', data: fontInter400, weight: 400, style: 'normal' });
-renderer.loadFontSync({ name: 'Inter', data: fontInter700, weight: 700, style: 'normal' });
+const renderer = new Renderer();
+await Promise.all([
+  renderer.registerFont({ name: 'Deva', data: fontDeva400, weight: 400, style: 'normal' }),
+  renderer.registerFont({ name: 'Deva', data: fontDeva700, weight: 700, style: 'normal' }),
+  renderer.registerFont({ name: 'Inter', data: fontInter400, weight: 400, style: 'normal' }),
+  renderer.registerFont({ name: 'Inter', data: fontInter700, weight: 700, style: 'normal' }),
+]);
 
 const KSHETRA_HEX: Record<string, string> = {
   shikshan: '#1565C0',
@@ -69,7 +83,7 @@ export async function getStaticPaths() {
   ];
 }
 
-async function generateOgImage({ title, subtitle, color }: OgProps): Promise<Buffer> {
+async function generateOgImage({ title, subtitle, color }: OgProps): Promise<Uint8Array<ArrayBuffer>> {
   const fontSize = title.length > 18 ? 48 : title.length > 10 ? 58 : 68;
 
   const html = `<div style="width:1200px;height:630px;background:${color};display:flex;flex-direction:column;padding:64px 80px;font-family:'Deva','Inter';">
@@ -85,8 +99,7 @@ async function generateOgImage({ title, subtitle, color }: OgProps): Promise<Buf
     </div>
   </div>`;
 
-  const result = await render(html, { renderer, width: 1200, height: 630 });
-  return Buffer.from(result);
+  return render(html, { renderer, width: 1200, height: 630 });
 }
 
 export const GET: APIRoute = async ({ props }) => {

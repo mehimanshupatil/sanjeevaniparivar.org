@@ -10,7 +10,7 @@ interface SectionHeaderProps {
 export default function SectionHeader({ tag, heading, sub, light, tagClass }: SectionHeaderProps) {
   return (
     <div className="text-center mb-14">
-      <span className={`inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${tagClass ?? (light ? 'bg-white/15 text-white' : 'bg-accent-light text-primary')}`}>
+      <span className={`inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${tagClass ?? (light ? 'bg-white/15 text-white' : 'bg-gold-light text-primary')}`}>
         {tag}
       </span>
       <h2 className={`mt-2 text-4xl font-extrabold leading-tight ${light ? 'text-white' : 'text-gray-900'}`}>

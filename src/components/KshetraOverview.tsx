@@ -1,7 +1,7 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import { KSHETRAS } from '@/content/kshetras';
-import SectionHeader from './ui/SectionHeader';
+import SectionHeader from './common/SectionHeader';
 
 export default function KshetraOverview() {
   const t = useT();
