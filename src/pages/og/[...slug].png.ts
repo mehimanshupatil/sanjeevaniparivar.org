@@ -1,19 +1,39 @@
 import type { APIRoute } from 'astro';
 import { render } from 'takumi-js';
 import { Renderer } from 'takumi-js/node';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { getCollection } from 'astro:content';
 import { KSHETRAS } from '@/content/kshetras';
 
+const FONT_CACHE = resolve(process.cwd(), 'node_modules/.cache/og-fonts');
+
 // Fetch full TTFs from Google Fonts at build time. Non-browser user agents get
 // one unsubsetted .ttf per weight instead of unicode-range woff2 slices.
-async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuffer> {
+// Cached on disk after the first download, and retried, because a single
+// flaky request otherwise fails the whole build.
+async function loadGoogleFont(family: string, weight: number): Promise<Uint8Array> {
+  const cached = join(FONT_CACHE, `${family.replace(/ /g, '-')}-${weight}.ttf`);
+  if (existsSync(cached)) return readFileSync(cached);
+
   const cssUrl = `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, '+')}:wght@${weight}`;
-  const css = await (await fetch(cssUrl)).text();
-  const fontUrl = css.match(/src: url\((.+?)\)/)?.[1];
-  if (!fontUrl) throw new Error(`No font URL for ${family} ${weight} in ${cssUrl}`);
-  return (await fetch(fontUrl)).arrayBuffer();
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const css = await (await fetch(cssUrl)).text();
+      const fontUrl = css.match(/src: url\((.+?)\)/)?.[1];
+      if (!fontUrl) throw new Error(`No font URL for ${family} ${weight} in ${cssUrl}`);
+      const res = await fetch(fontUrl);
+      if (!res.ok) throw new Error(`${res.status} for ${fontUrl}`);
+      const data = new Uint8Array(await res.arrayBuffer());
+      mkdirSync(FONT_CACHE, { recursive: true });
+      writeFileSync(cached, data);
+      return data;
+    } catch (err) {
+      if (attempt === 3) throw new Error(`Could not download ${family} ${weight} from Google Fonts: ${err}`);
+      await sleep(1000 * attempt);
+    }
+  }
 }
 
 const [fontDeva400, fontDeva700, fontInter400, fontInter700] = await Promise.all([

@@ -46,7 +46,7 @@ const programmes = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/programmes' }),
   schema: programmeText.extend({
     title: z.object({ top: z.string().optional(), main: z.string() }),
-    type: z.enum(['fair']),
+    type: z.enum(['fair']),  // one folder per type in src/banners/templates/
     kshetra: KSHETRA,
   }),
 });

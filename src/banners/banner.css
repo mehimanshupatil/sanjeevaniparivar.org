@@ -6,14 +6,8 @@
 @import "tailwindcss" source(none);
 @source "./";
 
-/* Fonts are committed (SIL OFL) so Marathi letterforms render the same on every machine. */
-@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Regular.ttf"); font-weight: 400; }
-@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Medium.ttf"); font-weight: 500; }
-@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-SemiBold.ttf"); font-weight: 600; }
-@font-face { font-family: "Mukta"; src: url("/banners/assets/fonts/Mukta-Bold.ttf"); font-weight: 700; }
-@font-face { font-family: "Rozha One"; src: url("/banners/assets/fonts/RozhaOne-Regular.ttf"); }
-@font-face { font-family: "Tiro Devanagari Marathi"; src: url("/banners/assets/fonts/TiroDevanagariMarathi-Regular.ttf"); }
-
+/* Fonts load from Google Fonts (see BannerLayout.astro). render-banners.mjs fails
+   if any of them didn't load, so a banner is never rendered in a fallback font. */
 @theme {
   --font-*: initial;
   --font-body: "Mukta", "Noto Sans Devanagari", sans-serif;
@@ -21,7 +15,7 @@
   --font-ornate: "Tiro Devanagari Marathi", serif;  /* headings, ornaments */
 }
 
-/* Theme colours are set per banner as CSS variables (see formats/*.astro). */
+/* Theme colours are set per banner as CSS variables (see BannerLayout.astro). */
 @theme inline {
   --color-*: initial;
   --color-ground: var(--ground);

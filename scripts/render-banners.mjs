@@ -14,6 +14,8 @@ import { extname, join, normalize, relative, dirname, basename } from 'node:path
 import { chromium } from 'playwright';
 
 const DIST = new URL('../dist/', import.meta.url).pathname;
+/** Families loaded in src/banners/BannerLayout.astro; each must load before a screenshot. */
+const BANNER_FONTS = ['Mukta', 'Rozha One', 'Tiro Devanagari Marathi'];
 const BANNERS = join(DIST, 'banners');
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
@@ -67,6 +69,16 @@ async function render(browser, origin, route) {
       if (over > 1) problems.push(`content is ${over}px taller than the banner, shorten some text`);
       const broken = await p.evaluate(() => [...document.images].filter((i) => !i.naturalWidth).map((i) => i.src));
       broken.forEach((src) => problems.push(`image failed to load: ${src}`));
+      // Fonts come from Google Fonts: a failed load would silently fall back to another font.
+      const faces = await p.evaluate(() =>
+        [...document.fonts].map((f) => ({ family: f.family.replace(/["']/g, ''), status: f.status })));
+      for (const family of BANNER_FONTS) {
+        if (!faces.some((f) => f.family === family && f.status === 'loaded')) {
+          problems.push(`font "${family}" did not load from Google Fonts — the banner would use a fallback font`);
+        }
+      }
+      faces.filter((f) => f.status === 'error')
+        .forEach((f) => problems.push(`a "${f.family}" font file failed to load`));
       await p.pdf({
         path: join(outDir, `${name}.pdf`),
         width: `${size.width}px`, height: `${size.height}px`, printBackground: true, pageRanges: '1',

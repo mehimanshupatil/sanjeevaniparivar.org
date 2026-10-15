@@ -34,6 +34,10 @@ _Avoid_: Nalasopara as the public location
 A recurring community event the organisation runs, described once: its title, organisers, partner logos and standard wording (e.g. सामवेदी ब्राह्मण ग्राहक पेठ).
 _Avoid_: Event, template
 
+**Programme Type**:
+The kind of Programme, such as a fair, lecture series, competition or camp. Every Programme of a type, in every year, uses the same banner template.
+_Avoid_: Category, kshetra (a kshetra is the area of work, not the kind of event)
+
 **Edition**:
 One year's occurrence of a Programme: its dates, venue and any wording that differs that year.
 _Avoid_: Event, instance, version

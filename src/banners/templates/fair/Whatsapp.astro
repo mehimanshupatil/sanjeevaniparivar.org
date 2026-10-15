@@ -1,0 +1,37 @@
+---
+// Fair (e.g. ग्राहक पेठ) — 1080×1920 WhatsApp card, also works as an Instagram story.
+import type { Banner } from '@/banners/resolve';
+import type { BannerFormat } from '@/banners/formats';
+import { decorUrl } from '@/banners/assets';
+import Frame from '@/banners/blocks/Frame.astro';
+import HeaderLogos from '@/banners/blocks/HeaderLogos.astro';
+import Organisers from '@/banners/blocks/Organisers.astro';
+import TitleBlock from '@/banners/blocks/TitleBlock.astro';
+import WhenWhere from '@/banners/blocks/WhenWhere.astro';
+import ItemsList from '@/banners/blocks/ItemsList.astro';
+import Closing from '@/banners/blocks/Closing.astro';
+import FooterLine from '@/banners/blocks/FooterLine.astro';
+import DecorRow from '@/banners/blocks/DecorRow.astro';
+
+interface Props {
+  banner: Banner;
+  format: BannerFormat;
+}
+const { banner: b, format } = Astro.props;
+const { decor } = b.theme;
+---
+<Frame format={format} pattern={decor.pattern}>
+  {decor.top && <img src={decorUrl(decor.top)} alt="" class="w-full" />}
+
+  <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} tagline={b.tagline} />
+  <Organisers names={b.organisers} suffix={b.organisersSuffix} />
+  <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} />
+
+  {b.intro && <p class="max-w-[880px] text-center text-[24px] leading-[1.55]">{b.intro}</p>}
+
+  <WhenWhere days={b.days} venue={b.venue} />
+  {b.items.length > 0 && <ItemsList heading={b.itemsHeading} items={b.items} more={b.itemsMore} />}
+  <Closing paragraphs={b.closing} />
+  {b.footer && <FooterLine text={b.footer} />}
+  {decor.bottomRow && <DecorRow file={decor.bottomRow} />}
+</Frame>

@@ -3,10 +3,11 @@
 interface Props {
   names: string[];
   suffix: string;
+  compact?: boolean;
 }
-const { names, suffix } = Astro.props;
+const { names, suffix, compact = false } = Astro.props;
 const sep = (i: number) => (i === 0 ? '' : i === names.length - 1 ? ' आणि ' : ', ');
 ---
-<p class="max-w-[860px] text-center text-[23px] leading-[1.5] text-ink-soft">
+<p class:list={['max-w-[860px] text-center leading-[1.5] text-ink-soft', compact ? 'text-[20px]' : 'text-[23px]']}>
   {names.map((n, i) => <>{sep(i)}<strong class="font-bold text-deep">{n}</strong></>)}{' '}{suffix}
 </p>

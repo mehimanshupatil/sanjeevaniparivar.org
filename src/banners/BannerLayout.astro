@@ -16,6 +16,13 @@ const vars = Object.entries(colors).map(([k, v]) => `--${k}: ${v};`).join(' ');
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
     <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- display=block: wait for each font rather than drawing a fallback first -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Rozha+One&family=Tiro+Devanagari+Marathi&display=block"
+    />
     <style is:inline set:html={`:root { ${vars} }`}></style>
   </head>
   <body>

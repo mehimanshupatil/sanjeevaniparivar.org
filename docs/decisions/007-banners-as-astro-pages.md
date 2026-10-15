@@ -20,5 +20,5 @@ Banners are Astro pages in this site: `/banners/<year>/<programme>/<format>/`.
 
 - The deploy installs Chromium (about a minute) and fails if a banner's text overflows.
 - Banner pages must not import `src/styles/global.css`; site fonts, the 18px base size and brand colours would shift the layout. `global.css` excludes `src/banners` from its Tailwind scan.
-- Banner fonts are local TTFs (not Google Fonts like the site) so renders are identical everywhere.
+- Banner fonts load from Google Fonts like the site's (the first version committed TTFs; switched to the CDN to keep binaries out of the repo). Rendering needs network access, and `render-banners.mjs` fails if any banner font doesn't load. Google may update font files, so renders can shift slightly between years; check overflow warnings.
 - Banner pages are `noindex` and excluded from the sitemap; they're render targets, not site pages.

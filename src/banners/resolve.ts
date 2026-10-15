@@ -9,6 +9,8 @@ export interface Banner {
   /** "2026/grahak-peth" — URL path under /banners/ */
   id: string;
   programme: string;
+  /** Programme type — picks the template folder in src/banners/templates/ */
+  type: CollectionEntry<'programmes'>['data']['type'];
   year: number;
   fullTitle: string;
   title: { top?: string; main: string };
@@ -50,6 +52,7 @@ export function resolveBanner(
   return {
     id: edition.id,
     programme: programme.id,
+    type: p.type,
     year,
     fullTitle,
     title: p.title,
