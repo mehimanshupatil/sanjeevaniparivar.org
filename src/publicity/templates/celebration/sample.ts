@@ -16,6 +16,7 @@ export const programme: Entry<ProgrammeData> = {
     note: { label: 'कार्यक्रम', text: 'वाचन अभियान केंद्रातील विद्यार्थी आपल्या आवडत्या पुस्तकांवर मनोगत व्यक्त करणार असून निवडक उताऱ्यांचे अभिवाचन सादर करणार आहेत.' },
     closing: [{ text: 'आपली उपस्थिती विद्यार्थ्यांचा उत्साह वाढवणारी ठरेल.', emphasis: true }],
     footer: 'आपला\nसंजीवनी परिवार',
+    quote: { text: 'वाचाल तर वाचाल' },
     portrait: { src: '/publicity/assets/people/namuna.svg', caption: 'डॉ. ए. पी. जे. अब्दुल कलाम', garland: true },
   },
 };

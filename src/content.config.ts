@@ -37,6 +37,8 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  /** A short quote shown large, e.g. a line of the poet's; `by` is who said it */
+  quote: z.object({ text: z.string(), by: z.string().optional() }).optional(),
   /** A person's photo, e.g. महाकवी कुसुमाग्रज on their जयंती. src: under public/publicity/assets/people/.
    *  garland: a marigold हार round the frame (for a tribute, not for a living guest); credit: a small source line, when the licence asks for one */
   portrait: z.object({ src: z.string(), caption: z.string(), garland: z.boolean().optional(), credit: z.string().optional() }).optional(),

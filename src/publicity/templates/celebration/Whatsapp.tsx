@@ -1,12 +1,16 @@
 // Celebration (e.g. मराठी भाषा गौरव दिन) — 1080×1920 WhatsApp card, also works as an Instagram story.
-// Patrika style: centred logo, calligraphic title with a line under it, the purpose, दिनांक / वेळ /
-// स्थळ as centred lines (beside an optional portrait), what the programme will be (note), the request to attend and a letter sign-off.
+// A letter strip on top (theme), centred logo, calligraphic title over a faint ornament with a line
+// under it, an optional quote, the purpose (beside an optional portrait), date/time and venue as two
+// coloured cards, what the programme will be in a ribboned card, the request to attend and a sign-off.
 import type { TemplateProps } from '../types';
 import Frame from '../../blocks/Frame';
+import LetterStrip from '../../blocks/LetterStrip';
 import Organisers from '../../blocks/Organisers';
 import TitleBlock from '../../blocks/TitleBlock';
-import DetailsScroll from '../../blocks/DetailsScroll';
+import Quote from '../../blocks/Quote';
 import Portrait from '../../blocks/Portrait';
+import DetailsCards from '../../blocks/DetailsCards';
+import ProgrammeCard from '../../blocks/ProgrammeCard';
 import Contacts from '../../blocks/Contacts';
 import Signoff from '../../blocks/Signoff';
 import DecorRow from '../../blocks/DecorRow';
@@ -16,17 +20,22 @@ export default function CelebrationWhatsapp({ edition: b, format }: TemplateProp
   const logo = b.logos.left ?? b.logos.right;
   return (
     <Frame format={format} pattern={decor.pattern}>
-      <header className="mt-8 flex flex-col items-center gap-2">
-        {logo && <img src={logo.src} alt={logo.caption} className="size-[112px] object-contain" />}
-        <p className="text-balance font-ornate text-[34px] text-deep">{b.invite}</p>
-        {b.tagline && <p className="text-[23px] text-ink-soft">{b.tagline}</p>}
+      {b.theme.strip && <LetterStrip letters={b.theme.strip} />}
+      <header className="flex items-center gap-4">
+        {logo && <img src={logo.src} alt={logo.caption} className="size-[96px] object-contain" />}
+        <div className="flex flex-col">
+          <p className="text-balance font-ornate text-[36px] text-deep">{b.invite}</p>
+          {b.tagline && <p className="text-[23px] text-ink-soft">{b.tagline}</p>}
+        </div>
       </header>
       {b.organisers.length > 0 && <Organisers names={b.organisers} suffix={b.organisersSuffix} />}
 
-      <div className="w-full flex flex-col items-center gap-2">
+      <div className="w-full flex flex-col items-center gap-1">
         <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} />
-        {b.title.sub && <p className="font-ornate text-[36px] text-deep">{b.title.sub}</p>}
+        {b.title.sub && <p className="rounded-full border-2 border-gold px-8 py-1 font-ornate text-[34px] text-deep">{b.title.sub}</p>}
       </div>
+
+      {b.quote && <Quote text={b.quote.text} by={b.quote.by} />}
 
       {b.portrait ? (
         <div className="w-full flex items-center gap-8">
@@ -35,16 +44,13 @@ export default function CelebrationWhatsapp({ edition: b, format }: TemplateProp
         </div>
       ) : b.intro && <p className="max-w-[900px] text-center text-[27px] leading-[1.6]">{b.intro}</p>}
 
-      <DetailsScroll days={b.days} venue={b.venue} />
+      <DetailsCards days={b.days} venue={b.venue} />
+      {b.note && <ProgrammeCard label={b.note.label} text={b.note.text} />}
 
-      {b.note && (
-        <section className="max-w-[920px] flex flex-col items-center gap-2 text-center">
-          <h2 className="font-ornate text-[32px] text-primary">॥ {b.note.label} ॥</h2>
-          <p className="text-[27px] leading-[1.55]">{b.note.text}</p>
-        </section>
-      )}
       {b.closing.map((c, i) => (
-        <p key={i} className={c.emphasis ? 'text-balance max-w-[900px] text-center font-ornate text-[33px] leading-[1.45] text-deep' : 'max-w-[900px] text-center text-[26px]'}>{c.text}</p>
+        <p key={i} className={c.emphasis
+          ? 'flex items-center gap-5 text-balance text-center font-ornate text-[33px] leading-[1.45] text-deep before:size-3 before:flex-none before:rotate-45 before:bg-gold after:size-3 after:flex-none after:rotate-45 after:bg-gold'
+          : 'max-w-[900px] text-center text-[26px]'}>{c.text}</p>
       ))}
       {b.contacts.length > 0 && <Contacts heading={b.contactsHeading} intro={b.contactsIntro} contacts={b.contacts} />}
       {b.footer && <Signoff text={b.footer} />}

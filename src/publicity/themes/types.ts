@@ -36,6 +36,8 @@ export interface Theme {
   colors: ThemeColors;
   decor: ThemeDecor;
   fonts?: ThemeFonts;
+  /** A row of letters for a decorative strip, e.g. the वर्णमाला for language programmes */
+  strip?: string;
   /** Colours for numbered-point circles, cycled in order; without it points are "१)" text */
   palette?: string[];
 }
