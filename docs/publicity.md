@@ -28,6 +28,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 | `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
 | `plantation` | वृक्षवाढदिवस (also suits वृक्षारोपण) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/plantation/` |
 | `cleanup` | स्वच्छता अभियान (also suits मंदिर / समुद्र किनारा स्वच्छता, प्लास्टिकमुक्त) | slogan strip on top, centred logo, a calendar badge for the date (one day; more days fall back to the date band), the call to join in an outlined box; optional `items` and `contacts` | `src/publicity/templates/cleanup/` |
+| `celebration` | मराठी भाषा गौरव दिन (also suits वाचन प्रेरणा दिन, विद्यार्थी गौरव) | patrika style: centred logo, `title.sub` under the title (e.g. "(कुसुमाग्रज जयंती)"), दिनांक / वेळ / स्थळ as centred lines between double rules, the programme as `note` ("॥ कार्यक्रम ॥"), a letter sign-off from `footer` (two lines: `"आपला\nसंजीवनी परिवार"`) | `src/publicity/templates/celebration/` |
 
 A template has one layout per format:
 
@@ -85,6 +86,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 | `kalaDalan` | आकाशकंदील कार्यशाळा (children) | off-white paper, kshetra colours + marigold, paper-flag bunting (पताका), paper box-lanterns, शिक्षण-blue band, Baloo 2 titles, numbered circles |
 | `paryavaran` | वृक्षवाढदिवस, वृक्षारोपण | pale green paper with faint leaves, leaf vine along the top, trees beside the title, dark-green band, saplings in clay pots, Rozha One |
 | `swachhata` | स्वच्छता अभियान | white-blue paper with faint bubbles, deep-blue slogan strip and calendar badge, green rules, केरसुणी beside the title, केरसुणी + सूप alternating along the bottom |
+| `sahitya` | मराठी भाषा गौरव दिन | parchment paper with faint quills, ink-indigo and saffron, लेखणी व दौत beside the title, open books + quills along the bottom, Amita titles |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 

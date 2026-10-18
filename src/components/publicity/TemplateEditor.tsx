@@ -97,6 +97,7 @@ export default function TemplateEditor({ type, templateLabel, formats, sample, s
         <Section title="शीर्षक">
           <Field label="वरची ओळ (ऐच्छिक)"><Input value={draft.titleTop} onChange={(e) => set('titleTop', e.target.value)} /></Field>
           <Field label="कार्यक्रमाचे नाव"><Input value={draft.titleMain} onChange={(e) => set('titleMain', e.target.value)} /></Field>
+          <Field label="नावाखालची ओळ (ऐच्छिक)"><Input value={draft.titleSub} onChange={(e) => set('titleSub', e.target.value)} /></Field>
           <Field label="निमंत्रण ओळ"><Input value={draft.invite} onChange={(e) => set('invite', e.target.value)} /></Field>
           <Field label="घोषवाक्य (ऐच्छिक)"><Input value={draft.tagline} onChange={(e) => set('tagline', e.target.value)} /></Field>
           <Field label="आयोजक (ऐच्छिक)" hint="प्रत्येक ओळीत एक नाव">
@@ -115,16 +116,20 @@ export default function TemplateEditor({ type, templateLabel, formats, sample, s
                 <Input type="time" value={d.from} onChange={(e) => set('days', draft.days.map((x, j) => (j === i ? { ...x, from: e.target.value } : x)))} />
               </Field>
               <Field label="पर्यंत">
-                <Input type="time" value={d.to} onChange={(e) => set('days', draft.days.map((x, j) => (j === i ? { ...x, to: e.target.value } : x)))} />
+                <Input type="time" value={d.to} disabled={d.startOnly} onChange={(e) => set('days', draft.days.map((x, j) => (j === i ? { ...x, to: e.target.value } : x)))} />
               </Field>
               <Button type="button" variant="ghost" size="icon" aria-label="दिवस काढा" disabled={draft.days.length === 1}
                 onClick={() => set('days', draft.days.filter((_, j) => j !== i))}><TrashIcon /></Button>
+              <label className="col-span-3 sm:col-span-4 flex items-center gap-2 text-sm text-gray-600">
+                <Checkbox checked={d.startOnly} onCheckedChange={(v) => set('days', draft.days.map((x, j) => (j === i ? { ...x, startOnly: v } : x)))} />
+                फक्त सुरुवातीची वेळ ("… वाजता")
+              </label>
             </div>
           ))}
           {incompleteDays && <p className="text-sm text-destructive">प्रत्येक दिवसाची तारीख व सुरुवातीची वेळ भरा.</p>}
-          <p className="text-xs text-gray-500">"पर्यंत" रिकामे ठेवल्यास "… वाजल्यापासून" असे येते. वार व मराठी अंक आपोआप येतात.</p>
+          <p className="text-xs text-gray-500">"पर्यंत" रिकामे ठेवल्यास "… वाजल्यापासून" असे येते; "फक्त सुरुवातीची वेळ" निवडल्यास "… वाजता". वार व मराठी अंक आपोआप येतात.</p>
           <Button type="button" variant="outline" size="sm" className="self-start"
-            onClick={() => set('days', [...draft.days, { date: '', from: '', to: '' }])}><PlusIcon /> दिवस जोडा</Button>
+            onClick={() => set('days', [...draft.days, { date: '', from: '', to: '', startOnly: false }])}><PlusIcon /> दिवस जोडा</Button>
           <Field label="स्थळ" hint="बॅनरवर जशा ओळी हव्यात तशा">
             <Textarea rows={2} value={draft.venue} onChange={(e) => set('venue', e.target.value)} />
           </Field>

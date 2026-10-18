@@ -20,7 +20,7 @@ export interface ResolvedEdition {
   type: ProgrammeData['type'];
   year: number;
   fullTitle: string;
-  title: { top?: string; main: string };
+  title: { top?: string; main: string; sub?: string };
   yearMr: string;
   invite: string;
   tagline?: string;

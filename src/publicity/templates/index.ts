@@ -14,6 +14,9 @@ import * as plantationSample from './plantation/sample';
 import CleanupWhatsapp from './cleanup/Whatsapp';
 import CleanupInstagram from './cleanup/Instagram';
 import * as cleanupSample from './cleanup/sample';
+import CelebrationWhatsapp from './celebration/Whatsapp';
+import CelebrationInstagram from './celebration/Instagram';
+import * as celebrationSample from './celebration/sample';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -66,6 +69,13 @@ export const TEMPLATES = {
     layouts: { whatsapp: CleanupWhatsapp, instagram: CleanupInstagram },
     sample: cleanupSample,
     editorSections: ['closing', 'contacts'],
+  },
+  celebration: {
+    label: 'दिन / सोहळा',
+    description: 'मराठी भाषा गौरव दिन, वाचन प्रेरणा दिन, विद्यार्थी गौरव यांसारखे कार्यक्रम: उद्देश, दिनांक-वेळ-स्थळ, कार्यक्रमाचे स्वरूप आणि उपस्थितीचे आवाहन',
+    layouts: { whatsapp: CelebrationWhatsapp, instagram: CelebrationInstagram },
+    sample: celebrationSample,
+    editorSections: ['note', 'closing'],
   },
 } satisfies Record<string, Template>;
 

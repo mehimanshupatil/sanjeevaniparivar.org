@@ -7,12 +7,14 @@ export interface Draft {
   programmeId: string;
   titleTop: string;
   titleMain: string;
+  titleSub: string;
   invite: string;
   tagline: string;
   /** One per line */
   organisers: string;
   intro: string;
-  days: { date: string; from: string; to: string }[];
+  /** startOnly: the programme starts at `from` with no end ("… वाजता") */
+  days: { date: string; from: string; to: string; startOnly: boolean }[];
   /** One per line */
   venue: string;
   itemsHeading: string;
@@ -41,11 +43,12 @@ export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<
     programmeId: programme.id,
     titleTop: p.title.top ?? '',
     titleMain: p.title.main,
+    titleSub: p.title.sub ?? '',
     invite: p.invite,
     tagline: p.tagline ?? '',
     organisers: (p.organisers ?? []).join('\n'),
     intro: p.intro ?? '',
-    days: edition.data.days.map((d) => ({ date: d.date, from: d.from ?? '', to: d.to ?? '' })),
+    days: edition.data.days.map((d) => ({ date: d.date, from: d.from ?? d.at ?? '', to: d.to ?? '', startOnly: Boolean(d.at) })),
     venue: edition.data.venue.join('\n'),
     itemsHeading: p.itemsHeading ?? '',
     items: (p.items ?? []).join('\n'),
@@ -67,7 +70,7 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
   const programme: Entry<ProgrammeData> = {
     id: d.programmeId.trim() || sample.id,
     data: {
-      title: { top: opt(d.titleTop), main: d.titleMain.trim() || '—' },
+      title: { top: opt(d.titleTop), main: d.titleMain.trim() || '—', sub: opt(d.titleSub) },
       type: sample.data.type,
       kshetra: sample.data.kshetra,
       theme: sample.data.theme,
@@ -98,7 +101,8 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
     data: {
       programme: { collection: 'programmes', id: programme.id },
       // A day needs a date and a start time; incomplete rows are left out (the form flags them).
-      days: d.days.filter((x) => x.date && x.from).map((x) => ({ date: x.date, from: x.from, to: opt(x.to) })),
+      days: d.days.filter((x) => x.date && x.from)
+        .map((x) => (x.startOnly ? { date: x.date, at: x.from } : { date: x.date, from: x.from, to: opt(x.to) })),
       venue: lines(d.venue).length ? lines(d.venue) : ['—'],
     },
   };
@@ -115,6 +119,7 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
   let y = 'title:\n';
   if (p.title.top) y += `  top: ${q(p.title.top)}\n`;
   y += `  main: ${q(p.title.main)}\n`;
+  if (p.title.sub) y += `  sub: ${q(p.title.sub)}\n`;
   y += `type: ${p.type}\nkshetra: ${p.kshetra}\ntheme: ${p.theme}\nformats: [${p.formats.join(', ')}]\n`;
   if (p.startedYear) y += `startedYear: ${p.startedYear}\n`;
   if (p.logos?.left || p.logos?.right) {

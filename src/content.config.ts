@@ -55,8 +55,9 @@ const programmeText = z.object({
 const programmes = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/programmes' }),
   schema: programmeText.extend({
-    title: z.object({ top: z.string().optional(), main: z.string() }),
-    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup']),  // one folder per type in src/publicity/templates/
+    /** sub: a line under the title, e.g. "(कुसुमाग्रज जयंती)" */
+    title: z.object({ top: z.string().optional(), main: z.string(), sub: z.string().optional() }),
+    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup', 'celebration']),  // one folder per type in src/publicity/templates/
     kshetra: KSHETRA,
     /** First year the programme ran; text can say {{ yearsRunning }} (e.g. "गेली ८ वर्षे") */
     startedYear: z.number().int().optional(),
