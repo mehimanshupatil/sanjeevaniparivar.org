@@ -2,7 +2,7 @@
   "name": "sanjeevaniparivar.org",
   "type": "module",
   "version": "1.0.0",
-  "packageManager": "pnpm@12.10.1",
+  "packageManager": "pnpm@12.14.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -14,8 +14,8 @@
     "check": "astro check"
   },
   "dependencies": {
-    "@astrojs/mdx": "^8.0.3",
-    "@astrojs/react": "^7.0.1",
+    "@astrojs/mdx": "^8.1.0",
+    "@astrojs/react": "^7.1.0",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@base-ui/react": "^1.9.0",
@@ -25,22 +25,22 @@
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.3.8",
+    "astro": "^7.4.0",
     "class-variance-authority": "^0.7.1",
-    "cn": "^0.4.0",
+    "cn": "^0.5.0",
     "immer": "^11.1.21",
     "marked": "^18.1.1",
     "qrcode.react": "^4.2.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "takumi-js": "^2.16.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "takumi-js": "^2.16.3",
     "use-immer": "^0.11.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "playwright": "1.64.0",
+    "playwright": "1.64.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "yaml": "^2.9.1"

@@ -38,8 +38,8 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/gallery` | `GalleryPage.tsx` |
 | `/team` | `TeamPage.tsx` — member names are `[नाव]` placeholders |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
-| `/banners/[year]/[programme]/[format]` | Bare banner pages rendered to PNG/PDF after build (see Banners below) |
-| `/banners/`, `/banners/[year]/[programme]/` | Preview + download pages for rendered banners (noindex), `BannerPreviewLayout.astro` |
+| `/banners/[year]/[programme]/[format]` | Bare Publicity pages rendered to PNG/PDF after build (see Publicity below) |
+| `/banners/`, `/banners/[year]/[programme]/` | Preview + download pages for rendered Publicity (noindex), `BannerPreviewLayout.astro` |
 | `/banners/templates/`, `/banners/templates/[type]/` | Template gallery + try-out editor for trust members (`TemplateEditor.tsx`), sample pages at `/banners/templates/[type]/[format]/` |
 
 ## Homepage section order (App.tsx)
@@ -55,8 +55,8 @@ HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTe
 ## Social links (src/lib/social.ts)
 YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB180VycBzFxlju1O`)
 
-## Banners
-- Invitation cards and banners for recurring programmes. Full guide, design rules and Marathi text standards: `docs/banners.md`. Decision: `docs/decisions/007-banners-as-astro-pages.md`
+## Publicity (invitations and banners)
+- Publicity for recurring programmes: Invitations (WhatsApp, Instagram) now, printed flex Banners later. `banners` in paths/URLs/code is the historical name for all of it; terms in `GLOSSARY.md`. Full guide, design rules and Marathi text standards: `docs/banners.md`. Decision: `docs/decisions/007-banners-as-astro-pages.md`
 - Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides; `draft: true` = dev only, not published). Types: `fair` (ग्राहक पेठ), `workshop` (आकाशकंदील कार्यशाळा)
 - Code: `src/banners/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `banner.css`); route `src/pages/banners/[year]/[programme]/[format].astro` (noindex, not in sitemap)
 - Render: `pnpm build && pnpm banners` → `dist/banners/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:banners` (strict) before deploy

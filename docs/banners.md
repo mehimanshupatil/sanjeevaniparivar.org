@@ -1,8 +1,8 @@
-# Banners and invitation cards
+# Publicity: invitations and banners
 
-Every programme's WhatsApp invitation and printed banners are built from the same templates, so each year is a content edit, not a redesign.
+Every programme's Publicity (its WhatsApp and Instagram invitations, and later its printed flex banners) is built from the same templates, so each year is a content edit, not a redesign. Terms are defined in `GLOSSARY.md`. `banners` in paths, URLs and code is the historical name for Publicity; it doesn't mean only printed banners.
 
-## Make next year's banner
+## Make next year's Publicity
 
 1. Copy last year's edition, e.g. `src/content/editions/2026/grahak-peth.yaml` → `src/content/editions/2027/grahak-peth.yaml`.
 2. Change `days` and `venue`. Dates are `2027-10-23`, times are 24-hour in quotes: `"16:00"`.
@@ -16,7 +16,7 @@ Preview and download every format of an edition at `/banners/2027/grahak-peth/`;
 
 Render locally: `pnpm build && pnpm banners` (writes into `dist/banners/…`). First time only: `pnpm exec playwright install chromium`.
 
-Weekdays, Marathi numerals, the year and "सकाळी / दुपारी / रात्री" are generated; never type them. The build fails with a clear message if a date or time is malformed, the programme name is misspelt, or the dates don't match the year folder. Rendering fails if text overflows the banner.
+Weekdays, Marathi numerals, the year and "सकाळी / दुपारी / रात्री" are generated; never type them. The build fails with a clear message if a date or time is malformed, the programme name is misspelt, or the dates don't match the year folder. Rendering fails if text overflows the image.
 
 ## Templates and formats
 
@@ -63,7 +63,7 @@ An edition can override any programme wording for one year by repeating the fiel
 
 In text, `{{ fullTitle }}` becomes the title plus the Marathi year, `{{ year }}` the Marathi year, and `{{ yearsRunning }}` the number of years since the programme's `startedYear` (e.g. "गेली {{ yearsRunning }} वर्षे" → "गेली ८ वर्षे" in 2025).
 
-Phone numbers in `contacts` are written in ordinary digits (`phone: "9028265426"`, so they stay dialable) and shown in Marathi numerals on the banner.
+Phone numbers in `contacts` are written in ordinary digits (`phone: "9028265426"`, so they stay dialable) and shown in Marathi numerals on the image.
 
 An edition with `draft: true` (e.g. next year's, before the date is fixed) shows in `pnpm dev` but is never built or published. Remove the line once the details are confirmed.
 

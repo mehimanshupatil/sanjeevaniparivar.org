@@ -28,14 +28,18 @@ _Avoid_: Founding, establishment
 The place the organisation serves, named "Vasai" (वसई) in public text. The registered address in Nalasopara (W), within Vasai taluka, appears only with the Legal Name.
 _Avoid_: Nalasopara as the public location
 
-## Banners
+## Publicity
+
+**Publicity** (प्रसिद्धी):
+Everything rendered to announce an Edition: its Invitations and Banners.
+_Avoid_: Banners (as the name for all of it), creatives, artwork
 
 **Programme**:
 A recurring community event the organisation runs, described once: its title, organisers, partner logos and standard wording (e.g. सामवेदी ब्राह्मण ग्राहक पेठ).
 _Avoid_: Event, template
 
 **Programme Type**:
-The kind of Programme, such as a fair, lecture series, competition or camp. Every Programme of a type, in every year, uses the same banner template.
+The kind of Programme, such as a fair, lecture series, competition or camp. Every Programme of a type, in every year, uses the same Template.
 _Avoid_: Category, kshetra (a kshetra is the area of work, not the kind of event)
 
 **Edition**:
@@ -43,9 +47,21 @@ One year's occurrence of a Programme: its dates, venue and any wording that diff
 _Avoid_: Event, instance, version
 
 **Format**:
-One output shape of an Edition's invitation, such as the WhatsApp card or a printed flex banner.
+One output shape of an Edition's Publicity, such as the WhatsApp card, the Instagram post or a printed flex banner. Each Format is either an Invitation or a Banner.
 _Avoid_: Template, size
 
+**Invitation** (निमंत्रण):
+Publicity sent to people to invite them, such as the WhatsApp card or the Instagram post.
+_Avoid_: Banner, poster
+
+**Banner** (बॅनर):
+A printed flex hung at or near the venue to announce the Edition. Only the physical print, never the whole Publicity.
+_Avoid_: Invitation, poster, hoarding
+
+**Template**:
+The design every Programme of one Programme Type uses, with one layout per Format.
+_Avoid_: Programme, Format, theme
+
 **Theme**:
-The colours and decorations a Programme's banners use, such as Diwali.
+The colours and decorations a Programme's Publicity uses, such as Diwali.
 _Avoid_: Skin, style
