@@ -1,7 +1,7 @@
 // Pure Publicity logic — no astro:content imports, so it also runs in the browser
 // (the template try-out editor renders Publicity live with it).
 import type { CollectionEntry } from 'astro:content';
-import { mrNum, ordinalMr, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
+import { mrNum, schoolYearMr, ordinalMr, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
 import { THEMES, type Theme } from './themes';
 import { LOGOS, type Logo } from './logos';
 import type { FormatId } from './formats';
@@ -39,6 +39,8 @@ export interface ResolvedEdition {
   footer?: string;
   quote?: { text: string; by?: string };
   portrait?: { src: string; caption: string; garland: boolean; credit?: string };
+  groupsHeading?: string;
+  groups: { name: string; who?: string; topics: string[] }[];
   rulesHeading?: string;
   rules: string[];
   note?: { label: string; text: string };
@@ -79,7 +81,7 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
   if (edition.id.includes('/') && !edition.id.startsWith(`${year}/`)) {
     throw new Error(`editions/${edition.id}.yaml: first date is in ${year} but the file is in another year's folder. Update the dates.`);
   }
-  const yearMr = mrNum(year);
+  const yearMr = p.yearStyle === 'school' ? schoolYearMr(days[0].date) : mrNum(year);
   const fullTitle = [p.title.top, p.title.main, yearMr].filter(Boolean).join(' ');
   const yearsRunning = p.startedYear ? mrNum(year - p.startedYear) : '';
   // editionNo counts the first year as १: a series started in 2003 is in its २४th year in 2026
@@ -115,6 +117,8 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     footer: fill(text.footer),
     quote: text.quote,
     portrait: text.portrait && { ...text.portrait, garland: text.portrait.garland ?? false },
+    groupsHeading: text.groupsHeading,
+    groups: text.groups ?? [],
     rulesHeading: text.rulesHeading,
     rules: (text.rules ?? []).map((r) => fill(r)!),
     note: text.note && { label: text.note.label, text: fill(text.note.text)! },

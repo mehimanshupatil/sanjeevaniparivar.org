@@ -22,6 +22,9 @@ import LecturesInstagram from './lectures/Instagram';
 import LectureSessionWhatsapp from './lectures/SessionWhatsapp';
 import LectureSessionInstagram from './lectures/SessionInstagram';
 import * as lecturesSample from './lectures/sample';
+import CompetitionWhatsapp from './competition/Whatsapp';
+import CompetitionInstagram from './competition/Instagram';
+import * as competitionSample from './competition/sample';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -91,6 +94,13 @@ export const TEMPLATES = {
     sessionLayouts: { whatsapp: LectureSessionWhatsapp, instagram: LectureSessionInstagram },
     sample: lecturesSample,
     editorSections: ['closing', 'contacts'],
+  },
+  competition: {
+    label: 'स्पर्धा',
+    description: 'वक्तृत्व स्पर्धेसारख्या स्पर्धा: गट व विषय, नियम, पालकांसाठी सूचना आणि नावनोंदणीसाठी संपर्क',
+    layouts: { whatsapp: CompetitionWhatsapp, instagram: CompetitionInstagram },
+    sample: competitionSample,
+    editorSections: ['rules', 'note', 'contacts'],
   },
 } satisfies Record<string, Template>;
 

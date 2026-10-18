@@ -86,6 +86,13 @@ export function ordinalMr(n: number): string {
   return ORDINALS[n - 1] ?? `${mrNum(n)}वे`;
 }
 
+/** The school year (June to May) a date falls in: 2026-01-18 → "२०२५-२६", 2026-07-01 → "२०२६-२७" */
+export function schoolYearMr(value: string | Date): string {
+  const d = parseDate(value);
+  const start = d.getUTCMonth() >= 5 ? d.getUTCFullYear() : d.getUTCFullYear() - 1;
+  return `${mrNum(start)}-${mrNum(String(start + 1).slice(2))}`;
+}
+
 /** ["A","B","C"] → "A, B आणि C" */
 export function joinMr(list: string[]): string {
   if (list.length < 2) return list.join('');

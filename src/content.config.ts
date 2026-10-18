@@ -37,6 +37,9 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  /** competition: the groups (गट), each with who it is for and the topics to choose from */
+  groupsHeading: z.string().optional(),
+  groups: z.array(z.object({ name: z.string(), who: z.string().optional(), topics: z.array(z.string()).min(1) })).optional(),
   /** lectures: the word before each session's ordinal, default "पुष्प" ("पुष्प पहिले") */
   sessionWord: z.string().optional(),
   /** A short quote shown large, e.g. a line of the poet's; `by` is who said it */
@@ -64,8 +67,10 @@ const programmes = defineCollection({
   schema: programmeText.extend({
     /** sub: a line under the title, e.g. "(कुसुमाग्रज जयंती)" */
     title: z.object({ top: z.string().optional(), main: z.string(), sub: z.string().optional() }),
-    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup', 'celebration', 'lectures']),  // one folder per type in src/publicity/templates/
+    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup', 'celebration', 'lectures', 'competition']),  // one folder per type in src/publicity/templates/
     kshetra: KSHETRA,
+    /** school: the title shows the school year ("२०२५-२६" for a January 2026 date) instead of the calendar year */
+    yearStyle: z.enum(['calendar', 'school']).optional(),
     /** First year the programme ran; text can say {{ yearsRunning }} (e.g. "गेली ८ वर्षे") */
     startedYear: z.number().int().optional(),
   }),

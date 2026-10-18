@@ -18,6 +18,7 @@
 /* Theme colours are set per page as CSS variables (see PublicityLayout.astro). */
 @theme inline {
   --color-*: initial;
+  --color-white: #fff;  /* card backgrounds and text on coloured headers, in every theme */
   --color-ground: var(--ground);
   --color-ink: var(--ink);
   --color-ink-soft: var(--inkSoft);

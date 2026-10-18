@@ -79,6 +79,9 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>, sampleEdi
       logos: sample.data.logos,
       portrait: sample.data.portrait,
       quote: sample.data.quote,
+      yearStyle: sample.data.yearStyle,
+      groupsHeading: sample.data.groupsHeading,
+      groups: sample.data.groups,
       invite: d.invite.trim(),
       tagline: opt(d.tagline),
       organisers: lines(d.organisers).length ? lines(d.organisers) : undefined,
@@ -125,6 +128,7 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
   y += `  main: ${q(p.title.main)}\n`;
   if (p.title.sub) y += `  sub: ${q(p.title.sub)}\n`;
   y += `type: ${p.type}\nkshetra: ${p.kshetra}\ntheme: ${p.theme}\nformats: [${p.formats.join(', ')}]\n`;
+  if (p.yearStyle) y += `yearStyle: ${p.yearStyle}\n`;
   if (p.startedYear) y += `startedYear: ${p.startedYear}\n`;
   if (p.logos?.left || p.logos?.right) {
     y += 'logos:\n' + (p.logos.left ? `  left: ${p.logos.left}\n` : '') + (p.logos.right ? `  right: ${p.logos.right}\n` : '');
@@ -139,6 +143,8 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
   y += field('footer', p.footer);
   if (p.quote) y += `quote:\n  text: ${q(p.quote.text)}\n${p.quote.by ? `  by: ${q(p.quote.by)}\n` : ''}`;
   if (p.portrait) y += `portrait:\n  src: ${q(p.portrait.src)}\n  caption: ${q(p.portrait.caption)}\n${p.portrait.garland ? '  garland: true\n' : ''}${p.portrait.credit ? `  credit: ${q(p.portrait.credit)}\n` : ''}`;
+  y += field('groupsHeading', p.groupsHeading);
+  if (p.groups?.length) y += 'groups:\n' + p.groups.map((g) => `  - name: ${q(g.name)}\n${g.who ? `    who: ${q(g.who)}\n` : ''}    topics:\n${g.topics.map((t) => `      - ${q(t)}\n`).join('')}`).join('');
   y += field('rulesHeading', p.rulesHeading) + list('rules', p.rules ?? []);
   if (p.note) y += `note:\n  label: ${q(p.note.label)}\n  text: ${q(p.note.text)}\n`;
   y += field('contactsHeading', p.contactsHeading) + field('contactsIntro', p.contactsIntro);

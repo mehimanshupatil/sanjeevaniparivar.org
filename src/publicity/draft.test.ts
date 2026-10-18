@@ -8,11 +8,12 @@ import * as plantationSample from './templates/plantation/sample.ts';
 import * as cleanupSample from './templates/cleanup/sample.ts';
 import * as celebrationSample from './templates/celebration/sample.ts';
 import * as lecturesSample from './templates/lectures/sample.ts';
+import * as competitionSample from './templates/competition/sample.ts';
 
 /** Drops undefined fields, as YAML has no way to write them. */
 const clean = (o: unknown) => JSON.parse(JSON.stringify(o));
 
-for (const [type, s] of [['fair', sample], ['workshop', workshopSample], ['plantation', plantationSample], ['cleanup', cleanupSample], ['celebration', celebrationSample], ['lectures', lecturesSample]] as const) {
+for (const [type, s] of [['fair', sample], ['workshop', workshopSample], ['plantation', plantationSample], ['cleanup', cleanupSample], ['celebration', celebrationSample], ['lectures', lecturesSample], ['competition', competitionSample]] as const) {
   test(`${type}: the generated YAML parses back to the same programme and edition`, () => {
     const { programme, edition } = draftToEntries(draftFromSample(s.programme, s.edition), s.programme, s.edition);
     assert.deepEqual(parse(programmeYaml(programme)), clean(programme.data));
