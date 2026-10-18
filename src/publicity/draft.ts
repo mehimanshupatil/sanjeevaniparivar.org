@@ -134,7 +134,7 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
     y += 'closing:\n' + p.closing.map((c) => `  - text: ${q(c.text)}\n${c.emphasis ? '    emphasis: true\n' : ''}`).join('');
   }
   y += field('footer', p.footer);
-  if (p.portrait) y += `portrait:\n  src: ${q(p.portrait.src)}\n  caption: ${q(p.portrait.caption)}\n${p.portrait.garland ? '  garland: true\n' : ''}`;
+  if (p.portrait) y += `portrait:\n  src: ${q(p.portrait.src)}\n  caption: ${q(p.portrait.caption)}\n${p.portrait.garland ? '  garland: true\n' : ''}${p.portrait.credit ? `  credit: ${q(p.portrait.credit)}\n` : ''}`;
   y += field('rulesHeading', p.rulesHeading) + list('rules', p.rules ?? []);
   if (p.note) y += `note:\n  label: ${q(p.note.label)}\n  text: ${q(p.note.text)}\n`;
   y += field('contactsHeading', p.contactsHeading) + field('contactsIntro', p.contactsIntro);

@@ -35,7 +35,7 @@ export interface ResolvedEdition {
   itemsMore?: string;
   closing: { text: string; emphasis: boolean }[];
   footer?: string;
-  portrait?: { src: string; caption: string; garland: boolean };
+  portrait?: { src: string; caption: string; garland: boolean; credit?: string };
   rulesHeading?: string;
   rules: string[];
   note?: { label: string; text: string };

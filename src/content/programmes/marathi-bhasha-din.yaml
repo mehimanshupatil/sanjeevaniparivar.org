@@ -29,5 +29,12 @@ closing:
   - text: आपली उपस्थिती विद्यार्थ्यांचा उत्साह वाढवणारी ठरेल.
     emphasis: true
 
+# छायाचित्र: भारतीय टपालखात्याचे २००३ चे टपाल तिकीट (Wikimedia Commons, GODL-India: श्रेय देऊन वापरता येते)
+portrait:
+  src: /publicity/assets/people/kusumagraj.jpg
+  caption: महाकवी कुसुमाग्रज
+  garland: true
+  credit: छायाचित्र — भारतीय टपाल तिकीट, २००३
+
 # दोन ओळी: "आपला" आणि खाली "संजीवनी परिवार"
 footer: "आपला\nसंजीवनी परिवार"
