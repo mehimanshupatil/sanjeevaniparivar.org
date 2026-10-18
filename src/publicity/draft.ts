@@ -137,6 +137,6 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
 
 export function editionYaml({ data: e }: Entry<EditionData>): string {
   const day = (d: EditionData['days'][number]) =>
-    `  - { date: ${d.date}${d.from ? `, from: ${q(d.from)}` : ''}${d.to ? `, to: ${q(d.to)}` : ''}${d.note ? `, note: ${q(d.note)}` : ''} }`;
+    `  - { date: ${d.date}${d.from ? `, from: ${q(d.from)}` : ''}${d.to ? `, to: ${q(d.to)}` : ''}${d.at ? `, at: ${q(d.at)}` : ''}${d.note ? `, note: ${q(d.note)}` : ''} }`;
   return `programme: ${e.programme.id}\n\ndays:\n${e.days.map(day).join('\n')}\n\n${list('venue', e.venue)}`;
 }

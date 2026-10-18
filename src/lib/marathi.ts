@@ -55,6 +55,11 @@ export function formatTime(value: string): string {
   return `${period(t.h)} ${clock(t)}`;
 }
 
+/** "07:30" → "सकाळी ७.३० वाजता" — a programme that starts at a time, with no end */
+export function formatAt(value: string): string {
+  return `${formatTime(value)} वाजता`;
+}
+
 /**
  * ("16:00","22:00") → "दुपारी ४.०० ते रात्री १०.०० वाजेपर्यंत"
  * ("09:00")         → "सकाळी ९.०० वाजल्यापासून"

@@ -28,7 +28,7 @@ export default function HeaderLogos({ left, right, invite, tagline, compact = fa
     <header className="w-full flex items-center justify-between gap-6 -mt-2">
       {left ? logo(left) : right && spacer}
       <div className={cx('flex-1 flex flex-col items-center text-center', compact ? 'gap-2' : 'gap-2.5')}>
-        <p className={cx('font-ornate tracking-[1px] text-primary', compact ? 'text-[30px]' : 'text-[34px]')}>{invite}</p>
+        <p className={cx('text-balance font-ornate tracking-[1px] text-primary', compact ? 'text-[30px]' : 'text-[34px]')}>{invite}</p>
         {tagline && <p className={cx('font-medium text-ink-soft', compact ? 'text-[20px]' : 'text-[23px]')}>{tagline}</p>}
       </div>
       {right ? logo(right) : left && spacer}

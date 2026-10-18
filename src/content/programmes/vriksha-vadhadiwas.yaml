@@ -1,0 +1,27 @@
+# संजीवनी वनराई प्रकल्प — वृक्षवाढदिवस. दरवर्षी हेच राहते.
+# दरवर्षीचे तपशील (तारीख, स्थळ, यावर्षीचा परिसर) src/content/editions/<वर्ष>/vriksha-vadhadiwas.yaml मध्ये लिहा.
+
+title:
+  top: संजीवनी परिवार आयोजित
+  main: वृक्षवाढदिवस
+type: drive
+kshetra: paryavaran
+theme: paryavaran
+formats: [whatsapp, instagram]
+startedYear: 2005   # संजीवनी वनराई प्रकल्प — "{{ yearsRunning }}वा वाढदिवस": 2026 मध्ये २१
+
+logos:
+  left: sanjeevani
+
+invite: ॥ वृक्ष आपले मित्र, मार्गदर्शक आणि तत्त्वज्ञ आहेत ॥
+tagline: — प्रा. श्री. सायनेकर सर
+
+intro: >-
+  प्राध्यापक श्री. सायनेकर सरांच्या प्रेरणेने सुरू झालेल्या संजीवनी वनराई प्रकल्पाचा हा
+  {{ yearsRunning }}वा वाढदिवस.
+
+closing:
+  - text: सर्व पर्यावरणप्रेमी बंधू-भगिनींनी या उपक्रमात सहभागी व्हावे ही विनंती.
+    emphasis: true
+
+footer: ॥ संजीवनी परिवार ॥

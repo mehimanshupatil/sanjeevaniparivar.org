@@ -76,8 +76,9 @@ const editions = defineCollection({
   schema: programmeText.partial().extend({
     programme: reference('programmes'),
     days: z.array(
-      z.object({ date: isoDate, from: hhmm.optional(), to: hhmm.optional(), note: z.string().optional() })
-        .refine((d) => Boolean(d.from) !== Boolean(d.note), 'Each day needs either "from" (and optional "to") or "note"'),
+      z.object({ date: isoDate, from: hhmm.optional(), to: hhmm.optional(), at: hhmm.optional(), note: z.string().optional() })
+        .refine((d) => [d.from, d.at, d.note].filter(Boolean).length === 1 && !(d.to && !d.from),
+          'Each day needs exactly one of "from" (and optional "to"), "at" (starts at, no end) or "note"'),
     ).min(1),
     venue: z.array(z.string()).min(1),
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */

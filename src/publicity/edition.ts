@@ -1,7 +1,7 @@
 // Pure Publicity logic — no astro:content imports, so it also runs in the browser
 // (the template try-out editor renders Publicity live with it).
 import type { CollectionEntry } from 'astro:content';
-import { mrNum, formatDate, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
+import { mrNum, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
 import { THEMES, type Theme } from './themes';
 import { LOGOS, type Logo } from './logos';
 import type { FormatId } from './formats';
@@ -77,7 +77,7 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     organisers: text.organisers ?? [],
     organisersSuffix: text.organisersSuffix ?? 'यांच्या संयुक्त विद्यमाने आयोजित',
     intro: fill(text.intro),
-    days: days.map((d) => ({ date: formatDate(d.date), time: d.note ?? formatRange(d.from!, d.to) })),
+    days: days.map((d) => ({ date: formatDate(d.date), time: d.note ?? (d.at ? formatAt(d.at) : formatRange(d.from!, d.to)) })),
     venue,
     itemsHeading: text.itemsHeading,
     items: text.items ?? [],

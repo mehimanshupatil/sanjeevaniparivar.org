@@ -5,7 +5,7 @@ Every programme's Publicity (its WhatsApp and Instagram invitations, and later i
 ## Make next year's Publicity
 
 1. Copy last year's edition, e.g. `src/content/editions/2026/grahak-peth.yaml` → `src/content/editions/2027/grahak-peth.yaml`.
-2. Change `days` and `venue`. Dates are `2027-10-23`, times are 24-hour in quotes: `"16:00"`.
+2. Change `days` and `venue`. Dates are `2027-10-23`, times are 24-hour in quotes: `"16:00"`. A day has `from` (and optional `to`: "… ते … वाजेपर्यंत", or without it "… वाजल्यापासून"), or `at` for a start time ("सकाळी ७.३० वाजता").
 3. `pnpm dev` and open `http://localhost:4321/publicity/2027/grahak-peth/whatsapp/`. It reloads as you edit.
 4. Push to `main`. The deploy renders the images and publishes them at
    `sanjeevaniparivar.org/publicity/2027/grahak-peth/whatsapp.png` (also `@2x.png` for print, and `.pdf`).
@@ -26,7 +26,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 |---|---|---|---|
 | `fair` | ग्राहक पेठ | list of attractions (`items`) | `src/publicity/templates/fair/` |
 | `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
-| `drive` | स्वच्छता अभियान (also suits वृक्षारोपण, समुद्र किनारा स्वच्छता) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/drive/` |
+| `drive` | स्वच्छता अभियान, वृक्षवाढदिवस (also suits वृक्षारोपण, समुद्र किनारा स्वच्छता) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/drive/` |
 
 A template has one layout per format:
 
