@@ -5,6 +5,7 @@
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 import { TEMPLATES, type Template } from '@/publicity/templates';
+import { STYLES, type StyleId } from '@/publicity/styles';
 
 export async function getStaticPaths() {
   const editions = await allEditions();
@@ -38,9 +39,14 @@ const outputsAt = (dir: string, namePart: string) => b.formats.map((id) => {
     ],
   };
 });
-// The edition's own cards, then (lectures) one group per session (पुष्प)
+// The edition's own cards (its type's Template), each style, then (lectures) one group per session (पुष्प)
 const groups = [
-  { heading: b.sessions.length ? 'सर्व पुष्पांची पत्रिका' : undefined, outputs: outputsAt(base, '') },
+  { heading: 'पारंपरिक रचना', outputs: outputsAt(base, '') },
+  // Every edition is also rendered in each style; members pick which to share.
+  ...(Object.keys(STYLES) as StyleId[]).map((id) => ({
+    heading: `${STYLES[id].label} — ${STYLES[id].description}`,
+    outputs: outputsAt(`${base}/${id}`, id),
+  })),
   ...(TEMPLATES[b.type] as Template).sessionLayouts
     ? b.sessions.map((x) => ({ heading: `${x.label} — ${x.speaker.name}`, outputs: outputsAt(`${base}/${x.n}`, `pushpa-${x.n}`) }))
     : [],

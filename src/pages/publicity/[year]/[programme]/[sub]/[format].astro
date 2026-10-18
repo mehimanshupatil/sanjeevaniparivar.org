@@ -1,0 +1,47 @@
+---
+// One level below an edition, one bare page per format:
+//   /publicity/2026/swachhata-abhiyan/poster/whatsapp/  — the edition in another style (all editions)
+//   /publicity/2026/vyakhyanmala/1/whatsapp/            — one lecture (session) of a lectures edition
+// Screenshotted like the edition pages.
+import PublicityLayout from '@/publicity/PublicityLayout.astro';
+import { TEMPLATES, type Template } from '@/publicity/templates';
+import { STYLES, type StyleId } from '@/publicity/styles';
+import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import type { FormatId } from '@/publicity/formats';
+import type { ResolvedSession } from '@/publicity/edition';
+
+export async function getStaticPaths() {
+  const editions = await allEditions();
+  return editions.flatMap((edition) => {
+    const [year, programme] = edition.id.split('/');
+    const styles = (Object.keys(STYLES) as StyleId[]).flatMap((style) =>
+      edition.formats.map((format) => ({
+        params: { year, programme, sub: style, format },
+        props: { edition, format, style },
+      })));
+    const layouts = (TEMPLATES[edition.type] as Template).sessionLayouts;
+    const sessions = !layouts ? [] : edition.sessions.flatMap((session) =>
+      edition.formats.filter((f) => layouts[f]).map((format) => ({
+        params: { year, programme, sub: String(session.n), format },
+        props: { edition, format, session },
+      })));
+    return [...styles, ...sessions];
+  });
+}
+
+interface Props {
+  edition: ResolvedEdition;
+  format: FormatId;
+  style?: StyleId;
+  session?: ResolvedSession;
+}
+const { edition, format, style, session } = Astro.props;
+const size = FORMATS[format];
+const StyleLayout = style && STYLES[style].layout;
+const SessionLayout = session && (TEMPLATES[edition.type] as Template).sessionLayouts![format]!;
+const title = [edition.fullTitle, style && STYLES[style].label, session?.label, size.label].filter(Boolean).join(' — ');
+---
+<PublicityLayout title={title} theme={edition.theme}>
+  {StyleLayout && <StyleLayout edition={edition} format={size} />}
+  {SessionLayout && session && <SessionLayout edition={edition} session={session} format={size} />}
+</PublicityLayout>

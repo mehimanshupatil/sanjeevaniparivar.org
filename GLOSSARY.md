@@ -66,6 +66,10 @@ _Avoid_: Invitation, poster, hoarding
 The design every Programme of one Programme Type uses, with one layout per Format.
 _Avoid_: Programme, Format, theme
 
+**Style** (रचना):
+One of the looks every Edition is rendered in, the same for every Programme Type: classic (the type's own Template), poster, rail (बाजूपट्टी) or pass (प्रवेशिका). Members pick which to share.
+_Avoid_: Variant, design, layout, Theme (a Theme is colours and decorations, which every Style uses)
+
 **Theme**:
 The colours and decorations a Programme's Publicity uses, such as Diwali.
 _Avoid_: Skin, style

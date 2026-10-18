@@ -36,12 +36,12 @@ function serve() {
   return new Promise((ok) => server.listen(0, '127.0.0.1', () => ok(server)));
 }
 
-/** dist/publicity/<year>/<programme>/<format>/index.html, and <year>/<programme>/<session>/<format>/ for lectures */
+/** dist/publicity/<year>/<programme>/<format>/index.html, and <year>/<programme>/<style or session>/<format>/ */
 async function publicityPages() {
   const entries = await readdir(PUBLICITY, { recursive: true });
   return entries
     .filter((p) => p.endsWith('index.html') && !p.startsWith('assets')
-      && (p.split('/').length === 4 || (p.split('/').length === 5 && /^\d+\/[^/]+\/\d+\//.test(p))))
+      && (p.split('/').length === 4 || (p.split('/').length === 5 && /^\d+\//.test(p))))
     .map((p) => '/publicity/' + dirname(p) + '/');
 }
 

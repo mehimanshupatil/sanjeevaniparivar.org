@@ -41,6 +41,19 @@ A template has one layout per format:
 
 A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The build fails if its type has no layout for one of them.
 
+## Styles: every edition in four looks
+
+Besides its type's own Template ("classic"), every edition is rendered in three more Styles, for every format. Members pick which to share (e.g. the poster first, the pass as a reminder). The edition's download page lists them all.
+
+| Style | URL | Look |
+|---|---|---|
+| classic | `/publicity/2026/<programme>/whatsapp.png` | the programme type's Template |
+| `poster` (पोस्टर) | `/publicity/2026/<programme>/poster/whatsapp.png` | top half one solid colour block with a huge title and a big faint motif (or the portrait); a giant date; then venue, details and the call; contacts in a coloured footer |
+| `rail` (बाजूपट्टी) | `…/rail/whatsapp.png` | full-height coloured column on the left with logo, dates (big numbers), time, venue and contacts; left-aligned content on the right |
+| `pass` (प्रवेशिका) | `…/pass/whatsapp.png` | an entry pass on a deep background; the ticket holds title and details, a perforated tear-off stub holds दिनांक / वेळ / स्थळ |
+
+Code: `src/publicity/styles/` — one component per style for every type and both formats (Instagram is the compact version), registered in `styles/index.ts`. Each style shows the type's own details through `styles/Details.tsx` (attractions, terms, group cards, lecture rows, programme note) and uses the edition's Theme colours and decorations. Lecture (session) cards come in the classic style only. A new style: add a component, register it; every edition gets it on the next build, and rendering fails if it overflows anywhere.
+
 ## Lecture series: sessions
 
 A `lectures` edition lists `days` and, in the same order, `sessions` (one per day; the build fails if the counts differ):
