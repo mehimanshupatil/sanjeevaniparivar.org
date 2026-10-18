@@ -37,6 +37,8 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  /** lectures: the word before each session's ordinal, default "पुष्प" ("पुष्प पहिले") */
+  sessionWord: z.string().optional(),
   /** A short quote shown large, e.g. a line of the poet's; `by` is who said it */
   quote: z.object({ text: z.string(), by: z.string().optional() }).optional(),
   /** A person's photo, e.g. महाकवी कुसुमाग्रज on their जयंती. src: under public/publicity/assets/people/.
@@ -62,7 +64,7 @@ const programmes = defineCollection({
   schema: programmeText.extend({
     /** sub: a line under the title, e.g. "(कुसुमाग्रज जयंती)" */
     title: z.object({ top: z.string().optional(), main: z.string(), sub: z.string().optional() }),
-    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup', 'celebration']),  // one folder per type in src/publicity/templates/
+    type: z.enum(['fair', 'workshop', 'plantation', 'cleanup', 'celebration', 'lectures']),  // one folder per type in src/publicity/templates/
     kshetra: KSHETRA,
     /** First year the programme ran; text can say {{ yearsRunning }} (e.g. "गेली ८ वर्षे") */
     startedYear: z.number().int().optional(),
@@ -87,9 +89,19 @@ const editions = defineCollection({
           'Each day needs exactly one of "from" (and optional "to"), "at" (starts at, no end) or "note"'),
     ).min(1),
     venue: z.array(z.string()).min(1),
+    /** lectures: one per day, in the same order — who speaks on that day and on what.
+     *  photo: under public/publicity/assets/people/; closing: this lecture's own request to attend */
+    sessions: z.array(z.object({
+      speaker: z.object({ name: z.string(), role: z.string().optional(), photo: z.string().optional() }),
+      topic: z.string(),
+      topicNote: z.string().optional(),
+      bio: z.string().optional(),
+      closing: z.string().optional(),
+    })).optional(),
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */
     draft: z.boolean().optional(),
-  }),
+  }).refine((e) => !e.sessions || e.sessions.length === e.days.length,
+    { message: 'sessions: one per day, in the same order as days', path: ['sessions'] }),
 });
 
 export const collections = { blog, programmes, editions };

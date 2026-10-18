@@ -65,8 +65,9 @@ export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<
   };
 }
 
-/** Builds programme + edition entries; type, theme, formats and logos come from the sample. */
-export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
+/** Builds programme + edition entries; type, theme, formats, logos, portrait, quote and (for
+ *  lectures) the sessions come from the sample — the form doesn't edit them yet. */
+export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>, sampleEdition?: Entry<EditionData>) {
   const programme: Entry<ProgrammeData> = {
     id: d.programmeId.trim() || sample.id,
     data: {
@@ -106,6 +107,7 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
       days: d.days.filter((x) => x.date && x.from)
         .map((x) => (x.startOnly ? { date: x.date, at: x.from } : { date: x.date, from: x.from, to: opt(x.to) })),
       venue: lines(d.venue).length ? lines(d.venue) : ['—'],
+      sessions: sampleEdition?.data.sessions,
     },
   };
   return { programme, edition };
@@ -147,5 +149,10 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
 export function editionYaml({ data: e }: Entry<EditionData>): string {
   const day = (d: EditionData['days'][number]) =>
     `  - { date: ${d.date}${d.from ? `, from: ${q(d.from)}` : ''}${d.to ? `, to: ${q(d.to)}` : ''}${d.at ? `, at: ${q(d.at)}` : ''}${d.note ? `, note: ${q(d.note)}` : ''} }`;
-  return `programme: ${e.programme.id}\n\ndays:\n${e.days.map(day).join('\n')}\n\n${list('venue', e.venue)}`;
+  const session = (s: NonNullable<EditionData['sessions']>[number]) =>
+    `  - speaker: { name: ${q(s.speaker.name)}${s.speaker.role ? `, role: ${q(s.speaker.role)}` : ''}${s.speaker.photo ? `, photo: ${q(s.speaker.photo)}` : ''} }\n` +
+    `    topic: ${q(s.topic)}\n` + (s.topicNote ? `    topicNote: ${q(s.topicNote)}\n` : '') +
+    (s.bio ? `    bio: ${q(s.bio)}\n` : '') + (s.closing ? `    closing: ${q(s.closing)}\n` : '');
+  const sessions = e.sessions?.length ? `\nsessions:\n${e.sessions.map(session).join('')}` : '';
+  return `programme: ${e.programme.id}\n\ndays:\n${e.days.map(day).join('\n')}\n\n${list('venue', e.venue)}${sessions}`;
 }

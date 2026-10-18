@@ -1,0 +1,35 @@
+---
+// /publicity/2026/vyakhyanmala/1/whatsapp/ — one bare page per lecture (session) × format,
+// for programme types with session layouts (lectures). Screenshotted like the edition pages.
+import PublicityLayout from '@/publicity/PublicityLayout.astro';
+import { TEMPLATES, type Template } from '@/publicity/templates';
+import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import type { FormatId } from '@/publicity/formats';
+import type { ResolvedSession } from '@/publicity/edition';
+
+export async function getStaticPaths() {
+  const editions = await allEditions();
+  return editions.flatMap((edition) => {
+    const layouts = (TEMPLATES[edition.type] as Template).sessionLayouts;
+    if (!layouts) return [];
+    const [year, programme] = edition.id.split('/');
+    return edition.sessions.flatMap((session) =>
+      edition.formats.filter((f) => layouts[f]).map((format) => ({
+        params: { year, programme, session: String(session.n), format },
+        props: { edition, session, format },
+      })));
+  });
+}
+
+interface Props {
+  edition: ResolvedEdition;
+  session: ResolvedSession;
+  format: FormatId;
+}
+const { edition, session, format } = Astro.props;
+const Layout = (TEMPLATES[edition.type] as Template).sessionLayouts![format]!;
+const size = FORMATS[format];
+---
+<PublicityLayout title={`${edition.fullTitle} — ${session.label} — ${size.label}`} theme={edition.theme}>
+  <Layout edition={edition} session={session} format={size} />
+</PublicityLayout>

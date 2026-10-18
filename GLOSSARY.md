@@ -46,6 +46,10 @@ _Avoid_: Category, kshetra (a kshetra is the area of work, not the kind of event
 One year's occurrence of a Programme: its dates, venue and any wording that differs that year.
 _Avoid_: Event, instance, version
 
+**Session** (पुष्प):
+One lecture within an Edition of a lecture series, on its own day, with its own speaker and topic (e.g. पुष्प पहिले of संजीवनी व्याख्यानमाला २०२६). It gets its own Invitation besides the Edition's.
+_Avoid_: Lecture (for the record), episode, day
+
 **Format**:
 One output shape of an Edition's Publicity, such as the WhatsApp card, the Instagram post or a printed flex banner. Each Format is either an Invitation or a Banner.
 _Avoid_: Template, size

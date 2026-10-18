@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import type { FormatId } from '../formats';
 import type { EditionData, Entry, ProgrammeData } from '../edition';
-import type { TemplateProps } from './types';
+import type { SessionProps, TemplateProps } from './types';
 import FairWhatsapp from './fair/Whatsapp';
 import FairInstagram from './fair/Instagram';
 import * as fairSample from './fair/sample';
@@ -17,6 +17,11 @@ import * as cleanupSample from './cleanup/sample';
 import CelebrationWhatsapp from './celebration/Whatsapp';
 import CelebrationInstagram from './celebration/Instagram';
 import * as celebrationSample from './celebration/sample';
+import LecturesWhatsapp from './lectures/Whatsapp';
+import LecturesInstagram from './lectures/Instagram';
+import LectureSessionWhatsapp from './lectures/SessionWhatsapp';
+import LectureSessionInstagram from './lectures/SessionInstagram';
+import * as lecturesSample from './lectures/sample';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -25,6 +30,8 @@ export interface Template {
   description: string;
   /** One layout per format this type supports */
   layouts: Partial<Record<FormatId, ComponentType<TemplateProps>>>;
+  /** lectures: a card per session (पुष्प), one layout per format */
+  sessionLayouts?: Partial<Record<FormatId, ComponentType<SessionProps>>>;
   /** Sample programme + edition for the gallery and the try-out editor */
   sample: { programme: Entry<ProgrammeData>; edition: Entry<EditionData> };
   /** Which type-specific sections the try-out editor shows (title, dates and venue always show) */
@@ -77,7 +84,15 @@ export const TEMPLATES = {
     sample: celebrationSample,
     editorSections: ['note', 'closing'],
   },
+  lectures: {
+    label: 'व्याख्यानमाला',
+    description: 'संजीवनी व्याख्यानमालेसारखी व्याख्याने: सर्व पुष्पांची एक पत्रिका आणि प्रत्येक वक्त्यासाठी स्वतंत्र पत्रिका (छायाचित्र, विषय, परिचय)',
+    layouts: { whatsapp: LecturesWhatsapp, instagram: LecturesInstagram },
+    sessionLayouts: { whatsapp: LectureSessionWhatsapp, instagram: LectureSessionInstagram },
+    sample: lecturesSample,
+    editorSections: ['closing', 'contacts'],
+  },
 } satisfies Record<string, Template>;
 
 export type ProgrammeType = keyof typeof TEMPLATES;
-export type { TemplateProps };
+export type { SessionProps, TemplateProps };

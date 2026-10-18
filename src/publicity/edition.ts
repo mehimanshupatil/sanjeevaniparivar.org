@@ -1,7 +1,7 @@
 // Pure Publicity logic — no astro:content imports, so it also runs in the browser
 // (the template try-out editor renders Publicity live with it).
 import type { CollectionEntry } from 'astro:content';
-import { mrNum, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
+import { mrNum, ordinalMr, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
 import { THEMES, type Theme } from './themes';
 import { LOGOS, type Logo } from './logos';
 import type { FormatId } from './formats';
@@ -21,6 +21,8 @@ export interface ResolvedEdition {
   year: number;
   fullTitle: string;
   title: { top?: string; main: string; sub?: string };
+  /** lectures: one per day, with that day's date and time */
+  sessions: ResolvedSession[];
   yearMr: string;
   invite: string;
   tagline?: string;
@@ -49,13 +51,28 @@ export interface ResolvedEdition {
   formats: FormatId[];
 }
 
+export interface ResolvedSession {
+  /** 1-based, used in URLs: /publicity/2026/vyakhyanmala/1/whatsapp/ */
+  n: number;
+  /** "पुष्प पहिले" */
+  label: string;
+  date: string;
+  time: string;
+  parts: ReturnType<typeof dateParts>;
+  speaker: { name: string; role?: string; photo?: string };
+  topic: string;
+  topicNote?: string;
+  bio?: string;
+  closing?: string;
+}
+
 /**
  * Merges an edition over its programme. Edition fields replace programme fields whole.
  * Edition ids of the form "<year>/<name>" must match the year of their first date.
  */
 export function resolveEdition(edition: Entry<EditionData>, programme: Entry<ProgrammeData>): ResolvedEdition {
   const p = programme.data;
-  const { programme: _ref, days, venue, draft: _draft, ...overrides } = edition.data;
+  const { programme: _ref, days, venue, draft: _draft, sessions = [], ...overrides } = edition.data;
   const text = { ...p, ...stripUndefined(overrides) };
 
   const year = parseDate(days[0].date).getUTCFullYear();
@@ -65,7 +82,10 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
   const yearMr = mrNum(year);
   const fullTitle = [p.title.top, p.title.main, yearMr].filter(Boolean).join(' ');
   const yearsRunning = p.startedYear ? mrNum(year - p.startedYear) : '';
-  const fill = (s?: string) => (s == null ? s : fillPlaceholders(s, { fullTitle, year: yearMr, yearsRunning }));
+  // editionNo counts the first year as १: a series started in 2003 is in its २४th year in 2026
+  const editionNo = p.startedYear ? mrNum(year - p.startedYear + 1) : '';
+  const fill = (s?: string) => (s == null ? s : fillPlaceholders(s, { fullTitle, year: yearMr, yearsRunning, editionNo }));
+  const resolvedDays = days.map((d) => ({ date: formatDate(d.date), parts: dateParts(d.date), time: d.note ?? (d.at ? formatAt(d.at) : formatRange(d.from!, d.to)) }));
 
   return {
     id: edition.id,
@@ -73,14 +93,20 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     type: p.type,
     year,
     fullTitle,
-    title: p.title,
+    title: { ...p.title, sub: fill(p.title.sub) },
+    sessions: sessions.map((s, i) => ({
+      n: i + 1,
+      label: `${text.sessionWord ?? 'पुष्प'} ${ordinalMr(i + 1)}`,
+      ...resolvedDays[i],
+      ...s,
+    })),
     yearMr,
     invite: text.invite,
     tagline: fill(text.tagline),
     organisers: text.organisers ?? [],
     organisersSuffix: text.organisersSuffix ?? 'यांच्या संयुक्त विद्यमाने आयोजित',
     intro: fill(text.intro),
-    days: days.map((d) => ({ date: formatDate(d.date), parts: dateParts(d.date), time: d.note ?? (d.at ? formatAt(d.at) : formatRange(d.from!, d.to)) })),
+    days: resolvedDays,
     venue,
     itemsHeading: text.itemsHeading,
     items: text.items ?? [],

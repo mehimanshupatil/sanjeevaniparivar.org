@@ -29,6 +29,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 | `plantation` | वृक्षवाढदिवस (also suits वृक्षारोपण) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/plantation/` |
 | `cleanup` | स्वच्छता अभियान (also suits मंदिर / समुद्र किनारा स्वच्छता, प्लास्टिकमुक्त) | slogan strip on top, centred logo, a calendar badge for the date (one day; more days fall back to the date band), the call to join in an outlined box; optional `items` and `contacts` | `src/publicity/templates/cleanup/` |
 | `celebration` | मराठी भाषा गौरव दिन (also suits वाचन प्रेरणा दिन, विद्यार्थी गौरव) | a letter strip on top (theme `strip`), logo + invite, calligraphic title over a faint book with `title.sub` in a pill, optional `quote` (`{ text, by }`) set large, the intro beside an optional `portrait`, दिनांक व वेळ and स्थळ as two coloured cards with icon badges, the programme (`note`) in a card with a ribbon label, the request to attend, a letter sign-off from `footer` (two lines: `"आपला\nसंजीवनी परिवार"`) | `src/publicity/templates/celebration/` |
+| `lectures` | संजीवनी व्याख्यानमाला | **two kinds of card.** The series card: `title.sub` (`वर्ष {{ editionNo }} वे`), an optional `quote` (the ओवी), intro, a row per session (date tile, photo, speaker, topic), वेळ \| स्थळ, closing, contacts. And one card per session (पुष्प) at `/publicity/<year>/<programme>/<n>/<format>`: photo between समई, name, role, topic, date band, the speaker's `bio`, the session's `closing` (or the series' invitation) | `src/publicity/templates/lectures/` (`Whatsapp`, `Instagram`, `SessionWhatsapp`, `SessionInstagram`) |
 
 A template has one layout per format:
 
@@ -38,6 +39,21 @@ A template has one layout per format:
 | `instagram` | 1080×1350 (4:5) | Instagram feed post | `Instagram.tsx`, compact sizes; leaves out long paragraphs for the post caption (fair: intro + closing; workshop: intro + the registration sentence) |
 
 A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The build fails if its type has no layout for one of them.
+
+## Lecture series: sessions
+
+A `lectures` edition lists `days` and, in the same order, `sessions` (one per day; the build fails if the counts differ):
+
+```yaml
+sessions:
+  - speaker: { name: प्रा. डॉ. मृदुला दाढे, role: प्रथितयश गायिका, photo: /publicity/assets/people/mrudula-dadhe.jpg }
+    topic: तरी असेल गीत हे
+    topicNote: (…)          # optional, under the topic
+    bio: …                  # optional, the speaker's परिचय on their own card
+    closing: …              # optional, this lecture's request to attend
+```
+
+Each session is numbered and labelled automatically ("पुष्प पहिले", "पुष्प दुसरे"; a programme can change the word with `sessionWord`). Besides the series card, every session gets its own card per format at `/publicity/2026/vyakhyanmala/1/whatsapp.png`; the edition's download page lists them all. Photos: portrait-shaped, at least 480×600, in `public/publicity/assets/people/`. The try-out editor keeps the sample's sessions but doesn't edit them yet.
 
 ## Template gallery and try-out editor (for trust members)
 
@@ -64,7 +80,7 @@ A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The bu
 
 An edition can override any programme wording for one year by repeating the field (e.g. `items:`). Lists are replaced whole.
 
-In text, `{{ fullTitle }}` becomes the title plus the Marathi year, `{{ year }}` the Marathi year, and `{{ yearsRunning }}` the number of years since the programme's `startedYear` (e.g. "गेली {{ yearsRunning }} वर्षे" → "गेली ८ वर्षे" in 2025).
+In text, `{{ fullTitle }}` becomes the title plus the Marathi year, `{{ year }}` the Marathi year, `{{ editionNo }}` the edition's number counting `startedYear` as the first ("वर्ष {{ editionNo }} वे" → "वर्ष २४ वे" in 2026 for 2003), and `{{ yearsRunning }}` the number of years since the programme's `startedYear` (e.g. "गेली {{ yearsRunning }} वर्षे" → "गेली ८ वर्षे" in 2025).
 
 Phone numbers in `contacts` are written in ordinary digits (`phone: "9028265426"`, so they stay dialable) and shown in Marathi numerals on the image.
 
@@ -88,6 +104,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 | `paryavaran` | वृक्षवाढदिवस, वृक्षारोपण | pale green paper with faint leaves, leaf vine along the top, trees beside the title, dark-green band, saplings in clay pots, Rozha One |
 | `swachhata` | स्वच्छता अभियान | white-blue paper with faint bubbles, deep-blue slogan strip and calendar badge, green rules, केरसुणी beside the title, केरसुणी + सूप alternating along the bottom |
 | `sahitya` | मराठी भाषा गौरव दिन | parchment paper with faint quills, ink-indigo and saffron, a वर्णमाला strip (अ आ इ … क ख ग घ) across the top, a faint open book behind the title, लेखणी व दौत beside it, books + quills along the bottom, Amita titles |
+| `prabodhan` | संजीवनी व्याख्यानमाला | warm paper with faint florets, प्रबोधन purple with crimson and brass, a marigold-and-jasmine garland on top, a lit समई either side of the title (and of the speaker's photo), flowers (पुष्प) along the bottom |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 

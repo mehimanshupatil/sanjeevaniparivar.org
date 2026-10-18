@@ -4,6 +4,7 @@
 // live Publicity page is shown instead.
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import { TEMPLATES, type Template } from '@/publicity/templates';
 
 export async function getStaticPaths() {
   const editions = await allEditions();
@@ -20,22 +21,30 @@ const { edition: b } = Astro.props;
 const base = `/publicity/${b.id}`;
 /** Saved file name, e.g. grahak-peth-2026-whatsapp.png — says what it is once downloaded. */
 const fileName = (format: string, suffix: string) => `${b.programme}-${b.year}-${format}${suffix}`;
-const outputs = b.formats.map((id) => {
+const outputsAt = (dir: string, namePart: string) => b.formats.map((id) => {
   const f = FORMATS[id];
+  const name = namePart ? `${namePart}-${id}` : id;
   return {
     id,
     label: f.label,
     size: `${f.width} × ${f.height}`,
     width: f.width,
     height: f.height,
-    page: `${base}/${id}/`,
+    page: `${dir}/${id}/`,
     files: [
-      { href: `${base}/${id}.png`, name: fileName(id, '.png'), label: 'PNG', note: 'WhatsApp / सोशल मीडिया' },
-      { href: `${base}/${id}@2x.png`, name: fileName(id, '-hd.png'), label: 'PNG HD', note: `छपाई (${f.width * 2} × ${f.height * 2})` },
-      { href: `${base}/${id}.pdf`, name: fileName(id, '.pdf'), label: 'PDF', note: 'छपाई' },
+      { href: `${dir}/${id}.png`, name: fileName(name, '.png'), label: 'PNG', note: 'WhatsApp / सोशल मीडिया' },
+      { href: `${dir}/${id}@2x.png`, name: fileName(name, '-hd.png'), label: 'PNG HD', note: `छपाई (${f.width * 2} × ${f.height * 2})` },
+      { href: `${dir}/${id}.pdf`, name: fileName(name, '.pdf'), label: 'PDF', note: 'छपाई' },
     ],
   };
 });
+// The edition's own cards, then (lectures) one group per session (पुष्प)
+const groups = [
+  { heading: b.sessions.length ? 'सर्व पुष्पांची पत्रिका' : undefined, outputs: outputsAt(base, '') },
+  ...(TEMPLATES[b.type] as Template).sessionLayouts
+    ? b.sessions.map((x) => ({ heading: `${x.label} — ${x.speaker.name}`, outputs: outputsAt(`${base}/${x.n}`, `pushpa-${x.n}`) }))
+    : [],
+];
 ---
 <PublicityPreviewLayout title={b.fullTitle}>
   <Fragment slot="crumbs">
@@ -49,8 +58,10 @@ const outputs = b.formats.map((id) => {
     <p>{b.venue.join(' ')}</p>
   </div>
 
-  <div class="mt-10 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-    {outputs.map((o) => (
+  {groups.map((g) => (<>
+  {g.heading && <h2 class="mt-12 text-xl font-bold text-gray-900">{g.heading}</h2>}
+  <div class="mt-6 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+    {g.outputs.map((o) => (
       <section class="rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
         <div class="flex items-baseline justify-between gap-2">
           <h2 class="font-bold text-gray-900">{o.label}</h2>
@@ -77,6 +88,7 @@ const outputs = b.formats.map((id) => {
       </section>
     ))}
   </div>
+  </>))}
 </PublicityPreviewLayout>
 
 <script>

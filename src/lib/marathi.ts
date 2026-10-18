@@ -79,6 +79,13 @@ export function formatRange(from: string, to?: string): string {
   return `${period(a.h)} ${clock(a)} ते ${end} वाजेपर्यंत`;
 }
 
+const ORDINALS = ['पहिले', 'दुसरे', 'तिसरे', 'चौथे', 'पाचवे', 'सहावे', 'सातवे', 'आठवे', 'नववे', 'दहावे'];
+
+/** 1 → "पहिले", 3 → "तिसरे" (neuter, as in "पुष्प पहिले"); after दहावे, "११वे" */
+export function ordinalMr(n: number): string {
+  return ORDINALS[n - 1] ?? `${mrNum(n)}वे`;
+}
+
 /** ["A","B","C"] → "A, B आणि C" */
 export function joinMr(list: string[]): string {
   if (list.length < 2) return list.join('');

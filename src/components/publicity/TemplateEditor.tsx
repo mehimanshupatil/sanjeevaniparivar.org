@@ -49,7 +49,7 @@ export default function TemplateEditor({ type, templateLabel, formats, sample, s
     try { localStorage.setItem(storageKey(type), JSON.stringify(draft)); } catch { /* private mode */ }
   }, [type, draft]);
 
-  const entries = useMemo(() => draftToEntries(draft, sample.programme), [draft, sample]);
+  const entries = useMemo(() => draftToEntries(draft, sample.programme, sample.edition), [draft, sample]);
 
   // Send the draft to every preview; previews answer with whether the text fits.
   useEffect(() => {
