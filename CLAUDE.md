@@ -57,10 +57,10 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 
 ## Publicity (invitations and banners)
 - Publicity for recurring programmes: Invitations (WhatsApp, Instagram) now, printed flex Banners later. Terms in `GLOSSARY.md`. Full guide, design rules and Marathi text standards: `docs/publicity.md`. Decisions: `docs/decisions/007-banners-as-astro-pages.md`, `008-publicity-naming.md`
-- Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides; `draft: true` = dev only, not published). Types: `fair` (ग्राहक पेठ), `workshop` (आकाशकंदील कार्यशाळा)
+- Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides; `draft: true` = dev only, not published). Types: `fair` (ग्राहक पेठ), `workshop` (आकाशकंदील कार्यशाळा), `drive` (स्वच्छता अभियान)
 - Code: `src/publicity/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `publicity.css`); route `src/pages/publicity/[year]/[programme]/[format].astro` (noindex, not in sitemap)
 - Render: `pnpm build && pnpm publicity` → `dist/publicity/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:publicity` (strict) before deploy
-- Publicity pages never import `global.css`. Publicity Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc. Themes: `diwali` (ग्राहक पेठ), `kalaDalan` (children's workshops, Baloo 2). Gallery + try-out editor: `/publicity/templates/`
+- Publicity pages never import `global.css`. Publicity Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc. Themes: `diwali` (ग्राहक पेठ), `kalaDalan` (children's workshops, Baloo 2), `paryavaran` (drives). Gallery + try-out editor: `/publicity/templates/`
 - Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
 - Type-check with `pnpm check` (astro check, also in CI). TypeScript is pinned to 6 — Astro's tooling doesn't support 7 yet
 - Formats: `whatsapp` (1080×1920, also a story) and `instagram` (1080×1350 feed post, compact blocks). Possible next steps (ask before starting): landscape print template with bleed, 1080×1080 square post, more themes (Ganeshotsav, Navratri, Gudi Padwa, Sankranti), event page + WhatsApp text from the same YAML

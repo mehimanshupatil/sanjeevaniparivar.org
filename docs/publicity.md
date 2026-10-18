@@ -26,6 +26,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 |---|---|---|---|
 | `fair` | ग्राहक पेठ | list of attractions (`items`) | `src/publicity/templates/fair/` |
 | `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
+| `drive` | स्वच्छता अभियान (also suits वृक्षारोपण, समुद्र किनारा स्वच्छता) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/drive/` |
 
 A template has one layout per format:
 
@@ -81,6 +82,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 |---|---|---|
 | `diwali` | ग्राहक पेठ | cream paper, kumkum/maroon/marigold, mango-leaf toran, star akashkandil, diyas, Rozha One |
 | `kalaDalan` | आकाशकंदील कार्यशाळा (children) | off-white paper, kshetra colours + marigold, paper-flag bunting (पताका), paper box-lanterns, शिक्षण-blue band, Baloo 2 titles, numbered circles |
+| `paryavaran` | स्वच्छता अभियान, वृक्षारोपण | pale green paper with faint leaves, leaf vine along the top, trees beside the title, dark-green band, saplings in clay pots, Rozha One |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 

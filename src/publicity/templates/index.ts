@@ -8,6 +8,9 @@ import * as fairSample from './fair/sample';
 import WorkshopWhatsapp from './workshop/Whatsapp';
 import WorkshopInstagram from './workshop/Instagram';
 import * as workshopSample from './workshop/sample';
+import DriveWhatsapp from './drive/Whatsapp';
+import DriveInstagram from './drive/Instagram';
+import * as driveSample from './drive/sample';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -46,6 +49,13 @@ export const TEMPLATES = {
     layouts: { whatsapp: WorkshopWhatsapp, instagram: WorkshopInstagram },
     sample: workshopSample,
     editorSections: ['rules', 'note', 'contacts'],
+  },
+  drive: {
+    label: 'अभियान',
+    description: 'स्वच्छता अभियान, वृक्षारोपण यांसारखे उपक्रम: घोषवाक्य, तारीख, स्थळ आणि सहभागाचे आवाहन',
+    layouts: { whatsapp: DriveWhatsapp, instagram: DriveInstagram },
+    sample: driveSample,
+    editorSections: ['closing', 'contacts'],
   },
 } satisfies Record<string, Template>;
 
