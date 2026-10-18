@@ -1,5 +1,5 @@
 // Lectures — 1080×1920 card for one lecture (पुष्प): series name and "वर्ष २४ वे · पुष्प पहिले",
-// the speaker's photo between समई, name and role, the topic, the date band, the speaker's
+// the speaker's photo (no lamps beside it: समई around a portrait reads as a memorial), name and role, the topic, the date band, the speaker's
 // परिचय, this lecture's request to attend (or the series' invitation) and the footer.
 import type { SessionProps } from '../types';
 import { decorUrl } from '../../assets';
@@ -24,16 +24,10 @@ export default function LectureSessionWhatsapp({ edition: b, session: x, format 
         </p>
       </div>
 
-      <div className="w-full flex items-end justify-center gap-10">
-        {decor.titleSides && <img src={decorUrl(decor.titleSides)} alt="" className="w-[110px] h-[280px]" />}
-        <figure className="flex flex-col items-center gap-3">
-          {x.speaker.photo && (
-            <img src={x.speaker.photo} alt={x.speaker.name}
-              className="w-[320px] h-[400px] rounded-[16px] border-[6px] border-double border-gold object-cover outline-2 outline-offset-4 outline-gold" />
-          )}
-        </figure>
-        {decor.titleSides && <img src={decorUrl(decor.titleSides)} alt="" className="w-[110px] h-[280px]" />}
-      </div>
+      {x.speaker.photo && (
+        <img src={x.speaker.photo} alt={x.speaker.name}
+          className="w-[320px] h-[400px] rounded-[16px] border-[6px] border-double border-gold object-cover outline-2 outline-offset-4 outline-gold" />
+      )}
 
       <div className="flex flex-col items-center gap-1 text-center">
         <p className="font-bold text-[50px] leading-[1.15] text-primary">{x.speaker.name}</p>
