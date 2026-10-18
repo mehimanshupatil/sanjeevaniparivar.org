@@ -26,7 +26,8 @@ Each programme has a `type`, and every programme of that type uses the same temp
 |---|---|---|---|
 | `fair` | ग्राहक पेठ | list of attractions (`items`) | `src/publicity/templates/fair/` |
 | `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
-| `drive` | स्वच्छता अभियान, वृक्षवाढदिवस (also suits वृक्षारोपण, समुद्र किनारा स्वच्छता) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/drive/` |
+| `plantation` | वृक्षवाढदिवस (also suits वृक्षारोपण) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/plantation/` |
+| `cleanup` | स्वच्छता अभियान (also suits मंदिर / समुद्र किनारा स्वच्छता, प्लास्टिकमुक्त) | slogan strip on top, centred logo, a calendar badge for the date (one day; more days fall back to the date band), the call to join in an outlined box; optional `items` and `contacts` | `src/publicity/templates/cleanup/` |
 
 A template has one layout per format:
 
@@ -72,7 +73,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.
 - **New partner logo**: add a transparent PNG to `public/publicity/assets/logos/` (or reuse an existing public file, as the Sanjeevani logo reuses `/assets/brand/sanjeevani-parivar-symbol.png`) and register its path in `src/publicity/logos.ts`.
-- **New theme**: add `src/publicity/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow`. Leave a slot out to keep it empty. Optional: `fonts` (a Google Fonts title font + weight, replacing Rozha One) and `palette` (colours for numbered-point circles).
+- **New theme**: add `src/publicity/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow` (one file, or a list that alternates). Leave a slot out to keep it empty. Optional: `fonts` (a Google Fonts title font + weight, replacing Rozha One) and `palette` (colours for numbered-point circles).
 - **New format** (square post, flex banner): add its size to `src/publicity/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.
 - **New programme type** (lecture series, competition, camp): add `src/publicity/templates/<type>/` with a React layout per format built from the shared blocks plus a block for its middle section, and a `sample.ts`; register it (label, description, layouts, sample, `editorSections`) in `templates/index.ts`; add the type and its fields to the `programmes` schema in `src/content.config.ts`, and to `ResolvedEdition` in `edition.ts`. It then appears in the gallery automatically; for fields the editor doesn't know yet, add them to `draft.ts` (and its round-trip test) and a section to `TemplateEditor.tsx`.
 
@@ -82,7 +83,8 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 |---|---|---|
 | `diwali` | ग्राहक पेठ | cream paper, kumkum/maroon/marigold, mango-leaf toran, star akashkandil, diyas, Rozha One |
 | `kalaDalan` | आकाशकंदील कार्यशाळा (children) | off-white paper, kshetra colours + marigold, paper-flag bunting (पताका), paper box-lanterns, शिक्षण-blue band, Baloo 2 titles, numbered circles |
-| `paryavaran` | स्वच्छता अभियान, वृक्षारोपण | pale green paper with faint leaves, leaf vine along the top, trees beside the title, dark-green band, saplings in clay pots, Rozha One |
+| `paryavaran` | वृक्षवाढदिवस, वृक्षारोपण | pale green paper with faint leaves, leaf vine along the top, trees beside the title, dark-green band, saplings in clay pots, Rozha One |
+| `swachhata` | स्वच्छता अभियान | white-blue paper with faint bubbles, deep-blue slogan strip and calendar badge, green rules, केरसुणी beside the title, केरसुणी + सूप alternating along the bottom |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 

@@ -1,4 +1,4 @@
-// Drive (e.g. स्वच्छता अभियान, वृक्षारोपण) — 1080×1920 WhatsApp card, also works as an Instagram story.
+// Plantation (e.g. वृक्षवाढदिवस, वृक्षारोपण) — 1080×1920 WhatsApp card, also works as an Instagram story.
 // Little text, so it is set larger than the other types: slogan, title, intro, date band, the call to join.
 import type { TemplateProps } from '../types';
 import { decorUrl } from '../../assets';
@@ -12,7 +12,7 @@ import Contacts from '../../blocks/Contacts';
 import FooterLine from '../../blocks/FooterLine';
 import DecorRow from '../../blocks/DecorRow';
 
-export default function DriveWhatsapp({ edition: b, format }: TemplateProps) {
+export default function PlantationWhatsapp({ edition: b, format }: TemplateProps) {
   const { decor } = b.theme;
   return (
     <Frame format={format} pattern={decor.pattern}>

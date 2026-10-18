@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mrNum, formatDate, formatTime, formatAt, formatRange, joinMr, parseDate, fillPlaceholders } from './marathi.ts';
+import { mrNum, dateParts, formatDate, formatTime, formatAt, formatRange, joinMr, parseDate, fillPlaceholders } from './marathi.ts';
 
 test('mrNum converts digits', () => {
   assert.equal(mrNum(2026), '२०२६');
@@ -26,6 +26,10 @@ test('formatTime picks the time-of-day word', () => {
   assert.equal(formatTime('22:00'), 'रात्री १०.००');
   assert.equal(formatTime('00:30'), 'रात्री १२.३०');
   assert.throws(() => formatTime('24:00'), /HH:MM/);
+});
+
+test('dateParts', () => {
+  assert.deepEqual(dateParts('2026-10-02'), { weekday: 'शुक्रवार', day: '२', month: 'ऑक्टोबर', year: '२०२६' });
 });
 
 test('formatAt', () => {

@@ -8,9 +8,12 @@ import * as fairSample from './fair/sample';
 import WorkshopWhatsapp from './workshop/Whatsapp';
 import WorkshopInstagram from './workshop/Instagram';
 import * as workshopSample from './workshop/sample';
-import DriveWhatsapp from './drive/Whatsapp';
-import DriveInstagram from './drive/Instagram';
-import * as driveSample from './drive/sample';
+import PlantationWhatsapp from './plantation/Whatsapp';
+import PlantationInstagram from './plantation/Instagram';
+import * as plantationSample from './plantation/sample';
+import CleanupWhatsapp from './cleanup/Whatsapp';
+import CleanupInstagram from './cleanup/Instagram';
+import * as cleanupSample from './cleanup/sample';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -50,11 +53,18 @@ export const TEMPLATES = {
     sample: workshopSample,
     editorSections: ['rules', 'note', 'contacts'],
   },
-  drive: {
-    label: 'अभियान',
-    description: 'स्वच्छता अभियान, वृक्षारोपण यांसारखे उपक्रम: घोषवाक्य, तारीख, स्थळ आणि सहभागाचे आवाहन',
-    layouts: { whatsapp: DriveWhatsapp, instagram: DriveInstagram },
-    sample: driveSample,
+  plantation: {
+    label: 'वृक्षारोपण',
+    description: 'वृक्षवाढदिवस, वृक्षारोपण यांसारखे उपक्रम: घोषवाक्य, तारीख, स्थळ आणि सहभागाचे आवाहन',
+    layouts: { whatsapp: PlantationWhatsapp, instagram: PlantationInstagram },
+    sample: plantationSample,
+    editorSections: ['closing', 'contacts'],
+  },
+  cleanup: {
+    label: 'स्वच्छता अभियान',
+    description: 'मंदिर, शाळा, समुद्र किनारा स्वच्छता: घोषवाक्य, दिनदर्शिकेसारखी तारीख, स्थळ आणि सहभागाचे आवाहन',
+    layouts: { whatsapp: CleanupWhatsapp, instagram: CleanupInstagram },
+    sample: cleanupSample,
     editorSections: ['closing', 'contacts'],
   },
 } satisfies Record<string, Template>;

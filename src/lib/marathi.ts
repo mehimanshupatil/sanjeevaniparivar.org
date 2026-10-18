@@ -21,10 +21,16 @@ export function parseDate(value: string | Date): Date {
   return d;
 }
 
+/** 2026-10-31 → { weekday: "शनिवार", day: "३१", month: "ऑक्टोबर", year: "२०२६" } */
+export function dateParts(value: string | Date) {
+  const d = parseDate(value);
+  return { weekday: DAYS[d.getUTCDay()], day: mrNum(d.getUTCDate()), month: MONTHS[d.getUTCMonth()], year: mrNum(d.getUTCFullYear()) };
+}
+
 /** 2026-10-31 → "शनिवार, ३१ ऑक्टोबर २०२६" */
 export function formatDate(value: string | Date): string {
-  const d = parseDate(value);
-  return `${DAYS[d.getUTCDay()]}, ${mrNum(d.getUTCDate())} ${MONTHS[d.getUTCMonth()]} ${mrNum(d.getUTCFullYear())}`;
+  const p = dateParts(value);
+  return `${p.weekday}, ${p.day} ${p.month} ${p.year}`;
 }
 
 interface Time { h: number; min: number }

@@ -1,4 +1,4 @@
-// Sample content for the `drive` template (gallery + try-out editor).
+// Sample content for the `plantation` template (gallery + try-out editor).
 // Near the template's limits: a long intro, two closing paragraphs, 4 contacts. Names and numbers are made up.
 import type { EditionData, Entry, ProgrammeData } from '../../edition';
 
@@ -6,7 +6,7 @@ export const programme: Entry<ProgrammeData> = {
   id: 'namuna-abhiyan',
   data: {
     title: { top: 'संजीवनी परिवार आयोजित', main: 'वृक्षारोपण अभियान' },
-    type: 'drive',
+    type: 'plantation',
     kshetra: 'paryavaran',
     theme: 'paryavaran',
     formats: ['whatsapp', 'instagram'],

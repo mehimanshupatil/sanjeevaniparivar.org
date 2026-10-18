@@ -22,7 +22,7 @@ export interface ThemeDecor {
   top?: string;         // full-width border at the top (toran)
   titleBack?: string;   // large faint ornament behind the title (mandala)
   titleSides?: string;  // hanging ornaments either side of the title (akashkandil)
-  bottomRow?: string;   // repeated ornament along the bottom (diya)
+  bottomRow?: string | string[];   // repeated ornament along the bottom (diya); a list alternates
 }
 
 /** Google Fonts family for big titles (and the venue); default Rozha One. */

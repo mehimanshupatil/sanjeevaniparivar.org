@@ -4,12 +4,13 @@ import { parse } from 'yaml';
 import { draftFromSample, draftToEntries, programmeYaml, editionYaml } from './draft.ts';
 import * as sample from './templates/fair/sample.ts';
 import * as workshopSample from './templates/workshop/sample.ts';
-import * as driveSample from './templates/drive/sample.ts';
+import * as plantationSample from './templates/plantation/sample.ts';
+import * as cleanupSample from './templates/cleanup/sample.ts';
 
 /** Drops undefined fields, as YAML has no way to write them. */
 const clean = (o: unknown) => JSON.parse(JSON.stringify(o));
 
-for (const [type, s] of [['fair', sample], ['workshop', workshopSample], ['drive', driveSample]] as const) {
+for (const [type, s] of [['fair', sample], ['workshop', workshopSample], ['plantation', plantationSample], ['cleanup', cleanupSample]] as const) {
   test(`${type}: the generated YAML parses back to the same programme and edition`, () => {
     const { programme, edition } = draftToEntries(draftFromSample(s.programme, s.edition), s.programme);
     assert.deepEqual(parse(programmeYaml(programme)), clean(programme.data));
