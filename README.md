@@ -11,8 +11,8 @@ Official website of **Sanjeevani Parivar (संजीवनी परिवा�
 | Typography | [@tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin) |
 | Icons | [@phosphor-icons/react](https://phosphoricons.com) + [@icons-pack/react-simple-icons](https://github.com/icons-pack/react-simple-icons) |
 | UI primitives | [shadcn/ui](https://ui.shadcn.com) (`base-vega`, Base UI) in `src/components/ui/` |
-| Banners | Astro pages + React templates, rendered to PNG/PDF with [Playwright](https://playwright.dev) — see [`docs/banners.md`](docs/banners.md) |
-| Content | MDX blog + banner programmes/editions (YAML) via `astro:content` |
+| Publicity | Astro pages + React templates, rendered to PNG/PDF with [Playwright](https://playwright.dev) — see [`docs/publicity.md`](docs/publicity.md) |
+| Content | MDX blog + Publicity programmes/editions (YAML) via `astro:content` |
 | Package manager | [pnpm](https://pnpm.io) |
 
 ## Getting Started
@@ -22,21 +22,21 @@ pnpm install
 pnpm dev        # http://localhost:4321
 pnpm build      # production build → dist/
 pnpm preview    # preview the build locally
-pnpm test       # unit tests (Marathi dates/times, banner YAML)
+pnpm test       # unit tests (Marathi dates/times, Publicity YAML)
 pnpm check      # type-check (.astro, .ts, .tsx)
-pnpm banners    # after build: render banners to dist/banners/ (first time: pnpm exec playwright install chromium)
+pnpm publicity  # after build: render Publicity to dist/publicity/ (first time: pnpm exec playwright install chromium)
 ```
 
 ## Project Structure
 
 ```
 src/
-├── banners/          # Banner templates (per programme type), shared blocks, themes — docs/banners.md
+├── publicity/        # Publicity templates (per programme type), shared blocks, themes — docs/publicity.md
 ├── components/       # React components (Navbar, Footer, sections, pages); ui/ = shadcn
 ├── content/
 │   ├── blog/         # MDX blog posts (bilingual)
-│   ├── programmes/   # Banner programmes (wording that stays the same each year)
-│   ├── editions/     # Banner editions: <year>/<programme>.yaml (dates, venue)
+│   ├── programmes/   # Publicity programmes (wording that stays the same each year)
+│   ├── editions/     # Publicity editions: <year>/<programme>.yaml (dates, venue)
 │   ├── kshetras.ts   # Kshetra definitions — single source of truth
 │   ├── events.ts     # Upcoming & past events
 │   ├── gallery.ts    # Gallery items
@@ -50,14 +50,14 @@ src/
 │   └── social.ts     # Social media links
 ├── pages/            # Astro file-based routes
 └── styles/
-    └── global.css    # Tailwind v4 @theme tokens + global styles (banners use src/banners/banner.css)
+    └── global.css    # Tailwind v4 @theme tokens + global styles (Publicity uses src/publicity/publicity.css)
 public/
 ├── assets/
 │   ├── brand/        # Logo downloads for /brand
 │   └── uploads/      # Migrated WordPress media
-└── banners/assets/   # Banner decorations (SVG) and partner logos
+└── publicity/assets/ # Publicity decorations (SVG) and partner logos
 scripts/
-├── render-banners.mjs    # Screenshot built banner pages → PNG/PDF
+├── render-publicity.mjs # Screenshot built Publicity pages → PNG/PDF
 ├── import-wp-posts.mjs   # Import WordPress posts CSV → MDX
 └── import-wp-pages.mjs   # Import WordPress pages CSV → MDX
 ```
@@ -90,8 +90,8 @@ The site supports **Marathi (`mr`)** (default) and **English (`en`)**. All user-
 | `/gallery` | Photo gallery |
 | `/events` | Events (upcoming + past) |
 | `/brand` | Brand guidelines: logo downloads, colours, fonts |
-| `/banners/` | Rendered banners per programme and year (noindex) |
-| `/banners/templates/` | Banner template gallery + try-out editor for trust members (noindex) |
+| `/publicity/` | Rendered Publicity per programme and year (noindex) |
+| `/publicity/templates/` | Template gallery + try-out editor for trust members (noindex) |
 | `/team` | Team members |
 | `/donate` | Donation info (bank + UPI) |
 

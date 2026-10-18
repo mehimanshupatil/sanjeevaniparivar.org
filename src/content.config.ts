@@ -1,9 +1,9 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod'
-import { THEMES } from '@/banners/themes';
-import { LOGOS } from '@/banners/logos';
-import { FORMATS } from '@/banners/formats';
+import { THEMES } from '@/publicity/themes';
+import { LOGOS } from '@/publicity/logos';
+import { FORMATS } from '@/publicity/formats';
 
 const KSHETRA = z.enum(['shikshan', 'paryavaran', 'aarogya', 'prabodhana', 'general']);
 const keysOf = <T extends Record<string, unknown>>(o: T) =>
@@ -22,7 +22,7 @@ const blog = defineCollection({
   }),
 });
 
-// ── Banners: a programme (same every year) + an edition (one year's details) ──
+// ── Publicity: a programme (same every year) + an edition (one year's details) ──
 
 /** Wording a programme sets once and an edition may override for one year.
  *  No defaults here: an edition that leaves a field out must not override it. */
@@ -45,7 +45,7 @@ const programmeText = z.object({
   contactsIntro: z.string().optional(),
   contacts: z.array(z.object({
     name: z.string(),
-    phone: z.string().regex(/^\+?[0-9 ]{10,15}$/, 'Phone in ordinary digits, e.g. "9028265426" (shown in Marathi numerals on the banner)'),
+    phone: z.string().regex(/^\+?[0-9 ]{10,15}$/, 'Phone in ordinary digits, e.g. "9028265426" (shown in Marathi numerals on the image)'),
   })).optional(),
   theme: keysOf(THEMES),
   formats: z.array(keysOf(FORMATS)).min(1),
@@ -56,7 +56,7 @@ const programmes = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/programmes' }),
   schema: programmeText.extend({
     title: z.object({ top: z.string().optional(), main: z.string() }),
-    type: z.enum(['fair', 'workshop']),  // one folder per type in src/banners/templates/
+    type: z.enum(['fair', 'workshop']),  // one folder per type in src/publicity/templates/
     kshetra: KSHETRA,
     /** First year the programme ran; text can say {{ yearsRunning }} (e.g. "गेली ८ वर्षे") */
     startedYear: z.number().int().optional(),

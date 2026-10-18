@@ -1,5 +1,7 @@
 # 007 — Banners as Astro Pages, Rendered in the Deploy
 
+> Renamed to Publicity by [008](008-publicity-naming.md): read `banners` paths below as `publicity`.
+
 ## Context
 
 Each programme needs a WhatsApp invitation and printed banners every year. A first version lived in a separate `banners/` folder: Nunjucks templates, its own `package.json`, a file:// render through Playwright, and a separate CI workflow. Its output couldn't be viewed on the site, and every new format meant copying a whole template.

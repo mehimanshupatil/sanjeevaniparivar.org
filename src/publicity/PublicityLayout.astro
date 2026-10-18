@@ -1,0 +1,48 @@
+---
+// Bare page for one Edition in one Format: no site navbar, no site CSS. Playwright screenshots #frame.
+import './publicity.css';
+import type { Theme } from './themes';
+
+interface Props {
+  title: string;
+  theme: Theme;
+}
+const { title, theme } = Astro.props;
+const vars = [
+  ...Object.entries(theme.colors).map(([k, v]) => `--${k}: ${v};`),
+  ...(theme.fonts ? [`--theme-display: "${theme.fonts.display}";`, `--theme-display-weight: ${theme.fonts.displayWeight};`] : []),
+].join(' ');
+
+// Every family the page uses; render-publicity.mjs checks each one loaded (meta below).
+// A theme's own display font replaces Rozha One (browsers only download fonts in use).
+const display = theme.fonts
+  ? { family: theme.fonts.display, query: `family=${theme.fonts.display.replace(/ /g, '+')}:wght@${theme.fonts.displayWeight}` }
+  : { family: 'Rozha One', query: 'family=Rozha+One' };
+const families = ['Mukta', display.family, 'Tiro Devanagari Marathi'];
+const query = ['family=Mukta:wght@400;500;600;700', display.query, 'family=Tiro+Devanagari+Marathi'].join('&');
+---
+<!doctype html>
+<html lang="mr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- display=block: wait for each font rather than drawing a fallback first -->
+    <link
+      rel="stylesheet"
+      href={`https://fonts.googleapis.com/css2?${query}&display=block`}
+    />
+    <meta name="publicity-fonts" content={families.join(',')} />
+    <style is:inline set:html={`:root { ${vars} }`}></style>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Fit long titles to their row, then mark the page ready for screenshots.
+      import { fitWhenReady } from './fit';
+      fitWhenReady();
+    </script>
+  </body>
+</html>

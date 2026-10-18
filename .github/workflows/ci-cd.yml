@@ -38,7 +38,7 @@ jobs:
       - name: Build site
         run: pnpm run build
 
-      # Chromium for rendering banners, cached per Playwright version.
+      # Chromium for rendering Publicity, cached per Playwright version.
       - name: Get Playwright version
         id: playwright
         run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
@@ -55,20 +55,20 @@ jobs:
         if: steps.chromium-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium
 
-      # Screenshots the built banner pages into dist/banners/** (PNG + PDF).
-      # Fails if a banner's text overflows or an image doesn't load.
-      - name: Render banners
-        run: pnpm run build:banners
+      # Screenshots the built Publicity pages into dist/publicity/** (PNG + PDF).
+      # Fails if any image's text overflows or an image doesn't load.
+      - name: Render publicity
+        run: pnpm run build:publicity
 
-      # Lets PR reviewers download and check the rendered banners.
-      - name: Upload banners for review
+      # Lets PR reviewers download and check the rendered Publicity.
+      - name: Upload publicity for review
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: banners
+          name: publicity
           path: |
-            dist/banners/**/*.png
-            dist/banners/**/*.pdf
+            dist/publicity/**/*.png
+            dist/publicity/**/*.pdf
 
       - name: Upload site for Pages
         if: github.event_name != 'pull_request'

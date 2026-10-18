@@ -10,7 +10,7 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    sitemap({ filter: (page) => !page.includes('/banners/') }),  // banner pages are render targets, not site pages
+    sitemap({ filter: (page) => !page.includes('/publicity/') }),  // Publicity pages are render targets, not site pages
   ],
   vite: {
     plugins: [tailwindcss()],

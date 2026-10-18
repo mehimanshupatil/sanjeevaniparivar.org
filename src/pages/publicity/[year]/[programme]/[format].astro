@@ -1,0 +1,35 @@
+---
+// /publicity/2026/grahak-peth/whatsapp/ — one bare page per edition × format.
+// The layout comes from the programme's type: src/publicity/templates/<type>/.
+// Rendered to static HTML (no JavaScript); scripts/render-publicity.mjs screenshots it.
+import PublicityLayout from '@/publicity/PublicityLayout.astro';
+import { TEMPLATES } from '@/publicity/templates';
+import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import type { FormatId } from '@/publicity/formats';
+
+export async function getStaticPaths() {
+  const editions = await allEditions();
+  return editions.flatMap((edition) =>
+    edition.formats.map((format) => {
+      const { layouts } = TEMPLATES[edition.type];
+      if (!layouts[format]) {
+        const has = Object.keys(layouts).join(', ');
+        throw new Error(`${edition.id}: programme type "${edition.type}" has no "${format}" template (it has: ${has}). Remove "${format}" from the programme's formats, or add src/publicity/templates/${edition.type}/<Format>.tsx and register it in templates/index.ts.`);
+      }
+      const [year, programme] = edition.id.split('/');
+      return { params: { year, programme, format }, props: { edition, format } };
+    }),
+  );
+}
+
+interface Props {
+  edition: ResolvedEdition;
+  format: FormatId;
+}
+const { edition, format } = Astro.props;
+const Layout = TEMPLATES[edition.type].layouts[format]!;
+const size = FORMATS[format];
+---
+<PublicityLayout title={`${edition.fullTitle} — ${size.label}`} theme={edition.theme}>
+  <Layout edition={edition} format={size} />
+</PublicityLayout>

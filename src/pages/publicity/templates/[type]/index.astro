@@ -1,0 +1,30 @@
+---
+// /publicity/templates/fair/ — try a template with your own programme's content.
+import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
+import TemplateEditor from '@/components/publicity/TemplateEditor';
+import { TEMPLATES, type ProgrammeType } from '@/publicity/templates';
+import { FORMATS, type FormatId } from '@/publicity/formats';
+
+export function getStaticPaths() {
+  return Object.keys(TEMPLATES).map((type) => ({ params: { type } }));
+}
+
+const type = Astro.params.type as ProgrammeType;
+const t = TEMPLATES[type];
+const formats = (Object.keys(t.layouts) as FormatId[]).map((id) => ({ id, ...FORMATS[id] }));
+---
+<PublicityPreviewLayout title={`${t.label} — वापरून पहा`}>
+  <Fragment slot="crumbs">
+    <span class="text-gray-300">/</span>
+    <a href="/publicity/templates/" class="text-gray-500 hover:text-primary">साचे</a>
+    <span class="text-gray-300">/</span>
+    <span class="text-gray-500">{t.label}</span>
+  </Fragment>
+
+  <h1 class="text-3xl font-extrabold text-gray-900">{t.label}: वापरून पहा</h1>
+  <p class="mt-2 mb-8 max-w-2xl text-gray-600">
+    डावीकडे आपल्या कार्यक्रमाचा मजकूर लिहा; उजवीकडे बॅनर लगेच बदलेल. आपण लिहिलेले फक्त याच ब्राउझरमध्ये राहते.
+  </p>
+
+  <TemplateEditor client:load type={type} templateLabel={t.label} formats={formats} sample={t.sample} sections={t.editorSections} />
+</PublicityPreviewLayout>

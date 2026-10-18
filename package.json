@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build:banners": "node scripts/render-banners.mjs --strict",
-    "banners": "node scripts/render-banners.mjs",
+    "build:publicity": "node scripts/render-publicity.mjs --strict",
+    "publicity": "node scripts/render-publicity.mjs",
     "test": "node --test \"src/**/*.test.ts\"",
     "check": "astro check"
   },
