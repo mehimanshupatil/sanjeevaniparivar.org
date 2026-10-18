@@ -35,6 +35,7 @@ export interface ResolvedEdition {
   itemsMore?: string;
   closing: { text: string; emphasis: boolean }[];
   footer?: string;
+  portrait?: { src: string; caption: string; garland: boolean };
   rulesHeading?: string;
   rules: string[];
   note?: { label: string; text: string };
@@ -85,6 +86,7 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     itemsMore: text.itemsMore,
     closing: (text.closing ?? []).map((c) => ({ text: fill(c.text)!, emphasis: c.emphasis ?? false })),
     footer: fill(text.footer),
+    portrait: text.portrait && { ...text.portrait, garland: text.portrait.garland ?? false },
     rulesHeading: text.rulesHeading,
     rules: (text.rules ?? []).map((r) => fill(r)!),
     note: text.note && { label: text.note.label, text: fill(text.note.text)! },

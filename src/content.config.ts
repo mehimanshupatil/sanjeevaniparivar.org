@@ -37,6 +37,9 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  /** A person's photo, e.g. महाकवी कुसुमाग्रज on their जयंती. src: under public/publicity/assets/people/.
+   *  garland: a marigold हार round the frame (for a tribute, not for a living guest) */
+  portrait: z.object({ src: z.string(), caption: z.string(), garland: z.boolean().optional() }).optional(),
   // workshop: numbered terms, a highlighted note, and who to contact to register
   rulesHeading: z.string().optional(),
   rules: z.array(z.string()).optional(),

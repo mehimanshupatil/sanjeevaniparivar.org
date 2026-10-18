@@ -27,7 +27,7 @@ export default function DetailsScroll({ days, venue, compact = false }: Props) {
           {row('वेळ', d.time)}
         </Fragment>
       ))}
-      {row('स्थळ', venue.map((line, i) => <Fragment key={i}>{i > 0 && ' '}{line}</Fragment>), cx(s.venue, 'font-display font-display-weight leading-[1.25] text-primary'))}
+      {row('स्थळ', venue.map((line, i) => <Fragment key={i}>{i > 0 && ' '}{line}</Fragment>), cx(s.venue, 'font-ornate leading-[1.3] text-primary'))}
     </section>
   );
 }

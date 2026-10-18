@@ -76,6 +76,7 @@ export function draftToEntries(d: Draft, sample: Entry<ProgrammeData>) {
       theme: sample.data.theme,
       formats: sample.data.formats,
       logos: sample.data.logos,
+      portrait: sample.data.portrait,
       invite: d.invite.trim(),
       tagline: opt(d.tagline),
       organisers: lines(d.organisers).length ? lines(d.organisers) : undefined,
@@ -133,6 +134,7 @@ export function programmeYaml({ data: p }: Entry<ProgrammeData>): string {
     y += 'closing:\n' + p.closing.map((c) => `  - text: ${q(c.text)}\n${c.emphasis ? '    emphasis: true\n' : ''}`).join('');
   }
   y += field('footer', p.footer);
+  if (p.portrait) y += `portrait:\n  src: ${q(p.portrait.src)}\n  caption: ${q(p.portrait.caption)}\n${p.portrait.garland ? '  garland: true\n' : ''}`;
   y += field('rulesHeading', p.rulesHeading) + list('rules', p.rules ?? []);
   if (p.note) y += `note:\n  label: ${q(p.note.label)}\n  text: ${q(p.note.text)}\n`;
   y += field('contactsHeading', p.contactsHeading) + field('contactsIntro', p.contactsIntro);

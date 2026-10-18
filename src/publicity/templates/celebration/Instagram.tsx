@@ -4,6 +4,7 @@ import type { TemplateProps } from '../types';
 import Frame from '../../blocks/Frame';
 import TitleBlock from '../../blocks/TitleBlock';
 import DetailsScroll from '../../blocks/DetailsScroll';
+import Portrait from '../../blocks/Portrait';
 import Signoff from '../../blocks/Signoff';
 import DecorRow from '../../blocks/DecorRow';
 
@@ -21,7 +22,12 @@ export default function CelebrationInstagram({ edition: b, format }: TemplatePro
         <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} compact />
         {b.title.sub && <p className="font-ornate text-[30px] text-deep">{b.title.sub}</p>}
       </div>
-      <DetailsScroll days={b.days} venue={b.venue} compact />
+      {b.portrait ? (
+        <div className="w-full flex items-center gap-6">
+          <Portrait {...b.portrait} compact />
+          <div className="flex-1"><DetailsScroll days={b.days} venue={b.venue} compact /></div>
+        </div>
+      ) : <DetailsScroll days={b.days} venue={b.venue} compact />}
       {call.map((c, i) => (
         <p key={i} className="text-balance max-w-[900px] text-center font-ornate text-[27px] leading-[1.4] text-deep">{c.text}</p>
       ))}

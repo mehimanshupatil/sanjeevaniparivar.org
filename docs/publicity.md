@@ -28,7 +28,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 | `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
 | `plantation` | वृक्षवाढदिवस (also suits वृक्षारोपण) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/plantation/` |
 | `cleanup` | स्वच्छता अभियान (also suits मंदिर / समुद्र किनारा स्वच्छता, प्लास्टिकमुक्त) | slogan strip on top, centred logo, a calendar badge for the date (one day; more days fall back to the date band), the call to join in an outlined box; optional `items` and `contacts` | `src/publicity/templates/cleanup/` |
-| `celebration` | मराठी भाषा गौरव दिन (also suits वाचन प्रेरणा दिन, विद्यार्थी गौरव) | patrika style: centred logo, `title.sub` under the title (e.g. "(कुसुमाग्रज जयंती)"), दिनांक / वेळ / स्थळ as centred lines between double rules, the programme as `note` ("॥ कार्यक्रम ॥"), a letter sign-off from `footer` (two lines: `"आपला\nसंजीवनी परिवार"`) | `src/publicity/templates/celebration/` |
+| `celebration` | मराठी भाषा गौरव दिन (also suits वाचन प्रेरणा दिन, विद्यार्थी गौरव) | patrika style: centred logo, `title.sub` under the title (e.g. "(कुसुमाग्रज जयंती)"), दिनांक / वेळ / स्थळ as centred lines between double rules, the programme as `note` ("॥ कार्यक्रम ॥"), a letter sign-off from `footer` (two lines: `"आपला\nसंजीवनी परिवार"`); optional `portrait` beside the intro | `src/publicity/templates/celebration/` |
 
 A template has one layout per format:
 
@@ -73,6 +73,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 ### Extending
 
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.
+- **Portrait** (`celebration`): put the photo in `public/publicity/assets/people/` (portrait-shaped, at least 480×600) and add to the programme `portrait: { src: /publicity/assets/people/<file>, caption: महाकवी कुसुमाग्रज, garland: true }`. `garland` adds a marigold हार: for a tribute (जयंती, स्मृती), not for a living guest. Only use a photo the trust has the right to use.
 - **New partner logo**: add a transparent PNG to `public/publicity/assets/logos/` (or reuse an existing public file, as the Sanjeevani logo reuses `/assets/brand/sanjeevani-parivar-symbol.png`) and register its path in `src/publicity/logos.ts`.
 - **New theme**: add `src/publicity/themes/<name>.ts` (all colour slots, any decoration slots) and register it in `themes/index.ts`. Decoration slots: `pattern`, `top`, `titleBack`, `titleSides`, `bottomRow` (one file, or a list that alternates). Leave a slot out to keep it empty. Optional: `fonts` (a Google Fonts title font + weight, replacing Rozha One) and `palette` (colours for numbered-point circles).
 - **New format** (square post, flex banner): add its size to `src/publicity/formats.ts`, write `templates/<type>/<Format>.tsx` for each type that needs it (the shared `Frame` draws paper, pattern and border; blocks take `compact` for shorter formats), register it in `templates/index.ts`, then list it in a programme's `formats`.

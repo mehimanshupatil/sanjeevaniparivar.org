@@ -1,11 +1,12 @@
 // Celebration (e.g. मराठी भाषा गौरव दिन) — 1080×1920 WhatsApp card, also works as an Instagram story.
 // Patrika style: centred logo, calligraphic title with a line under it, the purpose, दिनांक / वेळ /
-// स्थळ as centred lines, what the programme will be (note), the request to attend and a letter sign-off.
+// स्थळ as centred lines (beside an optional portrait), what the programme will be (note), the request to attend and a letter sign-off.
 import type { TemplateProps } from '../types';
 import Frame from '../../blocks/Frame';
 import Organisers from '../../blocks/Organisers';
 import TitleBlock from '../../blocks/TitleBlock';
 import DetailsScroll from '../../blocks/DetailsScroll';
+import Portrait from '../../blocks/Portrait';
 import Contacts from '../../blocks/Contacts';
 import Signoff from '../../blocks/Signoff';
 import DecorRow from '../../blocks/DecorRow';
@@ -27,7 +28,12 @@ export default function CelebrationWhatsapp({ edition: b, format }: TemplateProp
         {b.title.sub && <p className="font-ornate text-[36px] text-deep">{b.title.sub}</p>}
       </div>
 
-      {b.intro && <p className="max-w-[900px] text-center text-[27px] leading-[1.6]">{b.intro}</p>}
+      {b.portrait ? (
+        <div className="w-full flex items-center gap-8">
+          <Portrait {...b.portrait} />
+          {b.intro && <p className="flex-1 text-[27px] leading-[1.6]">{b.intro}</p>}
+        </div>
+      ) : b.intro && <p className="max-w-[900px] text-center text-[27px] leading-[1.6]">{b.intro}</p>}
 
       <DetailsScroll days={b.days} venue={b.venue} />
 
