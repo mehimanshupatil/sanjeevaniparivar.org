@@ -647,7 +647,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 71,
     "speaker": "श्री. यजुर्वेंद्र अनिल महाजन",
     "topic": "चांगला माणूस घडण्यासाठी!",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/2oNkPPRUamk",
     "date": "३ मे २०२६"
   }
 ]
