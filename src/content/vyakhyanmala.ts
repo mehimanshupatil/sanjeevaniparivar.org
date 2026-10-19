@@ -250,7 +250,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2012,
     "lecture_no": 27,
     "speaker": "श्री दिलीप दांद (कमांडर)",
-    "topic": "सात समुद्राची परिक्रमा, मुळाखत- श्री श्रीराम कळकर",
+    "topic": "सात समुद्राची परिक्रमा, मुलाखत- श्री श्रीराम कळकर",
     "youtubeUrl": "",
     "date": "२९ एप्रिल २०१२"
   },
@@ -313,7 +313,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2014,
     "lecture_no": 34,
     "speaker": "श्री वासुदेव कामत (प्रसिद्ध चित्रकार)",
-    "topic": "कलाप्रवास व व्यातीत बारकावे मुळाखत श्री विनायक परब",
+    "topic": "कलाप्रवास व व्यातीत बारकावे मुलाखत श्री विनायक परब",
     "youtubeUrl": "https://youtu.be/i9j-G1UBFPs",
     "date": "२७ एप्रिल २०१४"
   },
@@ -322,7 +322,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2014,
     "lecture_no": 35,
     "speaker": "श्री प्रदीप लोखंडे (रुरल रिलेशन्स)",
-    "topic": "ग्रामीण सेहसबंधाचा प्रवास व अनुभव (मुळाखत श्री सुमेध वडावाला)",
+    "topic": "ग्रामीण सेहसबंधाचा प्रवास व अनुभव (मुलाखत श्री सुमेध वडावाला)",
     "youtubeUrl": "https://youtu.be/hHk4tdJ3cXg",
     "date": "०४ मे २०१४"
   },
@@ -412,7 +412,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2018,
     "lecture_no": 45,
     "speaker": "डॉ. जयंत व मंगला नारळीकर",
-    "topic": "मुळाखत - श्री अरविंद परांजपे",
+    "topic": "मुलाखत - श्री अरविंद परांजपे",
     "youtubeUrl": "https://youtu.be/2ntFKojkf88",
     "date": "२९ एप्रिल २०१८"
   },
@@ -448,7 +448,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2019,
     "lecture_no": 49,
     "speaker": "श्री चंद्रकांत कुलकर्णी",
-    "topic": "मुळाखत - श्री गिरीश पतके",
+    "topic": "मुलाखत - श्री गिरीश पतके",
     "youtubeUrl": "",
     "date": "०४ मे २०१९"
   },
@@ -457,7 +457,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2019,
     "lecture_no": 50,
     "speaker": "श्री सागर रेड्डी",
-    "topic": "मुळाखत - श्रीमती स्मिता गवाणकर",
+    "topic": "मुलाखत - श्रीमती स्मिता गवाणकर",
     "youtubeUrl": "",
     "date": "०५ मे २०१९"
   },
@@ -564,9 +564,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 21,
     "year": 2023,
     "lecture_no": 62,
-    "speaker": "श्री विजय केकर",
-    "topic": "एक मटासप्रवास मुळाखत: श्रीमती स्मिता गवाणकर",
-    "youtubeUrl": "",
+    "speaker": "श्री विजय केंकरे",
+    "topic": "एक नाट्यप्रवास — मुलाखत : श्रीमती स्मिता गवाणकर",
+    "youtubeUrl": "https://youtube.com/live/DTN42S8MWaQ",
     "date": "०१ मे २०२३"
   },
   {
