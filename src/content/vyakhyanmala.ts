@@ -519,9 +519,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 20,
     "year": 2022,
     "lecture_no": 57,
-    "speaker": "श्रीमती निलाबरी जोशी",
+    "speaker": "श्रीमती नीलांबरी जोशी",
     "topic": "भविष्यकाळातील माध्यम तंत्रज्ञान आणि मानसशास्त्र",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/WaofkRRtRuA",
     "date": "२४ एप्रिल २०२२"
   },
   {
