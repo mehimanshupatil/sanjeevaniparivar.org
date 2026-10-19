@@ -23,10 +23,10 @@ export default function Pass({ edition: b, format }: TemplateProps) {
       <div id="content" data-fill className={cx(s.pad, 'h-full flex flex-col items-center justify-between gap-4')}>
         <p className={cx('text-balance text-center font-ornate text-band-accent', compact ? 'text-[28px]' : 'text-[34px]')}>{b.invite}</p>
 
-        {/* The ticket takes the free height and spreads its contents, so a short card has no empty bands */}
-        <article className="relative w-full flex-1 flex flex-col overflow-hidden rounded-[36px] bg-ground">
+        {/* The ticket is only as tall as its contents; the deep background shows around it */}
+        <article className="relative w-full flex-none overflow-hidden rounded-[36px] bg-ground">
           {decor.top && <img src={decorUrl(decor.top)} alt="" className="w-full px-8 pt-4" />}
-          <div className={cx(s.inner, 'flex-1 flex flex-col items-center justify-evenly text-center', compact ? 'gap-3 pt-5 pb-6' : 'gap-4 pt-7 pb-8')}>
+          <div className={cx(s.inner, 'flex flex-col items-center text-center', compact ? 'gap-3 pt-5 pb-6' : 'gap-4 pt-7 pb-8')}>
             {logo && <img src={logo.src} alt={logo.caption} className={compact ? 'size-[80px] object-contain' : 'size-[104px] object-contain'} />}
             {b.title.top && <span className={cx('font-ornate text-deep', compact ? 'text-[30px]' : 'text-[38px]')}>{b.title.top}</span>}
             <h1 className="w-full font-normal">
