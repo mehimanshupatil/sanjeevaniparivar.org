@@ -620,7 +620,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 68,
     "speaker": "डॉ. स्मिता दातार",
     "topic": "स्त्री : काल, आज, उद्या",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtube.com/live/8-UMpdwU7zs",
     "date": "४ मे २०२५"
   },
   {
