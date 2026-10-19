@@ -502,8 +502,8 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2021,
     "lecture_no": 55,
     "speaker": "श्री अधिक कदम",
-    "topic": "काश्मीर सेवा यज्ञ",
-    "youtubeUrl": "",
+    "topic": "१९९८ ते २०२१ काश्मीर सेवा यज्ञ",
+    "youtubeUrl": "https://youtu.be/C0C5Gx1P8JM",
     "date": "०१ मे २०२१"
   },
   {
