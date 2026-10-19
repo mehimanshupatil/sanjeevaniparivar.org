@@ -465,18 +465,18 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 18,
     "year": 2020,
     "lecture_no": 51,
-    "speaker": "श्री अतुल कहात",
-    "topic": "डिजीटल पार्वतन: आव्हान आणि संधी",
-    "youtubeUrl": "",
+    "speaker": "श्री अतुल कहाते",
+    "topic": "डिजिटल परिवर्तन : आव्हाने आणि संधी",
+    "youtubeUrl": "https://youtu.be/ctmZExMrKUk",
     "date": "०१ मे २०२०"
   },
   {
     "edition": 18,
     "year": 2020,
     "lecture_no": 52,
-    "speaker": "श्री संदिपकुमार साळुंके",
-    "topic": "कोरोना नंतरचे जग : आव्हान आणि संधी",
-    "youtubeUrl": "",
+    "speaker": "श्री संदीपकुमार साळुंखे",
+    "topic": "कोरोनानंतरचे जग : आव्हाने आणि संधी",
+    "youtubeUrl": "https://youtu.be/X0SuSqAQvEM",
     "date": "१७ मे २०२०"
   },
   {
