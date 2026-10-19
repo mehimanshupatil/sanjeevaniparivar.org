@@ -31,7 +31,7 @@ pnpm publicity  # after build: render Publicity to dist/publicity/ (first time: 
 
 ```
 src/
-├── publicity/        # Publicity templates (per programme type), shared blocks, themes — docs/publicity.md
+├── publicity/        # Publicity templates (per programme type), styles, shared blocks, themes — docs/publicity.md
 ├── components/       # React components (Navbar, Footer, sections, pages); ui/ = shadcn
 ├── content/
 │   ├── blog/         # MDX blog posts (bilingual)
@@ -90,7 +90,7 @@ The site supports **Marathi (`mr`)** (default) and **English (`en`)**. All user-
 | `/gallery` | Photo gallery |
 | `/events` | Events (upcoming + past) |
 | `/brand` | Brand guidelines: logo downloads, colours, fonts |
-| `/publicity/` | Rendered Publicity per programme and year (noindex) |
+| `/publicity/` | Rendered Publicity per programme and year, in every style (noindex) |
 | `/publicity/templates/` | Template gallery + try-out editor for trust members (noindex) |
 | `/team` | Team members |
 | `/donate` | Donation info (bank + UPI) |

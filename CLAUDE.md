@@ -39,6 +39,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/team` | `TeamPage.tsx` — member names are `[नाव]` placeholders |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
 | `/publicity/[year]/[programme]/[format]` | Bare Publicity pages rendered to PNG/PDF after build (see Publicity below) |
+| `/publicity/[year]/[programme]/[sub]/[format]` | The same edition in a Style (`poster`, `rail`, `pass`) or one lecture session (`1`, `2`, …) |
 | `/publicity/`, `/publicity/[year]/[programme]/` | Preview + download pages for rendered Publicity (noindex), `PublicityPreviewLayout.astro` |
 | `/publicity/templates/`, `/publicity/templates/[type]/` | Template gallery + try-out editor for trust members (`TemplateEditor.tsx`), sample pages at `/publicity/templates/[type]/[format]/` |
 
@@ -58,8 +59,8 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 ## Publicity (invitations and banners)
 - Publicity for recurring programmes: Invitations (WhatsApp, Instagram) now, printed flex Banners later. Terms in `GLOSSARY.md`. Full guide, design rules and Marathi text standards: `docs/publicity.md`. Decisions: `docs/decisions/007-banners-as-astro-pages.md`, `008-publicity-naming.md`
 - Content: `src/content/programmes/*.yaml` (fixed) + `src/content/editions/<year>/*.yaml` (dates, venue, per-year overrides; `draft: true` = dev only, not published). Types: `fair` (ग्राहक पेठ), `workshop` (आकाशकंदील कार्यशाळा), `plantation` (वृक्षवाढदिवस), `cleanup` (स्वच्छता अभियान), `celebration` (मराठी भाषा गौरव दिन), `competition` (वक्तृत्व स्पर्धा, `yearStyle: school` → "२०२५-२६"), `lectures` (व्याख्यानमाला: series card + a card per session/पुष्प at `/publicity/<year>/<programme>/<n>/<format>`)
-- Code: `src/publicity/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `publicity.css`); route `src/pages/publicity/[year]/[programme]/[format].astro` (noindex, not in sitemap)
-- Render: `pnpm build && pnpm publicity` → `dist/publicity/<year>/<programme>/<format>{.png,@2x.png,.pdf}`; CI runs `build:publicity` (strict) before deploy
+- Code: `src/publicity/` (React templates per programme type with `sample.ts`, shared React blocks, formats, themes, logos, `publicity.css`); routes `src/pages/publicity/[year]/[programme]/[format].astro` and `[sub]/[format].astro` (noindex, not in sitemap); `fit.ts` shrinks long titles and grows sparse cards to fill the frame
+- Render: `pnpm build && pnpm publicity` → `dist/publicity/<year>/<programme>/[<style or session>/]<format>{.png,@2x.png,.pdf}`; CI runs `build:publicity` (strict) before deploy
 - Publicity pages never import `global.css`. Publicity Tailwind tokens: `bg-ground`, `text-deep`, `font-display`, etc. Themes: `diwali` (ग्राहक पेठ), `kalaDalan` (children's workshops, Baloo 2), `paryavaran` (plantation), `swachhata` (cleanup), `sahitya` (celebration, Amita), `prabodhan` (lectures), `spardha` (competition, Khand), `ganeshotsav` (गणेशमूर्ती workshop). Gallery + try-out editor: `/publicity/templates/`
 - Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
 - Type-check with `pnpm check` (astro check, also in CI). TypeScript is pinned to 6 — Astro's tooling doesn't support 7 yet
