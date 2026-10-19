@@ -24,9 +24,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 1,
     "year": 2003,
     "lecture_no": 2,
-    "speaker": "सौ सेहलता देशमुख (कुलगुरू मुंबई विद्यापीठ)",
+    "speaker": "डॉ. स्नेहलता देशमुख (कुलगुरू, मुंबई विद्यापीठ)",
     "topic": "शिक्षण आणि उद्योजकता",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/lsJuaTtlJSQ",
     "date": "२७ एप्रिल २००३"
   },
   {
