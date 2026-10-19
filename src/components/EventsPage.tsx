@@ -30,6 +30,11 @@ function EventCard({ ev }: { ev: Event }) {
           {d.toLocaleDateString('en-IN', { month: 'short' })}
         </span>
         <span className="text-[10px] text-gray-400 mt-0.5">{d.getFullYear()}</span>
+        {ev.endDate && (
+          <span className="text-[10px] font-semibold mt-0.5" style={{ color }}>
+            – {new Date(ev.endDate).getDate()} {new Date(ev.endDate).toLocaleDateString('en-IN', { month: 'short' })}
+          </span>
+        )}
       </div>
 
       <div className="flex-1 min-w-0">
@@ -45,20 +50,28 @@ function EventCard({ ev }: { ev: Event }) {
         <h3 className="font-bold text-gray-900 mb-1 text-base">{t(ev.title)}</h3>
         <p className="text-sm text-gray-500 mb-1.5">{t(ev.desc)}</p>
         <p className="text-xs text-gray-400">📍 {t(ev.venue)}</p>
+        {ev.invitation && (
+          <a href={ev.invitation} className="mt-2 inline-block text-xs font-semibold text-primary hover:underline">
+            {t({ mr: 'निमंत्रण पत्रिका पहा →', en: 'View invitation →' })}
+          </a>
+        )}
       </div>
     </div>
   );
 }
 
-function PageContent() {
+function PageContent({ fromEditions }: { fromEditions: Event[] }) {
   const t = useT();
   const [filter, setFilter] = useState<string>('all');
 
   const now = new Date();
-  const upcoming = EVENTS.filter((e) => new Date(e.date) >= now).sort(
+  const events = [...EVENTS, ...fromEditions];
+  // A multi-day event stays upcoming until its last day
+  const ends = (e: Event) => new Date(e.endDate ?? e.date);
+  const upcoming = events.filter((e) => ends(e) >= now).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
-  const past = EVENTS.filter((e) => new Date(e.date) < now).sort(
+  const past = events.filter((e) => ends(e) < now).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
@@ -153,10 +166,11 @@ function PageContent() {
   );
 }
 
-export default function EventsPage() {
+/** fromEditions: events made from the Publicity editions at build time (src/publicity/events.ts) */
+export default function EventsPage({ fromEditions = [] }: { fromEditions?: Event[] }) {
   return (
     <LangProvider>
-      <PageContent />
+      <PageContent fromEditions={fromEditions} />
     </LangProvider>
   );
 }

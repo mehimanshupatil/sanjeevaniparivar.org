@@ -4,12 +4,18 @@ export interface Event {
   id: string;
   title: Bilingual;
   date: string;          // ISO date string
+  /** Last day of a multi-day event */
+  endDate?: string;
   time?: string;
   venue: Bilingual;
   desc: Bilingual;
   kshetra: 'shikshan' | 'paryavaran' | 'aarogya' | 'prabodhana' | 'general';
+  /** Download page of its invitation cards (events made from Publicity editions) */
+  invitation?: string;
 }
 
+/** Events without a Publicity edition. Events that have one are made from it at build time
+ *  (src/publicity/events.ts) and passed to the events page: add those as editions, not here. */
 export const EVENTS: Event[] = [
   {
     id: 'ev-01',

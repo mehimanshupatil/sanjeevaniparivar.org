@@ -37,6 +37,10 @@ const programmeText = z.object({
   itemsMore: z.string().optional(),
   closing: z.array(z.object({ text: z.string(), emphasis: z.boolean().optional() })).optional(),
   footer: z.string().optional(),
+  /** The events page (/events): a one-line Marathi summary (else the intro), and the English for
+   *  the English site — title (without the year), summary and venue. Missing English shows the Marathi. */
+  summary: z.string().optional(),
+  en: z.object({ title: z.string().optional(), summary: z.string().optional(), venue: z.string().optional() }).optional(),
   /** competition: the groups (गट), each with who it is for and the topics to choose from */
   groupsHeading: z.string().optional(),
   groups: z.array(z.object({ name: z.string(), who: z.string().optional(), topics: z.array(z.string()).min(1) })).optional(),

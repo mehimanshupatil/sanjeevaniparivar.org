@@ -9,3 +9,7 @@ days:
 venue:
   - स्वामी समर्थ मठ,
   - भुईगाव
+
+# संकेतस्थळावरील कार्यक्रमासाठी इंग्रजी स्थळ
+en:
+  venue: "Swami Samarth Math, Bhuigaon"

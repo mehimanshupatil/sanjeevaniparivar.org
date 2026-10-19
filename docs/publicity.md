@@ -151,6 +151,10 @@ Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site'
 - Time-of-day words: पहाटे (4–6), सकाळी (6–12), दुपारी (12–17), सायंकाळी (17–20), रात्री (20–4).
 - Suggest wording changes to the content owner before applying them; don't silently rewrite content.
 
+## Events page
+
+Every published edition is also an event on `/events` (`src/publicity/events.ts`, at build time), with a link to its invitation cards, so an event and its invitation never disagree. Don't add those to `src/content/events.ts`; it keeps only events that have no invitation. The event uses the title and year, the first day's time, the venue, the kshetra and the programme's `summary` (else the intro). For the English site, a programme can give `en: { title, summary }` and an edition `en: { venue }`; whatever is missing shows in Marathi. A multi-day event stays under "upcoming" until its last day.
+
 ## Archiving
 
 Rendered images are generated on every deploy and never committed. To keep the exact version that was shared, attach the files to a GitHub Release for that programme.

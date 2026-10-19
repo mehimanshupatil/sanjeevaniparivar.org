@@ -9,3 +9,7 @@ days:
 venue:
   - वाघेश्वरी मंदिर,
   - वाघोली
+
+# संकेतस्थळावरील कार्यक्रमासाठी इंग्रजी स्थळ
+en:
+  venue: "Wagheshwari Temple, Wagholi"

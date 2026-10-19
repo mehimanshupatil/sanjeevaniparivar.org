@@ -25,3 +25,9 @@ closing:
     emphasis: true
 
 footer: ॥ संजीवनी परिवार ॥
+
+# संकेतस्थळावरील कार्यक्रम (/events): मराठी सारांश आणि इंग्रजी मजकूर
+summary: संजीवनी वनराई प्रकल्पाचा {{ yearsRunning }}वा वाढदिवस — वृक्षारोपण करून साजरा.
+en:
+  title: "Tree Birthday Celebration"
+  summary: "The birthday of the Sanjeevani Vanrai project, celebrated by planting trees."

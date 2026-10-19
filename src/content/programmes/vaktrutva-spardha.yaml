@@ -41,3 +41,9 @@ contacts:
   - { name: किशोर वझे, phone: "9920170414" }
 
 footer: "आपला\nसंजीवनी परिवार"
+
+# संकेतस्थळावरील कार्यक्रम (/events): मराठी सारांश आणि इंग्रजी मजकूर
+summary: शाळकरी विद्यार्थ्यांसाठी गटनिहाय वक्तृत्व स्पर्धा.
+en:
+  title: "Sanjeevani Elocution Competition"
+  summary: "An elocution competition for school students, in age groups."

@@ -47,3 +47,9 @@ closing:
       आपण सहकुटुंब, सहपरिवार उपस्थित राहून {{ fullTitle }}ची शोभा वाढवावी, ही नम्र विनंती!
 
 footer: नक्की या… आपल्या माणसांसाठी, आपल्या समाजासाठी!
+
+# संकेतस्थळावरील कार्यक्रम (/events): मराठी सारांश आणि इंग्रजी मजकूर
+summary: दिवाळीनिमित्त समाजातील उद्योजकांची खरेदी पेठ — फराळ, आकाशकंदील, कपडे, वस्तू आणि बरेच काही.
+en:
+  title: "Samavedi Brahman Grahak Peth"
+  summary: "A Diwali fair of stalls by the community's entrepreneurs — snacks, lanterns, clothes, gifts and more."

@@ -40,3 +40,9 @@ contacts:
   - { name: मयूर नाईक, phone: "9028270268" }
   - { name: रोहन नाईक, phone: "8446807273" }
   - { name: कौस्तुभ पाटील, phone: "8087350359" }
+
+# संकेतस्थळावरील कार्यक्रम (/events): मराठी सारांश आणि इंग्रजी मजकूर
+summary: संजीवनी कलादालन अंतर्गत विद्यार्थ्यांसाठी आकाशकंदील बनवण्याची कार्यशाळा.
+en:
+  title: "Akashkandil (Diwali Lantern) Workshop"
+  summary: "A Sanjeevani Kaladalan workshop where students make traditional Diwali lanterns."

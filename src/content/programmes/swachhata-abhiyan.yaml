@@ -22,3 +22,9 @@ closing:
     emphasis: true
 
 footer: ॥ संजीवनी परिवार ॥
+
+# संकेतस्थळावरील कार्यक्रम (/events): मराठी सारांश आणि इंग्रजी मजकूर
+summary: संजीवनी परिवाराचे वार्षिक स्वच्छता अभियान — सर्वांनी सहभागी व्हावे.
+en:
+  title: "Cleanliness Drive"
+  summary: "Sanjeevani Parivar's annual cleanliness drive — everyone is welcome to join."

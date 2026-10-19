@@ -16,6 +16,12 @@ export interface ResolvedEdition {
   /** "2026/grahak-peth" — URL path under /publicity/ */
   id: string;
   programme: string;
+  kshetra: ProgrammeData['kshetra'];
+  /** The days as written, YYYY-MM-DD (for the events page) */
+  isoDates: string[];
+  summary?: string;
+  /** English for the events page; edition fields override the programme's one by one */
+  en: { title?: string; summary?: string; venue?: string };
   /** Programme type — picks the template folder in src/publicity/templates/ */
   type: ProgrammeData['type'];
   year: number;
@@ -93,6 +99,10 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     id: edition.id,
     programme: programme.id,
     type: p.type,
+    kshetra: p.kshetra,
+    isoDates: days.map((d) => d.date),
+    summary: fill(text.summary),
+    en: { ...p.en, ...stripUndefined(edition.data.en ?? {}) },
     year,
     fullTitle,
     title: { ...p.title, sub: fill(p.title.sub) },

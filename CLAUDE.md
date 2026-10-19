@@ -50,7 +50,7 @@ HeroSection → AboutSection → KshetraOverview → EventsSection → GalleryTe
 - `kshetras.ts` — 4 kshetras, 21 activities with slugs + body text
 - `vyakhyanmala.ts` — 65 lectures; fields: `lecture_no, edition, year, speaker, topic, youtubeUrl, date`
 - `gallery.ts` — 16 items; images expected at `/public/assets/gallery/`
-- `events.ts` — upcoming + past events
+- `events.ts` — events without an invitation; every published Publicity edition is added as an event automatically (`src/publicity/events.ts`)
 - `team.ts` — 6 members (names are placeholders)
 
 ## Social links (src/lib/social.ts)
