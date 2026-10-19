@@ -602,7 +602,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 66,
     "speaker": "श्री. अतुल कहाते",
     "topic": "आर्टिफिशियल इंटेलिजन्स (AI) : नव्या युगाची सुरुवात",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtube.com/live/U5oE-PJCnt0",
     "date": "२७ एप्रिल २०२५"
   },
   {
