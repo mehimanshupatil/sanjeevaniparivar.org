@@ -60,9 +60,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 3,
     "year": 2005,
     "lecture_no": 6,
-    "speaker": "श्री मुरलीधर सायनकर",
-    "topic": "विवेक क्रिया आपुली पालटावी",
-    "youtubeUrl": "",
+    "speaker": "प्रा. मुरलीधर सायनेकर",
+    "topic": "विवेके क्रिया आपुली पालटावी",
+    "youtubeUrl": "https://youtu.be/k0ZS4bXm1kc",
     "date": "१० एप्रिल २००५"
   },
   {
@@ -70,8 +70,8 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2005,
     "lecture_no": 7,
     "speaker": "श्री चंद्रशेखर धर्माधिकारी (निवृत्त मुख्य न्यायाधीश)",
-    "topic": "जरासे वेडे का",
-    "youtubeUrl": "",
+    "topic": "जरासे वेडे व्हा",
+    "youtubeUrl": "https://youtu.be/CyujlXxq3Gw",
     "date": "१७ एप्रिल २००५"
   },
   {
@@ -357,9 +357,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 14,
     "year": 2016,
     "lecture_no": 39,
-    "speaker": "प्रा. डॉ. मृदुला बळे",
+    "speaker": "प्रा. डॉ. मृदुला बेळे",
     "topic": "औषधांचे अर्थकारण आणि पेटंट",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/9QZfCfxhJVY",
     "date": "२४ एप्रिल २०१६"
   },
   {
@@ -485,7 +485,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 53,
     "speaker": "प्रा डॉ.शैलेश कुलकर्णी",
     "topic": "सकारात्मक दृष्टिकोन",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/2TWUnyRZa1k",
     "date": "२४ मे २०२०"
   },
   {
@@ -494,7 +494,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 54,
     "speaker": "डॉ भूषण केळकर",
     "topic": "चौथी औद्योगिक क्रांती : आव्हान आणि संधी",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/d5SGb2qsey0",
     "date": "२५ एप्रिल २०२१"
   },
   {
@@ -512,7 +512,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 56,
     "speaker": "डॉ अनिल काकोडकर",
     "topic": "सिलेज : ग्रामीण समृद्धीसाठी ज्ञान सेतू",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/D8TyN2Lmx7g",
     "date": "०२ मे २०२१"
   },
   {
