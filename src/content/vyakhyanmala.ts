@@ -529,8 +529,8 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2022,
     "lecture_no": 58,
     "speaker": "श्री अक्षय जोग",
-    "topic": "स्वा. सावरकर अक्षय आणि वास्तव",
-    "youtubeUrl": "",
+    "topic": "स्वा. सावरकर : आक्षेप आणि वास्तव",
+    "youtubeUrl": "https://youtu.be/N6TpcFOE82Y",
     "date": "०१ मे २०२२"
   },
   {
