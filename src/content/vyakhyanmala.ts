@@ -539,7 +539,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 59,
     "speaker": "श्रीमती गौरी कानिटकर",
     "topic": "विवाह संस्कार - सहजीवन",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/ye0cki-5vu4",
     "date": "०८ मे २०२२"
   },
   {
