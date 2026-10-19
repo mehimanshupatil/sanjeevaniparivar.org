@@ -25,7 +25,7 @@ Each programme has a `type`, and every programme of that type uses the same temp
 | Type | Programmes | Middle section | Template |
 |---|---|---|---|
 | `fair` | ग्राहक पेठ | list of attractions (`items`) | `src/publicity/templates/fair/` |
-| `workshop` | आकाशकंदील कार्यशाळा (also suits शाडूमाती गणेशमूर्ती) | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
+| `workshop` | आकाशकंदील कार्यशाळा, श्री गणेशमूर्ती कार्यशाळा | numbered terms (`rules`), a highlighted `note`, `contacts` for registration | `src/publicity/templates/workshop/` |
 | `plantation` | वृक्षवाढदिवस (also suits वृक्षारोपण) | none: a large intro and the call to join (`closing`, the `emphasis` line set large); optional `items` and `contacts` | `src/publicity/templates/plantation/` |
 | `cleanup` | स्वच्छता अभियान (also suits मंदिर / समुद्र किनारा स्वच्छता, प्लास्टिकमुक्त) | slogan strip on top, centred logo, a calendar badge for the date (one day; more days fall back to the date band), the call to join in an outlined box; optional `items` and `contacts` | `src/publicity/templates/cleanup/` |
 | `celebration` | मराठी भाषा गौरव दिन (also suits वाचन प्रेरणा दिन, विद्यार्थी गौरव) | a letter strip on top (theme `strip`), logo + invite, calligraphic title over a faint book with `title.sub` in a pill, optional `quote` (`{ text, by }`) set large, the intro beside an optional `portrait`, दिनांक व वेळ and स्थळ as two coloured cards with icon badges, the programme (`note`) in a card with a ribbon label, the request to attend, a letter sign-off from `footer` (two lines: `"आपला\nसंजीवनी परिवार"`) | `src/publicity/templates/celebration/` |
@@ -121,6 +121,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 | `sahitya` | मराठी भाषा गौरव दिन | parchment paper with faint quills, ink-indigo and saffron, a वर्णमाला strip (अ आ इ … क ख ग घ) across the top, a faint open book behind the title, लेखणी व दौत beside it, books + quills along the bottom, Amita titles |
 | `prabodhan` | संजीवनी व्याख्यानमाला | warm paper with faint florets, प्रबोधन purple with crimson and brass, a marigold-and-jasmine garland on top, a lit समई either side of the title (never beside a speaker's photo), flowers (पुष्प) along the bottom |
 | `spardha` | वक्तृत्व स्पर्धा | bright paper with faint stars, शिक्षण blue and trophy gold, a चषक either side of the title, microphones + stars along the bottom, a colour per group (`palette`), Khand titles |
+| `ganeshotsav` | श्री गणेशमूर्ती कार्यशाळा | warm paper with faint जास्वंद, शेंदूर red and clay brown, a दूर्वा-and-जास्वंद string on top, hanging जास्वंद beside the title, मोदक + जास्वंद along the bottom, Baloo 2 titles; no Ganesh image |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 
