@@ -121,7 +121,7 @@ An edition with `draft: true` (e.g. next year's, before the date is fixed) shows
 | `sahitya` | मराठी भाषा गौरव दिन | parchment paper with faint quills, ink-indigo and saffron, a वर्णमाला strip (अ आ इ … क ख ग घ) across the top, a faint open book behind the title, लेखणी व दौत beside it, books + quills along the bottom, Amita titles |
 | `prabodhan` | संजीवनी व्याख्यानमाला | warm paper with faint florets, प्रबोधन purple with crimson and brass, a marigold-and-jasmine garland on top, a lit समई either side of the title (never beside a speaker's photo), flowers (पुष्प) along the bottom |
 | `spardha` | वक्तृत्व स्पर्धा | bright paper with faint stars, शिक्षण blue and trophy gold, a चषक either side of the title, microphones + stars along the bottom, a colour per group (`palette`), Khand titles |
-| `ganeshotsav` | श्री गणेशमूर्ती कार्यशाळा | pale-yellow paper with faint जास्वंद, दूर्वा green and saffron, a दूर्वा-and-जास्वंद string on top, hanging जास्वंद beside the title, मोदक + जास्वंद along the bottom, Baloo 2 titles; no Ganesh image |
+| `ganeshotsav` | श्री गणेशमूर्ती कार्यशाळा | pale-yellow paper with faint जास्वंद, bright saffron (शेंदूर) and yellow, a दूर्वा-and-जास्वंद string on top, hanging जास्वंद beside the title, मोदक + जास्वंद along the bottom, Baloo 2 titles; no Ganesh image |
 
 Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site's `global.css`. Theme colours are classes like `bg-ground`, `text-deep`, `text-band-accent`. Fonts: `font-display` (Rozha One, or the theme's own title font, e.g. Baloo 2), `font-ornate` (Tiro Devanagari Marathi), `font-body` (Mukta), loaded from Google Fonts (`PublicityLayout.astro`). Rendering fails if any of them doesn't load, so an image is never drawn in a fallback font.
 
