@@ -1,20 +1,20 @@
 import type { Theme } from './types';
 
 /**
- * Ganeshotsav (शाडूमाती गणेशमूर्ती कार्यशाळा): warm paper with faint जास्वंद, शेंदूर red and
- * clay brown, a दूर्वा-and-जास्वंद string on top, hanging जास्वंद strings beside the title and
+ * Ganeshotsav (शाडूमाती गणेशमूर्ती कार्यशाळा): pale-yellow paper with faint जास्वंद, दूर्वा green
+ * and saffron (kept clear of the Diwali maroon so it doesn't look like ग्राहक पेठ), a दूर्वा-and-जास्वंद string on top, hanging जास्वंद strings beside the title and
  * मोदक + जास्वंद along the bottom. No Ganesh image (see docs/publicity.md).
  */
 export const ganeshotsav: Theme = {
   colors: {
-    ground: '#FFF8EE',
-    ink: '#2B1B12',
-    inkSoft: '#5A3A28',
-    primary: '#C62828',
-    deep: '#6D2E1B',
+    ground: '#FFFBEA',
+    ink: '#1F2A14',
+    inkSoft: '#4A5530',
+    primary: '#E65100',
+    deep: '#1B5E20',
     gold: '#C77700',
-    bandText: '#FFF8EE',
-    bandSoft: '#F3DCCB',
+    bandText: '#FFFBEA',
+    bandSoft: '#DCEFD0',
     bandAccent: '#FFC94D',
     marigold: '#F59E0B',
     marigoldEdge: '#B45309',
@@ -26,5 +26,5 @@ export const ganeshotsav: Theme = {
     bottomRow: ['modak.svg', 'jaswand.svg'],
   },
   fonts: { display: 'Baloo 2', displayWeight: 800 },
-  palette: ['#C62828', '#2E7D32', '#C77700', '#6D2E1B'],
+  palette: ['#E65100', '#1B5E20', '#C62828', '#C77700'],
 };
