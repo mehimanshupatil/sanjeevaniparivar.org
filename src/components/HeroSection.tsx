@@ -1,6 +1,7 @@
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import LogoImage from './common/LogoImage';
+import { vyakhyanmalaEdition } from '@/lib/org';
 
 export default function HeroSection() {
   const t = useT();
@@ -105,7 +106,7 @@ export default function HeroSection() {
             </div>
             <div className="w-px h-12" style={{ background: 'rgba(255,253,231,0.2)' }} />
             <div className="text-center">
-              <span className="block text-5xl font-black leading-none" style={{ color: '#F5C518' }}>23+</span>
+              <span className="block text-5xl font-black leading-none" style={{ color: '#F5C518' }}>{vyakhyanmalaEdition}</span>
               <span className="block text-xs font-medium mt-1.5" style={{ color: 'rgba(255,253,231,0.6)' }}>
                 {t(tr.hero.statLectures)}
               </span>

@@ -94,10 +94,13 @@ const editions = defineCollection({
     programme: reference('programmes'),
     days: z.array(
       z.object({ date: isoDate, from: hhmm.optional(), to: hhmm.optional(), at: hhmm.optional(), note: z.string().optional() })
-        .refine((d) => [d.from, d.at, d.note].filter(Boolean).length === 1 && !(d.to && !d.from),
-          'Each day needs exactly one of "from" (and optional "to"), "at" (starts at, no end) or "note"'),
+        .refine((d) => [d.from, d.at, d.note].filter(Boolean).length <= 1 && !(d.to && !d.from),
+          'A day has one of "from" (and optional "to"), "at" (starts at, no end) or "note"'),
     ).min(1),
-    venue: z.array(z.string()).min(1),
+    venue: z.array(z.string()).min(1).optional(),
+    /** false: a past edition kept only as a record on the events page (e.g. from the annual report),
+     *  with no invitation cards. Its days may leave out the time and it may leave out the venue. */
+    cards: z.boolean().optional(),
     /** lectures: one per day, in the same order — who speaks on that day and on what.
      *  photo: under public/publicity/assets/people/; closing: this lecture's own request to attend */
     sessions: z.array(z.object({
@@ -110,7 +113,9 @@ const editions = defineCollection({
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */
     draft: z.boolean().optional(),
   }).refine((e) => !e.sessions || e.sessions.length === e.days.length,
-    { message: 'sessions: one per day, in the same order as days', path: ['sessions'] }),
+    { message: 'sessions: one per day, in the same order as days', path: ['sessions'] })
+    .refine((e) => e.cards === false || (e.venue && e.days.every((d) => d.from || d.at || d.note)),
+      { message: 'An edition with invitation cards needs a venue and a time ("from", "at" or "note") on every day; add "cards: false" for a record without cards', path: ['days'] }),
 });
 
 export const collections = { blog, programmes, editions };

@@ -17,6 +17,8 @@ export interface ResolvedEdition {
   id: string;
   programme: string;
   kshetra: ProgrammeData['kshetra'];
+  /** false: a record on the events page only, no invitation cards */
+  cards: boolean;
   /** The days as written, YYYY-MM-DD (for the events page) */
   isoDates: string[];
   summary?: string;
@@ -80,7 +82,7 @@ export interface ResolvedSession {
  */
 export function resolveEdition(edition: Entry<EditionData>, programme: Entry<ProgrammeData>): ResolvedEdition {
   const p = programme.data;
-  const { programme: _ref, days, venue, draft: _draft, sessions = [], ...overrides } = edition.data;
+  const { programme: _ref, days, venue = [], draft: _draft, cards = true, sessions = [], ...overrides } = edition.data;
   const text = { ...p, ...stripUndefined(overrides) };
 
   const year = parseDate(days[0].date).getUTCFullYear();
@@ -93,13 +95,14 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
   // editionNo counts the first year as १: a series started in 2003 is in its २४th year in 2026
   const editionNo = p.startedYear ? mrNum(year - p.startedYear + 1) : '';
   const fill = (s?: string) => (s == null ? s : fillPlaceholders(s, { fullTitle, year: yearMr, yearsRunning, editionNo }));
-  const resolvedDays = days.map((d) => ({ date: formatDate(d.date), parts: dateParts(d.date), time: d.note ?? (d.at ? formatAt(d.at) : formatRange(d.from!, d.to)) }));
+  const resolvedDays = days.map((d) => ({ date: formatDate(d.date), parts: dateParts(d.date), time: d.note ?? (d.at ? formatAt(d.at) : d.from ? formatRange(d.from, d.to) : '') }));
 
   return {
     id: edition.id,
     programme: programme.id,
     type: p.type,
     kshetra: p.kshetra,
+    cards,
     isoDates: days.map((d) => d.date),
     summary: fill(text.summary),
     en: { ...p.en, ...stripUndefined(edition.data.en ?? {}) },

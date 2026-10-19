@@ -1,0 +1,17 @@
+# श्री गणेशमूर्ती कार्यशाळा २०२५ — नोंद (१७ वा वार्षिक अहवाल २०२५-२६ मधून).
+# निमंत्रण पत्रिका नाहीत (cards: false); फक्त संकेतस्थळावरील कार्यक्रमांत दिसते.
+
+programme: ganeshmurti-karyashala
+cards: false
+
+days:
+  - { date: 2025-08-24 }
+
+venue:
+  - श्रीवाघेश्वरी मंदिर,
+  - वाघोली
+
+summary: सातवी कार्यशाळा — १३० विद्यार्थ्यांनी शाडूमातीपासून गणेशमूर्ती बनवल्या.
+en:
+  venue: "Shri Wagheshwari Temple, Wagholi"
+  summary: "The seventh workshop — 130 students made Ganesh idols from shadu clay."

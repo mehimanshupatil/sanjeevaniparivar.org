@@ -1,67 +1,44 @@
 import type { Bilingual } from '@/i18n/translations';
 
+// कार्यकारी मंडळ (Executive Committee), from the trust's 17th annual report (2025–26).
+// Update when a new committee is elected.
+
+export const TEAM_TERM: Bilingual = { mr: '२०२४ – २०२९', en: '2024 – 2029' };
+
 export interface TeamMember {
   id: string;
-  name: string;
+  /** Without "श्री.", which the page adds in Marathi */
+  name: Bilingual;
   role: Bilingual;
-  bio: Bilingual;
   /** Path under /public/assets/team/ — optional */
   photo?: string;
 }
 
+/** Office bearers, in the order of the report */
 export const TEAM: TeamMember[] = [
-  {
-    id: 'tm-01',
-    name: 'श्री. [नाव]',
-    role: { mr: 'संस्थापक अध्यक्ष', en: 'Founding President' },
-    bio: {
-      mr: '१९९४ पासून संजीवनी परिवाराची स्थापना करून सामाजिक कार्याला वाहून घेतलेले.',
-      en: 'Founded Sanjeevani Parivar in 1994 and dedicated to social service since.',
-    },
-  },
-  {
-    id: 'tm-02',
-    name: 'श्री. [नाव]',
-    role: { mr: 'कार्याध्यक्ष', en: 'Working President' },
-    bio: {
-      mr: 'शिक्षण आणि प्रबोधना क्षेत्रात अग्रणी कार्यकर्ते.',
-      en: 'Leading activist in Education and Enlightenment initiatives.',
-    },
-  },
-  {
-    id: 'tm-03',
-    name: 'श्री. [नाव]',
-    role: { mr: 'सचिव', en: 'Secretary' },
-    bio: {
-      mr: 'पर्यावरण उपक्रमांचे समन्वयक. वृक्षवाढदिवस उत्सवाचे प्रमुख आयोजक.',
-      en: 'Coordinator of environment initiatives. Chief organiser of Tree Birthday Celebrations.',
-    },
-  },
-  {
-    id: 'tm-04',
-    name: 'श्री. [नाव]',
-    role: { mr: 'खजिनदार', en: 'Treasurer' },
-    bio: {
-      mr: 'आर्थिक नियोजन आणि पारदर्शकतेसाठी जबाबदार.',
-      en: 'Responsible for financial planning and transparency.',
-    },
-  },
-  {
-    id: 'tm-05',
-    name: 'डॉ. [नाव]',
-    role: { mr: 'आरोग्य विभाग प्रमुख', en: 'Health Wing Head' },
-    bio: {
-      mr: 'आरोग्य शिबिरे आणि जनजागृती कार्यक्रमांचे आयोजन.',
-      en: 'Organises health camps and awareness programmes.',
-    },
-  },
-  {
-    id: 'tm-06',
-    name: 'श्री. [नाव]',
-    role: { mr: 'शिक्षण विभाग प्रमुख', en: 'Education Wing Head' },
-    bio: {
-      mr: 'विद्यार्थी उपक्रम, स्पर्धा आणि शिष्यवृत्ती कार्यक्रमांचे प्रमुख.',
-      en: 'Leads student initiatives, competitions and scholarship programmes.',
-    },
-  },
+  { id: 'adhyaksha', name: { mr: 'आनंद गजानन पाटील', en: 'Anand Gajanan Patil' }, role: { mr: 'अध्यक्ष', en: 'President' } },
+  { id: 'upadhyaksha', name: { mr: 'नरेश विष्णू जोशी', en: 'Naresh Vishnu Joshi' }, role: { mr: 'उपाध्यक्ष', en: 'Vice President' } },
+  { id: 'sachiv', name: { mr: 'किशोर वासुदेव वझे', en: 'Kishor Vasudev Vaze' }, role: { mr: 'सचिव', en: 'Secretary' } },
+  { id: 'khajindar', name: { mr: 'चंद्रकांत दत्तात्रेय नाईक', en: 'Chandrakant Dattatray Naik' }, role: { mr: 'खजिनदार', en: 'Treasurer' } },
+  { id: 'sahasachiv', name: { mr: 'रोहन अशोक नाईक', en: 'Rohan Ashok Naik' }, role: { mr: 'सहसचिव', en: 'Joint Secretary' } },
+  { id: 'sahakhajindar', name: { mr: 'चिराग सुरेश पाटील', en: 'Chirag Suresh Patil' }, role: { mr: 'सहखजिनदार', en: 'Joint Treasurer' } },
+  { id: 'margadarshak', name: { mr: 'राजू बळवंत नाईक', en: 'Raju Balwant Naik' }, role: { mr: 'मार्गदर्शक', en: 'Mentor' } },
+];
+
+/** Members (सदस्य), in the order of the report */
+export const MEMBERS: Bilingual[] = [
+  { mr: 'कमळाकर काशिनाथ पाटील', en: 'Kamalakar Kashinath Patil' },
+  { mr: 'अरविंद केशव पाटील', en: 'Arvind Keshav Patil' },
+  { mr: 'हेमंत महादेव नाईक', en: 'Hemant Mahadev Naik' },
+  { mr: 'मनोज भालचंद्र पाटील', en: 'Manoj Bhalchandra Patil' },
+  { mr: 'विलास भास्कर नाईक', en: 'Vilas Bhaskar Naik' },
+  { mr: 'अनिल परशुराम पाटील', en: 'Anil Parshuram Patil' },
+  { mr: 'अविनाश सदानंद नाईक', en: 'Avinash Sadanand Naik' },
+  { mr: 'दिलीप भाऊ जोशी', en: 'Dilip Bhau Joshi' },
+  { mr: 'अनंत दत्तात्रय नाईक', en: 'Anant Dattatray Naik' },
+  { mr: 'सुभाष सखाराम नाईक', en: 'Subhash Sakharam Naik' },
+  { mr: 'हिमांशू विलास पाटील', en: 'Himanshu Vilas Patil' },
+  { mr: 'प्रलोभ गजानन म्हात्रे', en: 'Pralobh Gajanan Mhatre' },
+  { mr: 'अक्षय नरेश म्हात्रे', en: 'Akshay Naresh Mhatre' },
+  { mr: 'सुनील विनायक म्हात्रे', en: 'Sunil Vinayak Mhatre' },
 ];

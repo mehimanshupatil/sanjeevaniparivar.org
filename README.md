@@ -40,7 +40,7 @@ src/
 │   ├── kshetras.ts   # Kshetra definitions — single source of truth
 │   ├── events.ts     # Upcoming & past events
 │   ├── gallery.ts    # Gallery items
-│   ├── team.ts       # Team members
+│   ├── team.ts       # कार्यकारी मंडळ (office bearers + members)
 │   └── vyakhyanmala.ts  # 65 lecture series entries
 ├── i18n/
 │   └── translations.ts  # Marathi + English string dictionary
@@ -84,7 +84,7 @@ The site supports **Marathi (`mr`)** (default) and **English (`en`)**. All user-
 |---|---|
 | `/` | Homepage |
 | `/shikshan` `/paryavaran` `/aarogya` `/prabodhana` | Kshetra overview pages |
-| `/[kshetra]/[upakram]` | Individual activity pages (21 total) |
+| `/[kshetra]/[upakram]` | Individual activity pages (25 total) |
 | `/blog` | Blog listing with kshetra filters |
 | `/blog/[slug]` | Individual blog post |
 | `/gallery` | Photo gallery |

@@ -1,0 +1,17 @@
+# वृक्षवाढदिवस २०२५ — नोंद (१७ वा वार्षिक अहवाल २०२५-२६ मधून).
+# निमंत्रण पत्रिका नाहीत (cards: false); फक्त संकेतस्थळावरील कार्यक्रमांत दिसते.
+
+programme: vriksha-vadhadiwas
+cards: false
+
+days:
+  - { date: 2025-07-06 }
+
+venue:
+  - भाऊसाहेब वर्तक विद्यामंदिर,
+  - नाळे
+
+summary: भाऊसाहेब वर्तक विद्यामंदिर, नाळे येथे वृक्षारोपण करून वृक्षवाढदिवस साजरा.
+en:
+  venue: "Bhausaheb Vartak Vidyamandir, Nale"
+  summary: "The trees' birthday, celebrated by planting trees at Bhausaheb Vartak Vidyamandir, Nale."

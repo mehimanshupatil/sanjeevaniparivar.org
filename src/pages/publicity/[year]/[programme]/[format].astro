@@ -4,11 +4,11 @@
 // Rendered to static HTML (no JavaScript); scripts/render-publicity.mjs screenshots it.
 import PublicityLayout from '@/publicity/PublicityLayout.astro';
 import { TEMPLATES } from '@/publicity/templates';
-import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import { cardEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 import type { FormatId } from '@/publicity/formats';
 
 export async function getStaticPaths() {
-  const editions = await allEditions();
+  const editions = await cardEditions();
   return editions.flatMap((edition) =>
     edition.formats.map((format) => {
       const { layouts } = TEMPLATES[edition.type];

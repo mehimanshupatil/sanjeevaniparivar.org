@@ -7,6 +7,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { GALLERY, GALLERY_YEARS, type GalleryItem } from '@/content/gallery';
 import { KSHETRAS as ALL_KSHETRAS, KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
+import { yearsOfService, mr } from '@/lib/org';
 
 const KSHETRAS = [
   { key: 'all',     label: { mr: 'सर्व',    en: 'All'     }, color: 'var(--color-primary)' },
@@ -207,7 +208,7 @@ function GalleryContent() {
             {t({ mr: 'आपला प्रवास', en: 'Our Journey' })}
           </h1>
           <p className="text-base text-white/70 max-w-xl">
-            {t({ mr: '३१ वर्षांच्या सेवाकार्याची झलक — शिक्षण, पर्यावरण, आरोग्य आणि प्रबोधना', en: 'A glimpse of 31 years of service — Education, Environment, Health & Enlightenment' })}
+            {t({ mr: `${mr(yearsOfService)} वर्षांच्या सेवाकार्याची झलक — शिक्षण, पर्यावरण, आरोग्य आणि प्रबोधना`, en: `A glimpse of ${yearsOfService} years of service — Education, Environment, Health & Enlightenment` })}
           </p>
         </div>
       </section>

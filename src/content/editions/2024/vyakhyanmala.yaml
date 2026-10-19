@@ -1,0 +1,27 @@
+# संजीवनी व्याख्यानमाला २०२४ (वर्ष २२ वे) — नोंद, त्या वर्षीच्या निमंत्रण पत्रिकेवरून.
+# निमंत्रण पत्रिका नाहीत (cards: false); फक्त संकेतस्थळावरील कार्यक्रमांत दिसते.
+
+programme: vyakhyanmala
+cards: false
+
+days:
+  - { date: 2024-05-01, at: "18:00" }
+  - { date: 2024-05-04, at: "18:00" }
+  - { date: 2024-05-05, at: "18:00" }
+
+venue:
+  - सामवेद भवन पटांगण, उमराळे
+  - जैमुनी पतपेढीजवळ, सोपारा-बोळींज मार्ग
+
+sessions:
+  - speaker: { name: श्रीमती अंजली चिपलकट्टी, role: प्रसिद्ध लेखिका }
+    topic: माणूस असा का वागतो
+  - speaker: { name: डॉ. प्रदीप आपटे, role: प्रसिद्ध अर्थतज्ज्ञ }
+    topic: अन्नाचा इतिहास
+  - speaker: { name: श्री. अशोक राणे, role: चित्रपट समीक्षक }
+    topic: सिनेमा पाहणारा माणूस
+
+summary: श्रीमती अंजली चिपलकट्टी, डॉ. प्रदीप आपटे आणि श्री. अशोक राणे यांची व्याख्याने.
+en:
+  venue: "Samved Bhavan Ground, Umrale (near Jaimuni Patpedhi, Sopara–Bolinj Road)"
+  summary: "Lectures by Anjali Chipalkatti, Dr Pradeep Apte and Ashok Rane."

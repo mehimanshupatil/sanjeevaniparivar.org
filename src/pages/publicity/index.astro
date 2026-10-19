@@ -1,9 +1,9 @@
 ---
 // /publicity/ — every edition, newest year first, linking to its preview/download page.
 import PublicityPreviewLayout from "@/layouts/PublicityPreviewLayout.astro";
-import { allEditions, FORMATS } from "@/publicity/resolve";
+import { cardEditions, FORMATS } from "@/publicity/resolve";
 
-const editions = await allEditions();
+const editions = await cardEditions();
 const years = [...new Set(editions.map((b) => b.year))].sort((a, z) => z - a);
 ---
 

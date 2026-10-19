@@ -3,12 +3,12 @@
 // Images are written by scripts/render-publicity.mjs after `astro build`; in `pnpm dev` the
 // live Publicity page is shown instead.
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
-import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import { cardEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 import { TEMPLATES, type Template } from '@/publicity/templates';
 import { STYLES, type StyleId } from '@/publicity/styles';
 
 export async function getStaticPaths() {
-  const editions = await allEditions();
+  const editions = await cardEditions();
   return editions.map((edition) => {
     const [year, programme] = edition.id.split('/');
     return { params: { year, programme }, props: { edition } };

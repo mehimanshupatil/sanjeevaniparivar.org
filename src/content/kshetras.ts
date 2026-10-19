@@ -6,6 +6,7 @@
  */
 
 import type { Bilingual } from '@/i18n/translations';
+import { vyakhyanmalaEdition, vrikshaYears, mr } from '@/lib/org';
 
 export interface Activity {
   slug: string;
@@ -61,9 +62,9 @@ export const KSHETRAS: KshetraData[] = [
     activities: [
       {
         slug: 'vaktrutva-spardha',
-        title: { mr: 'वक्तृत्व स्पर्धा', en: 'Elocution Competition' },
-        desc: { mr: 'विद्यार्थ्यांमध्ये आत्मविश्वास वाढवण्यासाठी वार्षिक स्पर्धा', en: 'Annual competition to build confidence in students' },
-        body: { mr: 'वक्तृत्व स्पर्धा ही संजीवनी परिवाराच्या शिक्षण क्षेत्रातील एक महत्त्वाची स्पर्धा आहे. विद्यार्थ्यांना आपले विचार प्रभावीपणे मांडण्याची संधी देणे, आत्मविश्वास वाढवणे आणि भाषा कौशल्याचा विकास करणे हे या स्पर्धेचे मुख्य उद्दिष्ट आहे.', en: 'The Elocution Competition is one of the flagship initiatives of Sanjeevani Parivar\'s Education Kshetra. The primary goal is to give students an opportunity to express their thoughts effectively, build self-confidence and develop language skills.' },
+        title: { mr: `वक्तृत्व स्पर्धा`, en: `Elocution Competition` },
+        desc: { mr: `२०१२ पासून दरवर्षी — शाळकरी विद्यार्थ्यांसाठी गटनिहाय स्पर्धा`, en: `Every year since 2012 — a competition for school students, in age groups` },
+        body: { mr: `विद्यार्थ्यांच्या व्यक्तिमत्त्व विकासासाठी संजीवनी परिवार २०१२ पासून दरवर्षी वक्तृत्व स्पर्धा आयोजित करतो. ही स्पर्धा केवळ वक्तृत्वकौशल्यापुरती मर्यादित नसून विद्यार्थ्यांमध्ये आत्मविश्वास, भाषेवर प्रभुत्व, विचारांची मांडणी आणि सार्वजनिक बोलण्याचे नैपुण्य विकसित करते. विद्यार्थी आपल्या गटासाठी दिलेल्या कोणत्याही एका विषयावर पाच मिनिटे विचार मांडतात. २०२५-२६ मध्ये भाऊसाहेब वर्तक विद्यामंदिर, नाळे येथे चार गटांत झालेल्या स्पर्धेत १११ विद्यार्थ्यांनी सहभाग घेतला. याच वर्षी स्पर्धेची पुढील पायरी म्हणून वादविवाद स्पर्धेचा प्रयोगही करण्यात आला.`, en: `Since 2012 Sanjeevani Parivar has held an elocution competition every year for its students. It goes beyond public speaking: it builds confidence, command of the language, clear thinking and the skill of speaking in public. Each student speaks for five minutes on one of the topics set for their group. In 2025–26, 111 students took part in four groups at Bhausaheb Vartak Vidyamandir, Nale. The same year a debate was tried for the first time, as the next step after elocution.` },
       },
       {
         slug: 'vachana-prerna-din',
@@ -79,15 +80,39 @@ export const KSHETRAS: KshetraData[] = [
       },
       {
         slug: 'marathi-bhasha-din',
-        title: { mr: 'जागतिक मराठी भाषादिन', en: 'World Marathi Language Day' },
-        desc: { mr: 'मराठी भाषेचे जतन, संवर्धन आणि प्रसार', en: 'Preservation, promotion and spread of Marathi language' },
-        body: { mr: 'जागतिक मराठी भाषादिन साजरा करताना संजीवनी परिवार मराठी भाषेच्या समृद्धीसाठी विविध उपक्रम राबवते. कविता वाचन, निबंध लेखन आणि मराठी साहित्याची ओळख या माध्यमातून मातृभाषेचा अभिमान जागवला जातो.', en: 'Celebrating World Marathi Language Day, Sanjeevani Parivar runs various initiatives for the enrichment of the Marathi language. Through poetry recitation, essay writing and introduction to Marathi literature, pride in the mother tongue is awakened.' },
+        title: { mr: `मराठी भाषा गौरव दिन`, en: `Marathi Language Day` },
+        desc: { mr: `कुसुमाग्रज जयंतीनिमित्त २७ फेब्रुवारीला — वाचन अभियानातील विद्यार्थ्यांचे सादरीकरण`, en: `On 27 February, Kusumagraj's birth anniversary — performed by the reading-centre students` },
+        body: { mr: `ज्ञानपीठ पुरस्कार विजेते कवी कुसुमाग्रज (वि. वा. शिरवाडकर) यांचा जन्मदिवस २७ फेब्रुवारी हा "मराठी भाषा गौरव दिन" म्हणून साजरा केला जातो. संजीवनी परिवार हा दिवस वाचन अभियान केंद्रांच्या सहकार्याने साजरा करतो. उमराळे, सोमाडी, वटार, भुईगाव आदी गावांतील विद्यार्थी कुसुमाग्रजांच्या साहित्यातील उतारे, कविता वाचन आणि नाट्यप्रवेश सादर करतात.`, en: `Kusumagraj (V. V. Shirwadkar), the Jnanpith-winning poet, was born on 27 February, which is celebrated as Marathi Language Day. Sanjeevani Parivar marks it with its reading centres: students from Umrale, Somadi, Vatar, Bhuigaon and other villages read his poems and prose and perform scenes from his plays.` },
+      },
+      {
+        slug: 'vachan-abhiyan',
+        title: { mr: `वाचन अभियान`, en: `Reading Campaign` },
+        desc: { mr: `२०१६ पासून — सहा गावांत मुलांसाठी मराठी वाचन केंद्रे`, en: `Since 2016 — Marathi reading centres for children in six villages` },
+        body: { mr: `इंग्रजीच्या प्रभावामुळे मुले मातृभाषेपासून दुरावत असताना त्यांच्यामध्ये मराठी वाचनाची गोडी निर्माण व्हावी आणि मातृभाषेचे संवर्धन व्हावे या उद्देशाने संजीवनी परिवाराने २०१६ पासून वाचन अभियान सुरू केले आहे. अभियानातील नोंदणी झालेली ४२६ पुस्तके १० पेट्यांमधून विविध केंद्रांत फिरवली जातात. आजमितीस भुईगाव, गास, उमराळे, वाघोली, वटार आणि सोमाडी या सहा गावांमध्ये वाचन केंद्रे सुरू असून गावातील स्वयंसेविका ती चालवतात. आपल्या गावात केंद्र सुरू करायचे असल्यास परिवाराशी संपर्क साधावा.`, en: `As English draws children away from their mother tongue, Sanjeevani Parivar started a reading campaign in 2016 to give them a taste for Marathi reading. 426 catalogued books travel between centres in 10 boxes. Reading centres now run in six villages — Bhuigaon, Gas, Umrale, Wagholi, Vatar and Somadi — each looked after by volunteers from the village. To start a centre in your village, get in touch.` },
+      },
+      {
+        slug: 'study-center',
+        title: { mr: `संजीवनी स्टडी सेंटर`, en: `Sanjeevani Study Centre` },
+        desc: { mr: `भाऊसाहेब वर्तक विद्यामंदिर, नाळे — अभ्यासिका, कल चाचणी व मार्गदर्शन शिबिरे`, en: `At Bhausaheb Vartak Vidyamandir, Nale — a study room, aptitude tests and guidance sessions` },
+        body: { mr: `भाऊसाहेब वर्तक विद्यामंदिर, नाळे येथे सुरू केलेल्या संजीवनी स्टडी सेंटरमध्ये विद्यार्थ्यांना अभ्यासासाठी जागा आणि विविध कोर्स व मार्गदर्शन शिबिरे उपलब्ध करून दिली जातात. जैमुनी सहकारी पतपेढीच्या सहकार्याने इयत्ता ९ वी ते १२ वीच्या ७८ विद्यार्थ्यांची कल चाचणी (ॲप्टिट्यूड टेस्ट) घेऊन पालकांसह समुपदेशन करण्यात आले. "कृत्रिम बुद्धिमत्ता (AI) — बदलत्या जगाची नवी दिशा" या मार्गदर्शन कार्यशाळेला १०० हून अधिक विद्यार्थी व पालक उपस्थित होते. वरिष्ठ महाविद्यालयीन विद्यार्थ्यांसाठी संगणक प्रशिक्षण शिबिराचेही नियोजन आहे.`, en: `The Sanjeevani Study Centre at Bhausaheb Vartak Vidyamandir, Nale gives students a place to study, along with courses and guidance sessions. With Jaimuni Sahakari Patpedhi, 78 students of classes 9–12 took an aptitude test and were counselled with their parents. Over 100 students and parents attended a session on "Artificial Intelligence — the new direction of a changing world". A computer training camp for senior college students is planned.` },
+      },
+      {
+        slug: 'shaikshanik-madat',
+        title: { mr: `शैक्षणिक मदत`, en: `Education Aid` },
+        desc: { mr: `गरजू विद्यार्थ्यांना शिक्षणासाठी आर्थिक मदत`, en: `Financial help for students in need` },
+        body: { mr: `वैद्यकीय मदतीबरोबरच संजीवनी परिवाराने गरजू विद्यार्थ्यांना शिक्षणासाठी आर्थिक मदत करण्यास सुरुवात केली आहे. २०२५-२६ मध्ये तीन विद्यार्थ्यांना एकूण ₹५३,९५०/- ची मदत करण्यात आली.`, en: `Alongside medical aid, Sanjeevani Parivar now helps students in need with their education. In 2025–26, three students received ₹53,950 in all.` },
       },
       {
         slug: 'clay-ganesh',
-        title: { mr: 'शाडूमाती गणेश कार्यशाळा', en: 'Clay Ganesh Workshop' },
-        desc: { mr: 'पारंपरिक मूर्तिकलेचे शिक्षण देणारी कार्यशाळा', en: 'Workshop teaching traditional idol-making art' },
-        body: { mr: 'पर्यावरणपूरक गणेशोत्सव साजरा करण्यासाठी शाडूमातीपासून गणेश मूर्ती बनवण्याची कार्यशाळा आयोजित केली जाते. या कार्यशाळेत मुलांना पारंपरिक भारतीय शिल्पकलेची ओळख करून दिली जाते.', en: 'A workshop for making clay Ganesh idols is organized to celebrate an eco-friendly Ganesh festival. In this workshop, children are introduced to traditional Indian sculpture art.' },
+        title: { mr: `शाडूमाती गणेशमूर्ती कार्यशाळा`, en: `Clay Ganesh Idol Workshop` },
+        desc: { mr: `संजीवनी कलादालन — विद्यार्थ्यांसाठी शाडूमातीच्या गणेशमूर्ती बनवण्याची कार्यशाळा`, en: `Sanjeevani Kaladalan — students make eco-friendly clay Ganesh idols` },
+        body: { mr: `गणेशोत्सवाच्या पार्श्वभूमीवर संजीवनी कलादालन अंतर्गत विद्यार्थ्यांसाठी शाडूमातीपासून श्रीगणेशमूर्ती बनवण्याची कार्यशाळा आयोजित केली जाते. तज्ज्ञ चित्रकार व शिल्पकार विद्यार्थ्यांना मार्गदर्शन करतात आणि मूर्तीसाठी लागणारे साहित्य परिवाराकडून पुरवले जाते. २०२५ मध्ये श्रीवाघेश्वरी मंदिर, वाघोली येथे झालेल्या सातव्या कार्यशाळेत १३० विद्यार्थ्यांनी भाग घेतला.`, en: `Before Ganeshotsav, Sanjeevani Kaladalan holds a workshop where students make Ganesh idols from shadu clay. Artists and sculptors guide them and the trust provides the materials. The seventh workshop, in 2025 at Shri Wagheshwari Temple, Wagholi, had 130 students.` },
+      },
+      {
+        slug: 'akashkandil-karyashala',
+        title: { mr: `आकाशकंदील कार्यशाळा`, en: `Akashkandil (Diwali Lantern) Workshop` },
+        desc: { mr: `संजीवनी कलादालन — दिवाळीसाठी आकाशकंदील बनवण्याची कार्यशाळा`, en: `Sanjeevani Kaladalan — students make Diwali lanterns` },
+        body: { mr: `बालविद्यार्थ्यांच्या दिवाळसणाच्या उत्साहात भर टाकणारी आकाशकंदील कार्यशाळा संजीवनी कलादालन अंतर्गत श्रीवाघेश्वरी मंदिर, वाघोली येथे आयोजित केली जाते. आकाशकंदील बनवण्यासाठीचे सर्व साहित्य परिवाराकडून पुरवले जाते. २०२५ मध्ये या कार्यशाळेचे आठवे वर्ष होते आणि ८५ विद्यार्थ्यांनी सहभाग नोंदवला.`, en: `To add to the children's Diwali, Sanjeevani Kaladalan holds a lantern-making workshop at Shri Wagheshwari Temple, Wagholi, with all materials provided. 2025 was its eighth year, with 85 students.` },
       },
       {
         slug: 'patang-mahotsav',
@@ -137,9 +162,9 @@ export const KSHETRAS: KshetraData[] = [
     activities: [
       {
         slug: 'vriksha-vadhadiws',
-        title: { mr: 'वृक्षवाढदिवस उत्सव', en: 'Tree Birthday Celebration' },
-        desc: { mr: 'गेली २० वर्षे सातत्याने साजरा होणारा अनोखा उत्सव', en: 'A unique celebration running continuously for 20 years' },
-        body: { mr: 'वृक्षवाढदिवस उत्सव हा संजीवनी परिवाराचा सर्वात अनोखा उपक्रम आहे. लावलेल्या झाडांचा वाढदिवस साजरा करण्याची ही संकल्पना गेली २० वर्षे सातत्याने सुरू आहे. झाडांशी भावनिक नाते जोडणे आणि त्यांच्या संगोपनाची जबाबदारी घेणे हे या उत्सवाचे मुख्य उद्दिष्ट आहे.', en: 'The Tree Birthday Celebration is Sanjeevani Parivar\'s most unique initiative. The concept of celebrating the birthday of planted trees has been running continuously for 20 years. The main goal of this celebration is to build an emotional bond with trees and take responsibility for their care.' },
+        title: { mr: `वृक्षवाढदिवस उत्सव`, en: `Tree Birthday Celebration` },
+        desc: { mr: `गेली ${mr(vrikshaYears)} वर्षे — जुलैच्या पहिल्या रविवारी लावलेल्या झाडांचा वाढदिवस`, en: `For ${vrikshaYears} years — the birthday of the trees we planted, on the first Sunday of July` },
+        body: { mr: `संजीवनी परिवाराने २००५ साली वृक्षारोपण प्रकल्प हाती घेतला. परिवाराचे स्फूर्तिस्थान प्राध्यापक मुरलीधर सायनेकर यांच्या प्रेरणेतून लावलेल्या झाडांची मशागत करून २००६ पासून दरवर्षी जुलैच्या पहिल्या रविवारी त्यांचा वाढदिवस साजरा केला जातो आणि नवीन झाडांची लागवडही केली जाते. झाडांशी भावनिक नाते जोडणे आणि त्यांच्या संगोपनाची जबाबदारी घेणे हे या उत्सवाचे उद्दिष्ट आहे. "वृक्ष आपले मित्र, मार्गदर्शक आणि तत्त्वज्ञ आहेत," असे सायनेकर सर सांगत.`, en: `Sanjeevani Parivar began planting trees in 2005. Inspired by Prof. Muralidhar Saynekar, the trees are cared for and, since 2006, their birthday is celebrated every year on the first Sunday of July, along with new planting. The idea is to form a bond with trees and take responsibility for raising them. "Trees are our friends, guides and philosophers," Saynekar Sir would say.` },
       },
       {
         slug: 'vriksha-ropan',
@@ -161,9 +186,9 @@ export const KSHETRAS: KshetraData[] = [
       },
       {
         slug: 'plastic-free',
-        title: { mr: 'प्लास्टिकमुक्त उपक्रम', en: 'Plastic-Free Initiative' },
-        desc: { mr: 'कापडी पिशव्यांचे वाटप आणि प्लास्टिकविरोधी जनजागृती', en: 'Cloth bag distribution and anti-plastic awareness' },
-        body: { mr: 'प्लास्टिकमुक्त उपक्रमांतर्गत नागरिकांना कापडी पिशव्यांचे वाटप केले जाते आणि प्लास्टिकच्या दुष्परिणामांबद्दल जनजागृती केली जाते. एकल-वापर प्लास्टिक टाळण्यासाठी पर्यायी उपाय सुचवले जातात.', en: 'Under the Plastic-Free Initiative, cloth bags are distributed to citizens and awareness is created about the harmful effects of plastic. Alternative solutions to avoid single-use plastic are suggested.' },
+        title: { mr: `प्लास्टिकमुक्त उपक्रम`, en: `Plastic-Free Initiative` },
+        desc: { mr: `कापडी पिशव्यांचे वाटप आणि गावोगावी प्लास्टिक संकलन`, en: `Cloth bags for every home, and plastic collection in the villages` },
+        body: { mr: `प्लास्टिक पिशव्यांचा वापर कमी व्हावा यासाठी संजीवनी परिवार सतत आग्रही आहे. केवळ आग्रह न करता प्लास्टिक पिशवीला पर्याय म्हणून कापडी पिशव्यांच्या २,४२८ संचांचे वाटप समाजात करण्यात आले आहे. ध्यास फाउंडेशनच्या सहकार्याने गास, बोळींज, भावडी, वटार, उमराळे आदी गावांत प्लास्टिक संकलन केले जाते आणि ते योग्य विल्हेवाटीसाठी पाठवले जाते.`, en: `Sanjeevani Parivar keeps urging people to use fewer plastic bags, and offers an alternative: 2,428 sets of cloth bags have been given out. With Dhyas Foundation, plastic is collected in Gas, Bolinj, Bhavdi, Vatar, Umrale and other villages and sent for proper disposal.` },
       },
       {
         slug: 'nagrik-jagruti',
@@ -172,7 +197,7 @@ export const KSHETRAS: KshetraData[] = [
         body: { mr: 'पर्यावरण संरक्षणासाठी नागरिकांमध्ये जागरूकता निर्माण करणे हे या उपक्रमाचे उद्दिष्ट आहे. विविध माध्यमांतून — नाटिका, प्रदर्शन, जनजागृती रॅली — पर्यावरणाच्या महत्त्वाचा संदेश समाजापर्यंत पोहोचवला जातो.', en: 'The goal of this initiative is to create awareness among citizens for environmental protection. Through various mediums — skits, exhibitions, awareness rallies — the message of the importance of the environment is conveyed to society.' },
       },
     ],
-    stat: { value: '20+', label: { mr: 'वर्षे वृक्षवाढदिवस', en: 'Years of Tree Birthday' } },
+    stat: { value: `${vrikshaYears}+`, label: { mr: 'वर्षे वृक्षवाढदिवस', en: 'Years of Tree Birthday' } },
     quote: {
       mr: '"पृथ्वी आपण वारशाने मिळवलेली नाही, ती आपण आपल्या मुलांकडून उधार घेतलेली आहे."',
       en: '"We do not inherit the earth from our ancestors, we borrow it from our children."',
@@ -214,9 +239,9 @@ export const KSHETRAS: KshetraData[] = [
       },
       {
         slug: 'health-fund',
-        title: { mr: 'आरोग्य निधी', en: 'Health Fund' },
-        desc: { mr: 'गरजू रुग्णांना उपचारासाठी आर्थिक सहाय्य देणे', en: 'Financial assistance for treatment of needy patients' },
-        body: { mr: 'आरोग्य निधी हा एक मानवतावादी उपक्रम आहे. आर्थिकदृष्ट्या दुर्बल रुग्णांना उपचारासाठी आर्थिक सहाय्य देण्यासाठी हा निधी उभारला जातो. समाजातील दानशूर व्यक्ती आणि संस्थांच्या सहकार्याने हे सहाय्य केले जाते.', en: 'The Health Fund is a humanitarian initiative. This fund is raised to provide financial assistance for treatment to economically weaker patients. This assistance is provided with the cooperation of generous individuals and organizations in society.' },
+        title: { mr: `वैद्यकीय मदत (आरोग्य निधी)`, en: `Medical Aid (Health Fund)` },
+        desc: { mr: `गरजू रुग्णांना उपचारासाठी तातडीची आर्थिक मदत — कमाल ₹१ लाख`, en: `Urgent help for patients in need — up to ₹1 lakh` },
+        body: { mr: `आणीबाणीच्या परिस्थितीत गरजू समाजबांधवांना तातडीची आर्थिक मदत करणे हा या उपक्रमाचा उद्देश आहे. आजाराचे स्वरूप, रुग्णाची परिस्थिती आणि एकूण खर्च लक्षात घेऊन कमाल ₹१ लाखापर्यंत मदत केली जाते आणि ती लवकरात लवकर पोहोचवण्यावर परिवाराचा भर असतो. २०२५-२६ मध्ये ८ रुग्णांना ₹३.५० लाखांची मदत करण्यात आली. आजवर १० रुग्णांच्या कुटुंबीयांनी ₹३.७३ लाख परतफेडीच्या स्वरूपात परिवारास परत दिले आहेत. शुभकार्य किंवा आप्तेष्टांच्या स्मृतीनिमित्त या निधीस देणगी देता येते.`, en: `This fund gives urgent financial help to members of the community in a medical emergency. Up to ₹1 lakh is given, depending on the illness, the patient's situation and the total cost, and the trust tries to send it as fast as possible. In 2025–26, 8 patients received ₹3.5 lakh. So far the families of 10 patients have given back ₹3.73 lakh to the fund. Donations can be made on a family occasion or in memory of a loved one.` },
       },
     ],
     quote: {
@@ -249,9 +274,9 @@ export const KSHETRAS: KshetraData[] = [
     activities: [
       {
         slug: 'vyakhyanmala',
-        title: { mr: 'संजीवनी व्याख्यानमाला', en: 'Sanjeevani Vyakhyanmala' },
-        desc: { mr: '२००३ पासून सुरू — आंतरराष्ट्रीय ख्यातीचे वक्ते, २३ व्या वर्षात', en: 'Since 2003 — internationally renowned speakers, in its 23rd year' },
-        body: { mr: 'संजीवनी व्याख्यानमाला ही संजीवनी परिवाराची सर्वात प्रतिष्ठित आणि लोकप्रिय व्याख्यान श्रृंखला आहे. २००३ पासून सुरू असलेली ही व्याख्यानमाला आता २३ व्या वर्षात प्रवेश करत आहे. आंतरराष्ट्रीय ख्यातीचे वक्ते, शास्त्रज्ञ, साहित्यिक, समाजसेवक आणि विविध क्षेत्रातील तज्ज्ञ या व्याख्यानमालेत सहभागी होतात. कोरोना काळातही ऑनलाइन माध्यमातून ही व्याख्यानमाला सुरू राहिली.', en: 'Sanjeevani Vyakhyanmala is the most prestigious and popular lecture series of Sanjeevani Parivar. Started in 2003, this lecture series is now entering its 23rd year. Internationally renowned speakers, scientists, literary figures, social workers and experts from various fields participate in this series. Even during the COVID pandemic, the lecture series continued through online platforms.' },
+        title: { mr: `संजीवनी व्याख्यानमाला`, en: `Sanjeevani Vyakhyanmala` },
+        desc: { mr: `२००३ पासून सुरू — नामवंत वक्ते, ${mr(vyakhyanmalaEdition)} व्या वर्षात`, en: `Since 2003 — eminent speakers, in its ${vyakhyanmalaEdition}th year` },
+        body: { mr: `महाराष्ट्रातील नामवंत वक्ते, विषयांतील विविधता आणि नेटके नियोजन यांमुळे २००३ पासून सातत्य राखलेली संजीवनी व्याख्यानमाला वसई तालुक्यातील दर्जेदार व्याख्यानमाला म्हणून ओळखली जाते. यंदा ती ${mr(vyakhyanmalaEdition)} व्या वर्षात आहे. समाजात देण्याची मानसिकता वाढावी यासाठी प्रत्येक व्याख्यानमालेत सामाजिक कार्य करणाऱ्या व्यक्तीच्या कार्याबद्दल कृतज्ञता व्यक्त करून परिवाराच्या माध्यमातून देणगी दिली जाते; २०२५ मध्ये सैनिकांसाठी ऑक्सिजन प्लांट उभारण्याच्या कार्यास ₹६१,०००/- ची देणगी देण्यात आली. कोरोना काळातही ही व्याख्यानमाला ऑनलाइन माध्यमातून सुरू राहिली.`, en: `With eminent speakers from across Maharashtra, a wide range of subjects and careful organisation, the Sanjeevani Vyakhyanmala has run without a break since 2003 and is known as one of the finest lecture series in Vasai taluka. This year is its ${vyakhyanmalaEdition}th. To encourage giving, each series thanks a person doing social work and passes on a donation through the trust; in 2025, ₹61,000 went to setting up oxygen plants for soldiers. During COVID the series continued online.` },
       },
       {
         slug: 'budget-analysis',
@@ -272,7 +297,7 @@ export const KSHETRAS: KshetraData[] = [
         body: { mr: 'कोरोना महामारीच्या काळात प्रत्यक्ष कार्यक्रम आयोजित करणे शक्य नसताना संजीवनी परिवाराने ऑनलाइन व्याख्यानांच्या माध्यमातून ज्ञानप्रसाराचे काम अखंड सुरू ठेवले. YouTube आणि इतर डिजिटल प्लॅटफॉर्मवरून हजारो श्रोत्यांपर्यंत पोहोचणे शक्य झाले.', en: 'When it was not possible to organize in-person events during the COVID pandemic, Sanjeevani Parivar continued the work of knowledge dissemination uninterruptedly through online lectures. It became possible to reach thousands of listeners through YouTube and other digital platforms.' },
       },
     ],
-    stat: { value: '23', label: { mr: 'व्याख्यानमालेचे वर्षे', en: 'Years of Vyakhyanmala' } },
+    stat: { value: `${vyakhyanmalaEdition}`, label: { mr: 'व्याख्यानमालेचे वर्षे', en: 'Years of Vyakhyanmala' } },
     quote: {
       mr: '"विचाराने माणूस घडतो, विचाराने समाज घडतो."',
       en: '"Thought shapes the person, thought shapes the society."',

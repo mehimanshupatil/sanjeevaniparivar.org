@@ -14,5 +14,10 @@ export async function allEditions(): Promise<ResolvedEdition[]> {
   }));
 }
 
+/** Editions with invitation cards (every one but the `cards: false` records) — for the card pages. */
+export async function cardEditions(): Promise<ResolvedEdition[]> {
+  return (await allEditions()).filter((e) => e.cards);
+}
+
 export { FORMATS, resolveEdition };
 export type { ResolvedEdition };

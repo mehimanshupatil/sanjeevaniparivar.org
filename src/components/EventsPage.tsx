@@ -49,7 +49,7 @@ function EventCard({ ev }: { ev: Event }) {
         </div>
         <h3 className="font-bold text-gray-900 mb-1 text-base">{t(ev.title)}</h3>
         <p className="text-sm text-gray-500 mb-1.5">{t(ev.desc)}</p>
-        <p className="text-xs text-gray-400">📍 {t(ev.venue)}</p>
+        {t(ev.venue) && <p className="text-xs text-gray-400">📍 {t(ev.venue)}</p>}
         {ev.invitation && (
           <a href={ev.invitation} className="mt-2 inline-block text-xs font-semibold text-primary hover:underline">
             {t({ mr: 'निमंत्रण पत्रिका पहा →', en: 'View invitation →' })}

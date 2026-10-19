@@ -3,6 +3,8 @@
 // Add new keys here to extend multilingual support
 // =============================================
 
+import { yearsOfService, mr } from '@/lib/org';
+
 export type Lang = 'mr' | 'en';
 export type Bilingual = { mr: string; en: string };
 
@@ -83,7 +85,7 @@ export const translations = {
   footer: {
     orgName: { mr: 'संजीवनी परिवार', en: 'Sanjeevani Parivar' },
     tagline: { mr: 'ध्यास परिवर्तनाचा', en: 'Obsession for Change' },
-    desc: { mr: 'वसईतील एक प्रमुख सामाजिक संस्था — गेली ३१ वर्षे शिक्षण, पर्यावरण, आरोग्य व प्रबोधन क्षेत्रात कार्यरत.', en: 'A leading social organization from Vasai — working for 31+ years in Education, Environment, Health & Enlightenment.' },
+    desc: { mr: `वसईतील एक प्रमुख सामाजिक संस्था — गेली ${mr(yearsOfService)} वर्षे शिक्षण, पर्यावरण, आरोग्य व प्रबोधन क्षेत्रात कार्यरत.`, en: `A leading social organization from Vasai — working for ${yearsOfService}+ years in Education, Environment, Health & Enlightenment.` },
     kshetras: { mr: 'क्षेत्रे', en: 'Kshetras' },
     quickLinks: { mr: 'त्वरित दुवे', en: 'Quick Links' },
     social: { mr: 'सोशल मीडिया', en: 'Social Media' },

@@ -49,7 +49,7 @@ export function draftFromSample(programme: Entry<ProgrammeData>, edition: Entry<
     organisers: (p.organisers ?? []).join('\n'),
     intro: p.intro ?? '',
     days: edition.data.days.map((d) => ({ date: d.date, from: d.from ?? d.at ?? '', to: d.to ?? '', startOnly: Boolean(d.at) })),
-    venue: edition.data.venue.join('\n'),
+    venue: (edition.data.venue ?? []).join('\n'),
     itemsHeading: p.itemsHeading ?? '',
     items: (p.items ?? []).join('\n'),
     itemsMore: p.itemsMore ?? '',
@@ -160,5 +160,5 @@ export function editionYaml({ data: e }: Entry<EditionData>): string {
     `    topic: ${q(s.topic)}\n` + (s.topicNote ? `    topicNote: ${q(s.topicNote)}\n` : '') +
     (s.bio ? `    bio: ${q(s.bio)}\n` : '') + (s.closing ? `    closing: ${q(s.closing)}\n` : '');
   const sessions = e.sessions?.length ? `\nsessions:\n${e.sessions.map(session).join('')}` : '';
-  return `programme: ${e.programme.id}\n\ndays:\n${e.days.map(day).join('\n')}\n\n${list('venue', e.venue)}${sessions}`;
+  return `programme: ${e.programme.id}\n\ndays:\n${e.days.map(day).join('\n')}\n\n${list('venue', e.venue ?? [])}${sessions}`;
 }

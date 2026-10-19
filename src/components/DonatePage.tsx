@@ -4,6 +4,7 @@ import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { QRCodeSVG } from 'qrcode.react';
+import { yearsOfService } from '@/lib/org';
 
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
 const rand = (n: number) => Array.from({ length: n }, () => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]).join('');
@@ -43,7 +44,7 @@ function ProtectedLink({ hrefPrefixB64, numB64, labelB64, className }: { hrefPre
 }
 
 const IMPACT_STATS = [
-  { value: '31+', label: { mr: 'वर्षांचे सामाजिक कार्य', en: 'Years of Social Work' } },
+  { value: `${yearsOfService}+`, label: { mr: 'वर्षांचे सामाजिक कार्य', en: 'Years of Social Work' } },
   { value: '4',   label: { mr: 'कार्यक्षेत्रे', en: 'Kshetras' } },
   { value: '23',  label: { mr: 'व्याख्यानमाला वर्षे', en: 'Lecture Series Years' } },
   { value: '20+', label: { mr: 'वर्षे वृक्षवाढदिवस', en: 'Tree Birthday Years' } },

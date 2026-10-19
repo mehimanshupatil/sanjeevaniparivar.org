@@ -104,6 +104,8 @@ Phone numbers in `contacts` are written in ordinary digits (`phone: "9028265426"
 
 An edition with `draft: true` (e.g. next year's, before the date is fixed) shows in `pnpm dev` but is never built or published. Remove the line once the details are confirmed.
 
+An edition with `cards: false` is a record only: it appears on the events page (e.g. a past programme from the annual report) but gets no invitation cards. Its days may leave out the time and it may leave out the venue; a `summary` says what happened ("सातवी कार्यशाळा — १३० विद्यार्थी"). Remove `cards: false` and fill in the wording to make cards for it.
+
 ### Extending
 
 - **New programme of an existing type**: add `programmes/<name>.yaml` + `editions/<year>/<name>.yaml`. No code.

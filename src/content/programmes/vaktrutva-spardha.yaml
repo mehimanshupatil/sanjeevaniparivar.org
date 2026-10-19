@@ -10,6 +10,7 @@ kshetra: shikshan
 theme: spardha
 formats: [whatsapp, instagram]
 yearStyle: school
+startedYear: 2012   # अहवाल: "ही स्पर्धा २०१२ पासून आयोजित करण्यात येते"
 
 logos:
   left: sanjeevani

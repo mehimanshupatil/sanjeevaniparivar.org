@@ -6,12 +6,12 @@
 import PublicityLayout from '@/publicity/PublicityLayout.astro';
 import { TEMPLATES, type Template } from '@/publicity/templates';
 import { STYLES, type StyleId } from '@/publicity/styles';
-import { allEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
+import { cardEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 import type { FormatId } from '@/publicity/formats';
 import type { ResolvedSession } from '@/publicity/edition';
 
 export async function getStaticPaths() {
-  const editions = await allEditions();
+  const editions = await cardEditions();
   return editions.flatMap((edition) => {
     const [year, programme] = edition.id.split('/');
     const styles = (Object.keys(STYLES) as StyleId[]).flatMap((style) =>

@@ -1,4 +1,5 @@
 ---
+import { yearsOfService } from "@/lib/org";
 /**
  * index.astro — Landing page
  *
@@ -15,7 +16,7 @@ import App from "@/components/App";
 
 <Layout
   title="संजीवनी परिवार | Sanjeevani Parivar — ध्यास परिवर्तनाचा"
-  description="Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for 31+ years."
+  description={`Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for ${yearsOfService}+ years.`}
   ogImage="/og/home.png"
 >
   <App client:load />

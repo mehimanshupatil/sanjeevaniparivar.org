@@ -16,7 +16,7 @@ const CONTACT_ITEMS = [
     labelKey: tr.contact.address,
     content: (
       <p className="text-sm text-gray-500 leading-relaxed">
-        'परिजात', वाघोली, निर्मल रोड,<br />ता. वसई, पिन - 401304
+        “पारिजात”, वाघोली, निर्मळ रोड,<br />ता. वसई, पिन - ४०१ ३०४
       </p>
     ),
   },
