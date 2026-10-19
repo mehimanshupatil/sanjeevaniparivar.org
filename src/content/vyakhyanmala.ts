@@ -555,9 +555,9 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 21,
     "year": 2023,
     "lecture_no": 61,
-    "speaker": "डॉ. भूषण कळकर",
+    "speaker": "डॉ. भूषण केळकर",
     "topic": "वेध भविष्याचा : तंत्रज्ञान आणि आव्हान",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/SuiYk-nyHnc",
     "date": "३० एप्रिल २०२३"
   },
   {
