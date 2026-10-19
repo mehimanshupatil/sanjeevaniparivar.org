@@ -3,7 +3,7 @@ import { LangProvider, useT } from './LangContext';
 import { Button } from '@/components/ui/button';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import { EVENTS, type Event } from '@/content/events';
+import type { Event } from '@/publicity/events';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 const FILTERS = [
@@ -60,12 +60,11 @@ function EventCard({ ev }: { ev: Event }) {
   );
 }
 
-function PageContent({ fromEditions }: { fromEditions: Event[] }) {
+function PageContent({ events }: { events: Event[] }) {
   const t = useT();
   const [filter, setFilter] = useState<string>('all');
 
   const now = new Date();
-  const events = [...EVENTS, ...fromEditions];
   // A multi-day event stays upcoming until its last day
   const ends = (e: Event) => new Date(e.endDate ?? e.date);
   const upcoming = events.filter((e) => ends(e) >= now).sort(
@@ -166,11 +165,11 @@ function PageContent({ fromEditions }: { fromEditions: Event[] }) {
   );
 }
 
-/** fromEditions: events made from the Publicity editions at build time (src/publicity/events.ts) */
-export default function EventsPage({ fromEditions = [] }: { fromEditions?: Event[] }) {
+/** events: made from the published Publicity editions at build time (src/publicity/events.ts) */
+export default function EventsPage({ events = [] }: { events?: Event[] }) {
   return (
     <LangProvider>
-      <PageContent fromEditions={fromEditions} />
+      <PageContent events={events} />
     </LangProvider>
   );
 }

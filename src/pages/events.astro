@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import EventsPage from "@/components/EventsPage";
 import { editionEvents } from "@/publicity/events";
 
-const fromEditions = await editionEvents();
+const events = await editionEvents();
 ---
 
 <Layout
@@ -11,5 +11,5 @@ const fromEditions = await editionEvents();
   description="Upcoming and past events by Sanjeevani Parivar across Education, Environment, Health and Enlightenment initiatives in Vasai, Maharashtra."
   ogImage="/og/page/events.png"
 >
-  <EventsPage client:load fromEditions={fromEditions} />
+  <EventsPage client:load events={events} />
 </Layout>

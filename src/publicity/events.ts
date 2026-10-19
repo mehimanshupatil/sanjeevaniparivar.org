@@ -1,9 +1,22 @@
-// Events for the site's events page, made from the published Publicity editions (build time only),
-// so an event and its invitation never disagree. src/content/events.ts keeps the events that
-// have no invitation.
-import type { Event } from '@/content/events';
+// The site's events page (/events) is made entirely from the published Publicity editions
+// (build time only), so an event and its invitation never disagree. To add an event, add an edition.
+import type { Bilingual } from '@/i18n/translations';
 import { allEditions } from './resolve';
 import { venueInline } from './styles/Details';
+
+export interface Event {
+  id: string;
+  title: Bilingual;
+  /** YYYY-MM-DD; endDate: last day of a multi-day event */
+  date: string;
+  endDate?: string;
+  time?: string;
+  venue: Bilingual;
+  desc: Bilingual;
+  kshetra: 'shikshan' | 'paryavaran' | 'aarogya' | 'prabodhana' | 'general';
+  /** Download page of its invitation cards */
+  invitation?: string;
+}
 
 export async function editionEvents(): Promise<Event[]> {
   const editions = await allEditions();

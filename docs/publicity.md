@@ -153,7 +153,7 @@ Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site'
 
 ## Events page
 
-Every published edition is also an event on `/events` (`src/publicity/events.ts`, at build time), with a link to its invitation cards, so an event and its invitation never disagree. Don't add those to `src/content/events.ts`; it keeps only events that have no invitation. The event uses the title and year, the first day's time, the venue, the kshetra and the programme's `summary` (else the intro). For the English site, a programme can give `en: { title, summary }` and an edition `en: { venue }`; whatever is missing shows in Marathi. A multi-day event stays under "upcoming" until its last day.
+The events page `/events` is made entirely from the published editions (`src/publicity/events.ts`, at build time): each one is an event with a link to its invitation cards, so an event and its invitation never disagree. To add an event, add an edition; there is no separate events list. The event uses the title and year, the first day's time, the venue, the kshetra and the programme's `summary` (else the intro). For the English site, a programme can give `en: { title, summary }` and an edition `en: { venue }`; whatever is missing shows in Marathi. A multi-day event stays under "upcoming" until its last day.
 
 ## Archiving
 
