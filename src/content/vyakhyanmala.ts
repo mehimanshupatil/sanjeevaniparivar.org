@@ -87,7 +87,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "edition": 4,
     "year": 2006,
     "lecture_no": 9,
-    "speaker": "श्री दत्तप्रसाद दाभळकर",
+    "speaker": "डॉ. दत्तप्रसाद दाभोळकर",
     "topic": "नर्मदा आंदोलन सद्यस्थिती",
     "youtubeUrl": "",
     "date": "०१ मे २००६"
@@ -224,7 +224,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 24,
     "speaker": "श्री संदीप वासलेकर (आंतरराष्ट्रीय विचारवंत)",
     "topic": "एका दिशेचा शोध",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/RaKy4c2FnOA",
     "date": "२३ एप्रिल २०११"
   },
   {
@@ -233,7 +233,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 25,
     "speaker": "श्री चंद्रशेखर टिळक (अर्थतज्ञ)",
     "topic": "आर्थिक घोटाळे आणि आपली अर्थव्यवस्था",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/4xH-8dLekDo",
     "date": "२४ एप्रिल २०११"
   },
   {
@@ -242,7 +242,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 26,
     "speaker": "श्री संजय जोशी",
     "topic": "मी आणि माझा देव",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/Xjm5OjeuJds",
     "date": "०१ मे २०११"
   },
   {
@@ -269,16 +269,16 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 29,
     "speaker": "श्री दिलीप कुळकर्णी (DSK)",
     "topic": "मी असा घडलो",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/TO5NDkptVXE",
     "date": "०६ मे २०१२"
   },
   {
     "edition": 11,
     "year": 2013,
     "lecture_no": 30,
-    "speaker": "श्री दत्तप्रसाद दाभळकर",
+    "speaker": "डॉ. दत्तप्रसाद दाभोळकर",
     "topic": "वर्तमानकाळासाठी विवेकानंद",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/HoIu5_8-i9Q",
     "date": "२१ एप्रिल २०१३"
   },
   {
@@ -304,8 +304,8 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2014,
     "lecture_no": 33,
     "speaker": "श्री गिरीश कुबेर (संपादक लोकसत्ता)",
-    "topic": "पाहिले ते अर्थकारण दुसरे ते राजकारण",
-    "youtubeUrl": "",
+    "topic": "पहिले ते अर्थकारण, दुसरे ते राजकारण",
+    "youtubeUrl": "https://youtu.be/wgxWQdoFrzY",
     "date": "२६ एप्रिल २०१४"
   },
   {
@@ -314,7 +314,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 34,
     "speaker": "श्री वासुदेव कामत (प्रसिद्ध चित्रकार)",
     "topic": "कलाप्रवास व व्यातीत बारकावे मुळाखत श्री विनायक परब",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/i9j-G1UBFPs",
     "date": "२७ एप्रिल २०१४"
   },
   {
@@ -323,7 +323,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 35,
     "speaker": "श्री प्रदीप लोखंडे (रुरल रिलेशन्स)",
     "topic": "ग्रामीण सेहसबंधाचा प्रवास व अनुभव (मुळाखत श्री सुमेध वडावाला)",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/hHk4tdJ3cXg",
     "date": "०४ मे २०१४"
   },
   {
@@ -350,7 +350,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 38,
     "speaker": "श्री सुनील देवधर",
     "topic": "ईशान्य भारत समस्या आणि समाधान",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/Xpe1QBOV6oI",
     "date": "०४ मे २०१५"
   },
   {
@@ -368,7 +368,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 40,
     "speaker": "श्री अरविंद परांजपे",
     "topic": "विश्वातील सजीवसृष्टी - एक शोध",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/O3VY3rjPtr8",
     "date": "०१ मे २०१६"
   },
   {
@@ -377,7 +377,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 41,
     "speaker": "प्रा. डॉ आसावरी बापट",
     "topic": "कौटिल्य, शिवाजी आणि राष्ट्रवाद",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/EZb0jcee2tg",
     "date": "०६ मे २०१६"
   },
   {
@@ -386,7 +386,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 42,
     "speaker": "कर्नल शैलेश रायकर",
     "topic": "सर्जिकल स्ट्राईक तथ्य की मिथ्य",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/EC4kyIcNuaI",
     "date": "०१ मे २०१७"
   },
   {
@@ -404,16 +404,16 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 44,
     "speaker": "श्रीमती मृदुला बर्वे",
     "topic": "स्टार्टअप एक मानसिकता",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/p6EQgv_pqfw",
     "date": "०७ मे २०१७"
   },
   {
     "edition": 16,
     "year": 2018,
     "lecture_no": 45,
-    "speaker": "श्री व श्रीमती नारळीकर",
+    "speaker": "डॉ. जयंत व मंगला नारळीकर",
     "topic": "मुळाखत - श्री अरविंद परांजपे",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/2ntFKojkf88",
     "date": "२९ एप्रिल २०१८"
   },
   {
@@ -421,8 +421,8 @@ export const VYAKHYANE: Vyakhyan[] = [
     "year": 2018,
     "lecture_no": 46,
     "speaker": "श्रीमती भारती ठाकूर",
-    "topic": "नर्मदा परिक्रमा ते धर्मादालय",
-    "youtubeUrl": "",
+    "topic": "नर्मदा परिक्रमा ते नर्मदालय",
+    "youtubeUrl": "https://youtu.be/L8ZW0kv6LDk",
     "date": "०१ मे २०१८"
   },
   {
@@ -431,7 +431,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 47,
     "speaker": "श्री गणेश प्रभू",
     "topic": "प्राचीन विज्ञानातील भारतीय वैज्ञानिकांचे योगदान",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/S4IxZdiBIew",
     "date": "०६ मे २०१८"
   },
   {
