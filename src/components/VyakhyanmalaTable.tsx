@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { SiYoutube } from '@icons-pack/react-simple-icons';
 import { VYAKHYANE } from '@/content/vyakhyanmala';
+import { mrNum } from '@/lib/marathi';
+import YoutubeDialog, { youtubeId, type Video } from '@/components/common/YoutubeDialog';
 
 const totalEditions = Math.max(...VYAKHYANE.map((v) => v.edition));
 
@@ -11,6 +13,13 @@ const TINT  = 'var(--color-enlightenment-tint)';
 
 export default function VyakhyanmalaTable() {
   const [query, setQuery] = useState('');
+  const [playing, setPlaying] = useState<Video | null>(null);
+  /** Open the lecture in the popup player; links it can't embed open on YouTube as before */
+  const play = (v: (typeof VYAKHYANE)[number]) => (e: MouseEvent) => {
+    if (!youtubeId(v.youtubeUrl)) return;
+    e.preventDefault();
+    setPlaying({ url: v.youtubeUrl, title: `${v.speaker} — ${v.topic}`, subtitle: `व्याख्यानमाला ${mrNum(v.year)} · ${v.date}` });
+  };
 
   const filtered = query.trim()
     ? VYAKHYANE.filter(
@@ -108,6 +117,7 @@ export default function VyakhyanmalaTable() {
                               href={v.youtubeUrl}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={play(v)}
                               className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white transition-colors"
                               title="YouTube वर पाहा"
                             >
@@ -139,6 +149,7 @@ export default function VyakhyanmalaTable() {
                           href={v.youtubeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={play(v)}
                           className="inline-flex items-center gap-1 text-xs font-medium text-[#FF0000]"
                         >
                           <SiYoutube className="w-3.5 h-3.5" />
@@ -152,6 +163,7 @@ export default function VyakhyanmalaTable() {
             </div>
           ))}
       </div>
+      <YoutubeDialog video={playing} onClose={() => setPlaying(null)} />
     </div>
   );
 }

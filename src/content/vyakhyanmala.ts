@@ -575,7 +575,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 63,
     "speaker": "श्रीमती अंजली चिपलकट्टी",
     "topic": "माणूस असा का वागतो",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/MdXptMZq5BU",
     "date": "१ मे २०२४"
   },
   {
@@ -584,7 +584,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 64,
     "speaker": "डॉ. प्रदीप आपटे",
     "topic": "अन्नाचा इतिहास",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/JshnL--avwY",
     "date": "४ मे २०२४"
   },
   {
@@ -593,7 +593,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 65,
     "speaker": "श्री. अशोक राणे",
     "topic": "सिनेमा पाहणारा माणूस",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/c8cpE_87nds",
     "date": "५ मे २०२४"
   },
   {
@@ -611,7 +611,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 67,
     "speaker": "सौ. सुमेधा योगेश चिथाडे",
     "topic": "राष्ट्राय स्वाहा, इदं न मम",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/OZhksDpfNHg",
     "date": "१ मे २०२५"
   },
   {
@@ -629,7 +629,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 69,
     "speaker": "प्रा. डॉ. मृदुला दाढे",
     "topic": "तरी असेल गीत हे",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/HVJzZmL5H8M",
     "date": "२६ एप्रिल २०२६"
   },
   {
@@ -638,7 +638,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 70,
     "speaker": "श्री. आनंद वासुदेव हर्डीकर",
     "topic": "नेताजी, तुमि कोथाय?",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtu.be/2paOkkfA5TI",
     "date": "१ मे २०२६"
   },
   {
