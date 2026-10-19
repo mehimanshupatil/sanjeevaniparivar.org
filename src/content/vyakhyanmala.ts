@@ -548,7 +548,7 @@ export const VYAKHYANE: Vyakhyan[] = [
     "lecture_no": 60,
     "speaker": "वीरमाता अनुराधा गोरे",
     "topic": "विस्मृतीत गेलेले वीरांगना",
-    "youtubeUrl": "",
+    "youtubeUrl": "https://youtube.com/live/QxYUCR4tezs",
     "date": "१९ एप्रिल २०२३"
   },
   {
