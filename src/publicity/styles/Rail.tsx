@@ -20,7 +20,7 @@ export default function Rail({ edition: b, format }: TemplateProps) {
     : { rail: 'w-[340px] px-[40px] py-[52px]', day: many ? 'text-[84px]' : 'text-[120px]', label: 'text-[26px]', text: 'text-[22px]', venue: 'text-[32px]', main: 'px-[56px] py-[56px]', title: 'text-[150px]', year: 'text-[64px]' };
   return (
     <main id="frame" className="overflow-hidden bg-ground font-body text-ink" style={{ width: format.width, height: format.height }}>
-      <div id="content" className="h-full flex">
+      <div id="content" data-fill className="h-full flex">
         <aside className={cx(s.rail, 'flex-none flex flex-col justify-between bg-deep text-band-text')}>
           <div className={cx('flex flex-col', compact ? 'gap-6' : 'gap-9')}>
             {logo && <span className={cx('grid place-items-center rounded-[20px] bg-white', compact ? 'size-[100px]' : 'size-[130px]')}><img src={logo.src} alt={logo.caption} className="size-[77%] object-contain" /></span>}
@@ -56,7 +56,7 @@ export default function Rail({ edition: b, format }: TemplateProps) {
           <div className="flex flex-col">
             {b.title.top && <span className={cx('font-ornate text-deep', compact ? 'text-[32px]' : 'text-[42px]')}>{b.title.top}</span>}
             <h1 className="w-full font-normal">
-              <span data-fit className={cx(s.title, 'inline-block whitespace-nowrap font-display font-display-weight leading-[1.02] text-primary')}>{b.title.main}</span>
+              <span data-fit data-fit-min={0.35} className={cx(s.title, 'inline-block whitespace-nowrap font-display font-display-weight leading-[1.02] text-primary')}>{b.title.main}</span>
             </h1>
             <span className={cx(s.year, 'flex items-center gap-5 font-ornate leading-none text-gold after:h-0.5 after:flex-1 after:bg-gold')}>{b.yearMr}</span>
             {b.title.sub && <span className={cx('mt-3 font-ornate text-deep', compact ? 'text-[26px]' : 'text-[32px]')}>{b.title.sub}</span>}

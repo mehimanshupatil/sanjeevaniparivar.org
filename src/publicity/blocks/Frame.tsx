@@ -24,7 +24,7 @@ export default function Frame({ format, pattern, compact = false, children }: Pr
       }}
     >
       <div className="h-full border-[3px] border-deep p-1.5">
-        <div id="content" className={cx('relative h-full flex flex-col items-center justify-between border border-gold', compact ? 'px-8 pb-5' : 'px-[38px] pb-[26px]')}>
+        <div id="content" data-fill className={cx('relative h-full flex flex-col items-center justify-between border border-gold', compact ? 'px-8 pb-5' : 'px-[38px] pb-[26px]')}>
           {children}
         </div>
       </div>

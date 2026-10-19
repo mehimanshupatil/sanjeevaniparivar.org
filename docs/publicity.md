@@ -75,6 +75,7 @@ Each session is numbered and labelled automatically ("पुष्प पहि�
 - `/publicity/templates/<type>/` ("वापरून पहा") lets a member type their programme's details into a Marathi form and see every format update live, with a warning if text doesn't fit. Nothing is saved on the site (the draft stays in their browser). "कॉपी करा" / "WhatsApp वर पाठवा" sends you the programme + edition YAML to add to `src/content/`.
 - Each type's sample lives in `src/publicity/templates/<type>/sample.ts`, deliberately near the template's limits. Sample pages are rendered in CI too, so a template change that makes the sample overflow fails the build.
 - Long titles shrink to fit between the side ornaments (`src/publicity/fit.ts`, marked `data-fit`); render waits for `html[data-publicity-ready]`.
+- Cards fill their frame (`fillFrame` in `fit.ts`, marked `data-fill`): a card with little text is enlarged evenly (text, photos and blocks, never wider than the card, up to 1.6×) until it fills about 94% of the height, so a 9:16 card isn't a few small blocks with big gaps. It stops before a title would stop fitting or look smaller. Full cards stay at 1×, so the overflow check still sees them.
 
 ## How it fits together
 

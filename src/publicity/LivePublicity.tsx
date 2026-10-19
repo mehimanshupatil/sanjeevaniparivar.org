@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { resolveEdition, type ResolvedEdition, type EditionData, type Entry, type ProgrammeData } from './edition';
 import { TEMPLATES, type ProgrammeType } from './templates';
 import { FORMATS, type FormatId } from './formats';
-import { fitText } from './fit';
+import { fitText, fillFrame } from './fit';
 
 export interface DraftMessage {
   kind: 'publicity-draft';
@@ -47,12 +47,13 @@ export default function LivePublicity({ type, format, programme, edition }: Prop
     return () => removeEventListener('message', onMessage);
   }, [format]);
 
-  // Re-fit titles after each change, then report whether the content fits.
+  // Re-fit titles and fill the card after each change (as the render does), then report whether the content fits.
   useLayoutEffect(() => {
     let cancelled = false;
     document.fonts.ready.then(() => {
       if (cancelled) return;
       fitText();
+      fillFrame();
       if (parent === window) return;
       const el = document.getElementById('content');
       const overflow = el ? Math.max(0, el.scrollHeight - el.clientHeight) : 0;

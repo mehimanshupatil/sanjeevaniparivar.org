@@ -18,7 +18,8 @@ export default function TitleBlock({ top, main, yearMr, decor, compact = false }
   // Width kept clear for the ornaments on both sides (ornament width + a gap), or a small margin.
   const reserve = decor.titleSides ? (compact ? 2 * (90 + 16) : 2 * (110 + 16)) : 40;
   return (
-    <section className="relative z-0 w-full flex flex-col items-center text-center">
+    // Tall enough for the side ornaments, so they never overlap what comes below
+    <section className={cx('relative z-0 w-full flex flex-col items-center text-center', decor.titleSides && (compact ? 'min-h-[200px]' : 'min-h-[250px]'))}>
       {decor.titleBack && (
         <img src={decorUrl(decor.titleBack)} alt=""
           className={cx(s.back, 'absolute -z-1 left-1/2 top-1/2 max-w-none -translate-x-1/2 -translate-y-1/2 opacity-[0.11]')} />

@@ -20,7 +20,7 @@ export default function Poster({ edition: b, format }: TemplateProps) {
     : { block: heavy ? 'h-[620px]' : 'h-[820px]', pad: 'px-[70px]', title: 'text-[180px]', year: 'text-[80px]', day: 'text-[210px]', month: 'text-[44px]', sub: 'text-[32px]', venue: 'text-[44px]' };
   return (
     <main id="frame" className="overflow-hidden bg-ground font-body text-ink" style={{ width: format.width, height: format.height }}>
-      <div id="content" className="h-full flex flex-col">
+      <div id="content" data-fill className="h-full flex flex-col">
         <section className={cx(s.block, s.pad, 'relative flex-none flex flex-col justify-between overflow-hidden bg-deep py-[48px] text-band-text')}>
           {b.portrait
             ? <div className="absolute right-[40px] bottom-[20px]"><Portrait {...b.portrait} compact /></div>
