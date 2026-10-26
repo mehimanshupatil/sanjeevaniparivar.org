@@ -51,6 +51,12 @@ const groups = [
     ? b.sessions.map((x) => ({ heading: `${x.label} — ${x.speaker.name}`, outputs: outputsAt(`${base}/${x.n}`, `pushpa-${x.n}`) }))
     : [],
 ];
+
+// Personal invitation: the card is an iframe of /vaiyaktik/whatsapp/, with the name the member types
+const personal = b.personal && {
+  page: `${base}/vaiyaktik/whatsapp/`,
+  fileName: `${b.programme}-${b.year}-nimantran`,
+};
 ---
 <PublicityPreviewLayout title={b.fullTitle}>
   <Fragment slot="crumbs">
@@ -63,6 +69,29 @@ const groups = [
     {b.days.map((d) => <p><span class="font-semibold text-gray-800">{d.date}</span> · {d.time}</p>)}
     <p>{b.venue.join(' ')}</p>
   </div>
+
+  {personal && (
+    <section class="mt-12 rounded-2xl bg-white border border-gray-100 p-4 sm:p-6" data-personal data-page={personal.page} data-file-name={personal.fileName}>
+      <h2 class="text-xl font-bold text-gray-900">वैयक्तिक निमंत्रण</h2>
+      <p class="mt-1 text-sm text-gray-600">पाहुण्याचे नाव लिहा आणि निमंत्रण डाउनलोड करा. नाव कुठेही साठवले जात नाही.</p>
+      <div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,360px)_1fr]">
+        <div class="rounded-lg overflow-hidden border border-gray-100 bg-gray-100" style="aspect-ratio: 1080 / 1920" data-personal-preview>
+          <iframe src={personal.page} title="वैयक्तिक निमंत्रण" class="border-0 pointer-events-none origin-top-left" style="width: 1080px; height: 1920px"></iframe>
+        </div>
+        <div class="flex flex-col gap-4">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-sm font-semibold text-gray-800">पाहुण्याचे नाव, गाव</span>
+            <input type="text" data-personal-name placeholder="उदा. श्री. नाव आडनाव, गाव" autocomplete="off"
+              class="rounded-lg border border-gray-300 px-3 py-2 text-base focus:border-primary focus:outline-none" />
+          </label>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" data-personal-download class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">PNG डाउनलोड</button>
+            <button type="button" data-personal-share hidden class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary disabled:opacity-50">शेअर करा</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
 
   {groups.map((g) => (<>
   {g.heading && <h2 class="mt-12 text-xl font-bold text-gray-900">{g.heading}</h2>}
@@ -98,6 +127,70 @@ const groups = [
 </PublicityPreviewLayout>
 
 <script>
+  import type { PersonalMessage, PersonalReply } from '@/publicity/personal/client';
+
+  // Personal invitation: the name goes into the card iframe; the card page makes the PNG (it has the card's fonts and styles) and posts it back.
+  const personal = document.querySelector<HTMLElement>('[data-personal]');
+  if (personal) {
+    const preview = personal.querySelector<HTMLElement>('[data-personal-preview]')!;
+    const frame = preview.querySelector('iframe')!;
+    const input = personal.querySelector<HTMLInputElement>('[data-personal-name]')!;
+    const download = personal.querySelector<HTMLButtonElement>('[data-personal-download]')!;
+    const share = personal.querySelector<HTMLButtonElement>('[data-personal-share]')!;
+    const post = (m: PersonalMessage) => frame.contentWindow!.postMessage(m, location.origin);
+
+    const scale = () => { frame.style.transform = `scale(${preview.clientWidth / 1080})`; };
+    scale();
+    new ResizeObserver(scale).observe(preview);
+
+    const name = () => input.value.trim();
+    let timer: number | undefined;
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(() => post({ kind: 'personal-guest', name: name() }), 250);
+    });
+    // A name typed before the card page loaded
+    frame.addEventListener('load', () => { if (name()) post({ kind: 'personal-guest', name: name() }); });
+
+    /** Asks the card page for the PNG of the card as it is now. */
+    const png = () => new Promise<File>((resolve) => {
+      const onReply = (e: MessageEvent<PersonalReply>) => {
+        if (e.source !== frame.contentWindow || e.data?.kind !== 'personal-png') return;
+        window.removeEventListener('message', onReply);
+        const who = name().replace(/[\\/:*?"<>|,]/g, '').replace(/\s+/g, '-');
+        resolve(new File([e.data.blob], `${personal.dataset.fileName}${who ? `-${who}` : ''}.png`, { type: 'image/png' }));
+      };
+      window.addEventListener('message', onReply);
+      // Send the latest name first, in case the debounce hasn't fired yet
+      clearTimeout(timer);
+      post({ kind: 'personal-guest', name: name() });
+      post({ kind: 'personal-export' });
+    });
+    const busy = async (button: HTMLButtonElement, work: () => Promise<void>) => {
+      button.disabled = true;
+      try { await work(); } finally { button.disabled = false; }
+    };
+
+    download.addEventListener('click', () => busy(download, async () => {
+      const file = await png();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(file);
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }));
+
+    // Phones: share the image straight to WhatsApp (Web Share API with files)
+    const probe = new File([''], 'x.png', { type: 'image/png' });
+    if (navigator.canShare?.({ files: [probe] })) {
+      share.hidden = false;
+      share.addEventListener('click', () => busy(share, async () => {
+        const file = await png();
+        await navigator.share({ files: [file] }).catch(() => {});
+      }));
+    }
+  }
+
   // In `pnpm dev` the PNGs don't exist yet: swap in the live Publicity page, scaled down.
   document.querySelectorAll<HTMLAnchorElement>('[data-preview]').forEach((link) => {
     const img = link.querySelector('img')!;

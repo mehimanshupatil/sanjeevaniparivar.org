@@ -1,7 +1,7 @@
 // Pure Publicity logic — no astro:content imports, so it also runs in the browser
 // (the template try-out editor renders Publicity live with it).
 import type { CollectionEntry } from 'astro:content';
-import { mrNum, schoolYearMr, ordinalMr, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders } from '@/lib/marathi';
+import { mrNum, schoolYearMr, ordinalMr, dateParts, formatDate, formatAt, formatRange, parseDate, fillPlaceholders, joinMr } from '@/lib/marathi';
 import { THEMES, type Theme } from './themes';
 import { LOGOS, type Logo } from './logos';
 import type { FormatId } from './formats';
@@ -48,6 +48,9 @@ export interface ResolvedEdition {
   quote?: { text: string; by?: string };
   portrait?: { src: string; caption: string; garland: boolean; credit?: string };
   deity?: { src: string; name: string };
+  /** The personal invitation's wording, filled in; inauguration only when the edition has one.
+   *  days: as written in a letter, "शनिवार, दिनांक ३१ ऑक्टोबर २०२६" */
+  personal?: { request: string; inauguration?: string; days: { date: string; time: string }[] };
   groupsHeading?: string;
   groups: { name: string; who?: string; topics: string[] }[];
   rulesHeading?: string;
@@ -83,7 +86,7 @@ export interface ResolvedSession {
  */
 export function resolveEdition(edition: Entry<EditionData>, programme: Entry<ProgrammeData>): ResolvedEdition {
   const p = programme.data;
-  const { programme: _ref, days, venue = [], draft: _draft, cards = true, sessions = [], ...overrides } = edition.data;
+  const { programme: _ref, days, venue = [], draft: _draft, cards = true, sessions = [], inauguration, ...overrides } = edition.data;
   const text = { ...p, ...stripUndefined(overrides) };
 
   const year = parseDate(days[0].date).getUTCFullYear();
@@ -132,6 +135,13 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     quote: text.quote,
     portrait: text.portrait && { ...text.portrait, garland: text.portrait.garland ?? false },
     deity: text.deity,
+    personal: text.personal && {
+      request: fillPlaceholders(text.personal.request, { fullTitle, title: [p.title.top, p.title.main].filter(Boolean).join(' '), organisers: joinMr(text.organisers ?? []) }),
+      inauguration: text.personal.inauguration && inauguration
+        ? fillPlaceholders(text.personal.inauguration, { by: inauguration.by, when: `${letterDate(inauguration.date)} रोजी ${formatAt(inauguration.at)}` })
+        : undefined,
+      days: days.map((d, i) => ({ date: letterDate(d.date), time: resolvedDays[i].time })),
+    },
     groupsHeading: text.groupsHeading,
     groups: text.groups ?? [],
     rulesHeading: text.rulesHeading,
@@ -147,6 +157,12 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     theme: THEMES[text.theme],
     formats: text.formats,
   };
+}
+
+/** 2026-10-31 → "शनिवार, दिनांक ३१ ऑक्टोबर २०२६" (the personal invitation's letter style) */
+function letterDate(value: string): string {
+  const d = dateParts(value);
+  return `${d.weekday}, दिनांक ${d.day} ${d.month} ${d.year}`;
 }
 
 function stripUndefined<T extends object>(o: T): Partial<T> {
