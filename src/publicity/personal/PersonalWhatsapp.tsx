@@ -62,7 +62,7 @@ export default function PersonalWhatsapp({ edition: b, format, guest }: Props) {
       {personal.inauguration && (
         <section className="w-full rounded-[6px] border-2 border-dashed border-gold px-8 py-5 text-center">
           <h2 className="font-ornate text-[32px] font-normal text-primary">उद्घाटन समारंभ</h2>
-          <p className="mt-2 text-[24px] leading-[1.55]">{personal.inauguration}</p>
+          <p className="mt-2 text-[28px] font-bold leading-[1.5]">{personal.inauguration}</p>
         </section>
       )}
 
