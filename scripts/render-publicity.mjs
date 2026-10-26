@@ -10,6 +10,7 @@
 import { createServer } from 'node:http';
 import { readFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
 import { extname, join, normalize, relative, dirname, basename } from 'node:path';
 import { chromium } from 'playwright';
 
@@ -45,22 +46,25 @@ async function publicityPages() {
     .map((p) => '/publicity/' + dirname(p) + '/');
 }
 
-async function render(browser, origin, route) {
+/**
+ * Each page loads twice: at 1× (checks, PDF, PNG) and at 2× (print PNG). One browser context per
+ * scale, shared by all pages, so Google Fonts and images download once instead of on every page.
+ */
+async function render(contexts, origin, route) {
   const outDir = join(DIST, dirname(route));
   const name = basename(route);
   const problems = [];
-
-  const page = await browser.newPage();
-  await page.goto(origin + route, { waitUntil: 'load' });
-  await page.waitForSelector('html[data-publicity-ready]'); // fonts loaded + long titles fitted (src/publicity/fit.ts)
-  const size = await page.locator('#frame').evaluate((el) => ({ width: el.offsetWidth, height: el.offsetHeight }));
-  await page.close();
+  let size;
 
   for (const [suffix, scale] of [['', 1], ['@2x', 2]]) {
-    const p = await browser.newPage({ viewport: size, deviceScaleFactor: scale });
+    const p = await contexts[scale].newPage();
+    // The 1× load measures the frame; the 2× page gets that size before loading.
+    if (size) await p.setViewportSize(size);
     await p.goto(origin + route, { waitUntil: 'load' });
-    await p.waitForSelector('html[data-publicity-ready]');
+    await p.waitForSelector('html[data-publicity-ready]'); // fonts loaded + long titles fitted (src/publicity/fit.ts)
     if (scale === 1) {
+      size = await p.locator('#frame').evaluate((el) => ({ width: el.offsetWidth, height: el.offsetHeight }));
+      await p.setViewportSize(size);
       const over = await p.evaluate(() => {
         const el = document.getElementById('content');
         return el.scrollHeight - el.clientHeight;
@@ -106,11 +110,17 @@ if (!existsSync(PUBLICITY)) {
 const server = await serve();
 const origin = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch();
+const contexts = { 1: await browser.newContext({ deviceScaleFactor: 1 }), 2: await browser.newContext({ deviceScaleFactor: 2 }) };
 let problems = 0;
 try {
   const routes = (await publicityPages()).filter((r) => filters.every((f) => r.includes(f)));
   if (!routes.length) console.log('No pages matched.');
-  for (const route of routes) problems += await render(browser, origin, route);
+  // A few pages at a time: rendering is mostly waiting (page load, fonts, encoding).
+  const queue = [...routes];
+  const worker = async () => {
+    for (let route; (route = queue.shift());) problems += await render(contexts, origin, route);
+  };
+  await Promise.all(Array.from({ length: Math.min(4, availableParallelism()) }, worker));
 } catch (err) {
   console.error(`✖ ${err.message}`);
   problems++;

@@ -42,6 +42,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/publicity/[year]/[programme]/[format]` | Bare Publicity pages rendered to PNG/PDF after build (see Publicity below) |
 | `/publicity/[year]/[programme]/[sub]/[format]` | The same edition in a Style (`poster`, `rail`, `pass`) or one lecture session (`1`, `2`, …) |
 | `/publicity/`, `/publicity/[year]/[programme]/` | Preview + download pages for rendered Publicity (noindex), `PublicityPreviewLayout.astro` |
+| `/publicity/whatsapp/` | `WhatsappSender.tsx` — send an approved WhatsApp template to a CSV list via Meta's API from the browser; token in localStorage; logic in `src/lib/whatsapp.ts` |
 | `/publicity/templates/`, `/publicity/templates/[type]/` | Template gallery + try-out editor for trust members (`TemplateEditor.tsx`), sample pages at `/publicity/templates/[type]/[format]/` |
 
 ## Homepage section order (App.tsx)

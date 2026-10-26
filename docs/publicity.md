@@ -78,6 +78,18 @@ A programme with `personal` wording gets a "वैयक्तिक निम�
 - Per year: `inauguration: { by, date, at }` in the edition YAML. Without it the उद्घाटन box is left out.
 - Card: `src/publicity/personal/PersonalWhatsapp.tsx` (WhatsApp size only), page `/publicity/<year>/<programme>/vaiyaktik/whatsapp/`. The build renders it once with the sample name "आपले नाव, गाव", so an overflowing card fails CI. The edition page shows it in an iframe and posts the name in; `personal/client.ts` re-fits the card and makes the PNG with `modern-screenshot`.
 
+## Sending on WhatsApp (`/publicity/whatsapp/`)
+
+A page for trust members to send an approved WhatsApp template to the people in a CSV, through Meta's API, straight from the browser (the site has no server; Graph API allows browser calls). Not linked from the site, noindex.
+
+1. Access token (a System User token with only the WhatsApp permissions), phone number ID and WhatsApp Business Account ID. "या उपकरणावर साठवा" keeps them in this browser's localStorage; "विसरा" removes them.
+2. "जोडा" checks the number and loads the APPROVED templates. For a marketing template it shows whether Meta's automatic creative optimizations (image filters, text formatting, …) are on, with a button to turn them all off so the invitation goes as designed.
+3. A CSV with a header row (e.g. नाव, गाव, फोन). Numbers are normalised (10-digit Indian mobiles get 91); bad numbers and repeats are not selected. The list is never stored.
+4. Each placeholder (`{{1}}`, `{{name}}`, URL-button variables) comes from a CSV column or one text for everyone. An image header uses the link of a published card (the same image for everyone; Meta fetches it, so no uploads). Preview and the exact JSON are shown.
+5. Send: one message at a time, status per row, stop, re-send the failed ones, download the results as CSV. Marketing templates go to `/marketing_messages` (falls back to Cloud API by itself), others to `/messages`.
+
+"Sent" only means WhatsApp accepted the message: delivery, read receipts and replies need a webhook server, which the site doesn't have. Replies and "STOP" should go to the trust's main number (in the WhatsApp Business app), so say so in the template. Pure logic and tests: `src/lib/whatsapp.ts`.
+
 ## Template gallery and try-out editor (for trust members)
 
 - `/publicity/templates/` shows every template in every format, filled with sample content. Share this link; it isn't linked from the site or indexed.

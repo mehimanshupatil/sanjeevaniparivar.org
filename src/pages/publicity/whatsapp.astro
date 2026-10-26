@@ -1,0 +1,27 @@
+---
+// /publicity/whatsapp/ — send an approved WhatsApp template to the people in a CSV, through
+// Meta's API from the browser. For trust members; not linked from the site (noindex).
+import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
+import WhatsappSender from '@/components/publicity/WhatsappSender';
+import { cardEditions } from '@/publicity/resolve';
+
+// Meta fetches the header image itself, so it must be the published URL, never localhost.
+const site = Astro.site!.origin;
+const images = (await cardEditions())
+  .filter((e) => e.formats.includes('whatsapp'))
+  .sort((a, b) => b.year - a.year)
+  .map((e) => ({ label: `${e.fullTitle} — WhatsApp निमंत्रण`, url: `${site}/publicity/${e.id}/whatsapp.png` }));
+---
+<PublicityPreviewLayout title="WhatsApp वरून निमंत्रण पाठवा">
+  <Fragment slot="crumbs">
+    <span class="text-gray-300">/</span>
+    <span class="text-gray-500">WhatsApp</span>
+  </Fragment>
+
+  <h1 class="text-3xl font-extrabold text-gray-900">WhatsApp वरून निमंत्रण पाठवा</h1>
+  <p class="mt-2 mb-8 max-w-2xl text-gray-600">
+    मंजूर साचा निवडा, CSV यादी द्या आणि पाठवा. संदेश थेट या ब्राउझरमधून Meta कडे जातात; token फक्त या उपकरणावर राहतो आणि यादी कुठेही साठवली जात नाही.
+  </p>
+
+  <WhatsappSender client:only="react" images={images} />
+</PublicityPreviewLayout>
