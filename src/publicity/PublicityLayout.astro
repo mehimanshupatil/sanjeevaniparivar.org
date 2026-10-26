@@ -29,9 +29,11 @@ const query = ['family=Mukta:wght@400;500;600;700', display.query, 'family=Tiro+
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- display=block: wait for each font rather than drawing a fallback first -->
+    <!-- display=block: wait for each font rather than drawing a fallback first.
+         crossorigin: lets the personal invitation's PNG export read the font rules and embed them -->
     <link
       rel="stylesheet"
+      crossorigin="anonymous"
       href={`https://fonts.googleapis.com/css2?${query}&display=block`}
     />
     <meta name="publicity-fonts" content={families.join(',')} />

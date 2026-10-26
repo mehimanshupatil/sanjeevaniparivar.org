@@ -53,6 +53,10 @@ const programmeText = z.object({
   portrait: z.object({ src: z.string(), caption: z.string(), garland: z.boolean().optional(), credit: z.string().optional() }).optional(),
   /** A deity picture at the top centre, between the logos (e.g. ग्राहक पेठ). src: under public/publicity/assets/deity/; name: alt text */
   deity: z.object({ src: z.string(), name: z.string() }).optional(),
+  /** A personal invitation (वैयक्तिक निमंत्रण): a member types the guest's name on the edition's page and
+   *  downloads the card. request: the invitation sentence ({{ organisers }}, {{ title }} without the year, {{ fullTitle }} with it);
+   *  inauguration: the उद्घाटन line, shown when the edition has an `inauguration` ({{ by }}, {{ when }}) */
+  personal: z.object({ request: z.string(), inauguration: z.string().optional() }).optional(),
   // workshop: numbered terms, a highlighted note, and who to contact to register
   rulesHeading: z.string().optional(),
   rules: z.array(z.string()).optional(),
@@ -112,6 +116,8 @@ const editions = defineCollection({
       bio: z.string().optional(),
       closing: z.string().optional(),
     })).optional(),
+    /** Who opens the programme (उद्घाटन) and when; shown on the personal invitation */
+    inauguration: z.object({ by: z.string(), date: isoDate, at: hhmm }).optional(),
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */
     draft: z.boolean().optional(),
   }).refine((e) => !e.sessions || e.sessions.length === e.days.length,
