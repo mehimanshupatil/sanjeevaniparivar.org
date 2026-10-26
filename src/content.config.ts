@@ -51,6 +51,8 @@ const programmeText = z.object({
   /** A person's photo, e.g. महाकवी कुसुमाग्रज on their जयंती. src: under public/publicity/assets/people/.
    *  garland: a marigold हार round the frame (for a tribute, not for a living guest); credit: a small source line, when the licence asks for one */
   portrait: z.object({ src: z.string(), caption: z.string(), garland: z.boolean().optional(), credit: z.string().optional() }).optional(),
+  /** A deity picture at the top centre, between the logos (e.g. ग्राहक पेठ). src: under public/publicity/assets/deity/; name: alt text */
+  deity: z.object({ src: z.string(), name: z.string() }).optional(),
   // workshop: numbered terms, a highlighted note, and who to contact to register
   rulesHeading: z.string().optional(),
   rules: z.array(z.string()).optional(),

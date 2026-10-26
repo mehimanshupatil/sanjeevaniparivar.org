@@ -17,7 +17,7 @@ export default function FairWhatsapp({ edition: b, format }: TemplateProps) {
     <Frame format={format} pattern={decor.pattern}>
       {decor.top && <img src={decorUrl(decor.top)} alt="" className="w-full" />}
 
-      <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} tagline={b.tagline} />
+      <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} tagline={b.tagline} deity={b.deity} />
       {b.organisers.length > 0 && <Organisers names={b.organisers} suffix={b.organisersSuffix} />}
       <TitleBlock top={b.title.top} main={b.title.main} yearMr={b.yearMr} decor={decor} />
 

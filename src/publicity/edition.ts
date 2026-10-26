@@ -47,6 +47,7 @@ export interface ResolvedEdition {
   footer?: string;
   quote?: { text: string; by?: string };
   portrait?: { src: string; caption: string; garland: boolean; credit?: string };
+  deity?: { src: string; name: string };
   groupsHeading?: string;
   groups: { name: string; who?: string; topics: string[] }[];
   rulesHeading?: string;
@@ -130,6 +131,7 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     footer: fill(text.footer),
     quote: text.quote,
     portrait: text.portrait && { ...text.portrait, garland: text.portrait.garland ?? false },
+    deity: text.deity,
     groupsHeading: text.groupsHeading,
     groups: text.groups ?? [],
     rulesHeading: text.rulesHeading,

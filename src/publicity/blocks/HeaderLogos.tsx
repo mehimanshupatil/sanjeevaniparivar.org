@@ -1,4 +1,4 @@
-// Top row: left logo · invitation line + tagline · right logo
+// Top row: left logo · optional deity picture, invitation line + tagline · right logo
 import type { Logo } from '../logos';
 import { cx } from '../cx';
 
@@ -7,11 +7,13 @@ interface Props {
   right?: Logo;
   invite: string;
   tagline?: string;
+  /** A deity picture above the invitation line, in a gold frame */
+  deity?: { src: string; name: string };
   /** Smaller sizes for shorter formats (e.g. Instagram post) */
   compact?: boolean;
 }
 
-export default function HeaderLogos({ left, right, invite, tagline, compact = false }: Props) {
+export default function HeaderLogos({ left, right, invite, tagline, deity, compact = false }: Props) {
   const logo = (l: Logo) => (
     <figure className={cx(compact ? 'w-[150px] gap-1' : 'w-[170px] gap-1.5', 'flex flex-col items-center text-center')}>
       <img
@@ -28,6 +30,10 @@ export default function HeaderLogos({ left, right, invite, tagline, compact = fa
     <header className="w-full flex items-center justify-between gap-6 -mt-2">
       {left ? logo(left) : right && spacer}
       <div className={cx('flex-1 flex flex-col items-center text-center', compact ? 'gap-2' : 'gap-2.5')}>
+        {deity && (
+          <img src={deity.src} alt={deity.name}
+            className={cx('border-[5px] border-double border-gold object-cover outline-2 outline-offset-4 outline-gold', compact ? 'mt-3 h-[150px] w-[120px]' : 'mt-4 h-[230px] w-[184px]')} />
+        )}
         <p className={cx('text-balance font-ornate tracking-[1px] text-primary', compact ? 'text-[30px]' : 'text-[34px]')}>{invite}</p>
         {tagline && <p className={cx('font-medium text-ink-soft', compact ? 'text-[20px]' : 'text-[23px]')}>{tagline}</p>}
       </div>
