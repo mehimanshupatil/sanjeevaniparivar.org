@@ -27,7 +27,7 @@ export default function PersonalWhatsapp({ edition: b, format, guest }: Props) {
       <HeaderLogos left={b.logos.left} right={b.logos.right} invite={b.invite} deity={b.deity} />
 
       <section className="w-full flex flex-col items-center gap-2 text-center">
-        <p className="font-ornate text-[28px] text-ink-soft">प्रति,</p>
+        <p className="self-start font-ornate text-[28px] text-ink-soft">प्रति,</p>
         {/* data-fit: a long name shrinks to one line (see fit.ts) */}
         <p data-guest data-fit data-fit-reserve={40} className="whitespace-nowrap font-ornate text-[52px] leading-[1.3] text-deep">{guest}</p>
         <div className="flex items-center gap-4">
