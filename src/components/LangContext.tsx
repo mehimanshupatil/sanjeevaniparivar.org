@@ -11,8 +11,9 @@ const LangContext = createContext<LangContextType>({
   toggle: () => {},
 });
 
-export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('mr');
+/** initial: the language before the visitor picks one (the legal pages open in English for Meta's review) */
+export function LangProvider({ children, initial = 'mr' }: { children: ReactNode; initial?: Lang }) {
+  const [lang, setLang] = useState<Lang>(initial);
 
   useEffect(() => {
     const stored = localStorage.getItem('sp-lang') as Lang | null;

@@ -97,6 +97,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
           <span>{t(f.copyright)}</span>
+          <span className="flex gap-4">
+            <a href="/privacy" className="hover:text-gold transition-colors">{t({ mr: 'गोपनीयता धोरण', en: 'Privacy Policy' })}</a>
+            <a href="/terms" className="hover:text-gold transition-colors">{t({ mr: 'सेवा अटी', en: 'Terms of Service' })}</a>
+          </span>
           <span className="italic">{t(f.motto)}</span>
         </div>
       </div>

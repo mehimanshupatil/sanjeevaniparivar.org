@@ -23,6 +23,8 @@ export async function ogEntries(): Promise<{ slug: string; card: OgCardProps }[]
     page('page/gallery', 'चित्रदालन', 'आमचा फोटो प्रवास'),
     page('page/team', 'आमची टीम', 'संजीवनी परिवार'),
     page('page/brand', 'ब्रँड मार्गदर्शक', 'लोगो, रंग व नाव'),
+    page('page/privacy', 'गोपनीयता धोरण', 'संजीवनी परिवार'),
+    page('page/terms', 'सेवा अटी', 'संजीवनी परिवार'),
     page('page/events', 'कार्यक्रम', 'आगामी व मागील कार्यक्रम'),
     page('page/blog', 'ब्लॉग', 'आमच्या कार्याच्या कहाण्या'),
 

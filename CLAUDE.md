@@ -38,6 +38,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/gallery` | `GalleryPage.tsx` |
 | `/team` | `TeamPage.tsx` — कार्यकारी मंडळ 2024–2029 (office bearers + members) |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
+| `/privacy` `/terms` | `LegalPage.tsx` — Privacy Policy + Terms of Service (URLs given to Meta for the WhatsApp app), opens in English; text in `src/content/legal.ts` |
 | `/publicity/[year]/[programme]/[format]` | Bare Publicity pages rendered to PNG/PDF after build (see Publicity below) |
 | `/publicity/[year]/[programme]/[sub]/[format]` | The same edition in a Style (`poster`, `rail`, `pass`) or one lecture session (`1`, `2`, …) |
 | `/publicity/`, `/publicity/[year]/[programme]/` | Preview + download pages for rendered Publicity (noindex), `PublicityPreviewLayout.astro` |
