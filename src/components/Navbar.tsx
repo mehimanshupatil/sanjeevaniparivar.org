@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useWindowEvent } from '@mantine/hooks';
 import { ListIcon, XIcon, HeartIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
@@ -27,11 +28,7 @@ export default function Navbar() {
 
   useEffect(() => { setPathname(window.location.pathname); }, []);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  useWindowEvent('scroll', () => setScrolled(window.scrollY > 20), { passive: true });
 
   const closeMenu = () => setMenuOpen(false);
   const isActive = (href: string) => pathname === href;

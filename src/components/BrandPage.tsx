@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import type { CSSProperties } from 'react';
+import { useClipboard } from '@mantine/hooks';
 import { DownloadSimpleIcon, CopyIcon, CheckIcon, XIcon, CheckCircleIcon } from '@phosphor-icons/react';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
@@ -19,19 +19,11 @@ const FULL_LOGO = '/assets/brand/sanjeevani-parivar-logo.png';
 const AA_TEXT = 4.5;
 
 function CopyHex({ hex }: { hex: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(hex);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // Clipboard unavailable (insecure context) — hex is still visible to copy by hand
-    }
-  };
+  // Clipboard unavailable (insecure context): nothing happens, the hex is still visible to copy by hand
+  const clipboard = useClipboard({ timeout: 1500 });
   return (
-    <Button variant="ghost" size="icon-xs" onClick={copy} aria-label={`Copy ${hex}`}>
-      {copied ? <CheckIcon /> : <CopyIcon />}
+    <Button variant="ghost" size="icon-xs" onClick={() => clipboard.copy(hex)} aria-label={`Copy ${hex}`}>
+      {clipboard.copied ? <CheckIcon /> : <CopyIcon />}
     </Button>
   );
 }

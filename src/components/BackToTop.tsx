@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useWindowEvent } from '@mantine/hooks';
 import {  ArrowUpIcon } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  useWindowEvent('scroll', () => setVisible(window.scrollY > 400), { passive: true });
 
   if (!visible) return null;
 

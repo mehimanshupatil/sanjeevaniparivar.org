@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, downloadFile } from '@/lib/utils';
 import {
   GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
   CREATIVE_FEATURES, optimizationsOn, apiError, type WaTemplate,
@@ -219,11 +219,7 @@ export default function WhatsappSender({ images }: Props) {
       const s = status[i];
       return [...r.row, r.phone ?? '', s?.state ?? (selected.has(i) ? 'pending' : 'skipped'), s?.state === 'sent' ? s.id : s?.state === 'failed' ? s.error : ''];
     })];
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob(['﻿' + toCsv(rows)], { type: 'text/csv;charset=utf-8' }));
-    a.download = csv.fileName.replace(/\.csv$/i, '') + '-results.csv';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    downloadFile(new Blob(['﻿' + toCsv(rows)], { type: 'text/csv;charset=utf-8' }), csv.fileName.replace(/\.csv$/i, '') + '-results.csv');
   };
 
   const columnItems = (csv?.header ?? []).map((h, i) => ({ value: String(i), label: h || `स्तंभ ${i + 1}` }));

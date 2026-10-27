@@ -128,6 +128,7 @@ const personal = b.personal && {
 
 <script>
   import type { PersonalMessage, PersonalReply } from '@/publicity/personal/client';
+  import { downloadFile } from '@/lib/utils';
 
   // Personal invitation: the name goes into the card iframe; the card page makes the PNG (it has the card's fonts and styles) and posts it back.
   const personal = document.querySelector<HTMLElement>('[data-personal]');
@@ -173,11 +174,7 @@ const personal = b.personal && {
 
     download.addEventListener('click', () => busy(download, async () => {
       const file = await png();
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(file);
-      a.download = file.name;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      downloadFile(file, file.name);
     }));
 
     // Phones: share the image straight to WhatsApp (Web Share API with files)

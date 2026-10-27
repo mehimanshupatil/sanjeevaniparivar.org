@@ -2,6 +2,7 @@
 // every format on the right (iframes of the template's sample pages, fed via postMessage).
 // Nothing is saved on the site; the result is copied or sent on WhatsApp as YAML.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useClipboard, useLocalStorage } from '@mantine/hooks';
 import { PlusIcon, TrashIcon, CopyIcon, CheckIcon, ArrowCounterClockwiseIcon, WarningIcon } from '@phosphor-icons/react';
 import { SiWhatsapp } from '@icons-pack/react-simple-icons';
 import { Button } from '@/components/ui/button';
@@ -25,29 +26,19 @@ interface Props {
   sections: EditorSection[];
 }
 
-const storageKey = (type: string) => `publicity-draft:${type}`;
-
-function loadDraft(type: string, fallback: Draft): Draft {
-  try {
-    const saved = localStorage.getItem(storageKey(type));
-    return saved ? { ...fallback, ...JSON.parse(saved) } : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 export default function TemplateEditor({ type, templateLabel, formats, sample, sections }: Props) {
   const initial = useMemo(() => draftFromSample(sample.programme, sample.edition), [sample]);
-  const [draft, setDraft] = useState<Draft>(initial);
+  // This member's last draft, kept in their browser only; fields added since are filled from the sample
+  const [draft, setDraft] = useLocalStorage<Draft>({
+    key: `publicity-draft:${type}`,
+    defaultValue: initial,
+    deserialize: (saved) => {
+      try { return saved ? { ...initial, ...JSON.parse(saved) } : initial; } catch { return initial; }
+    },
+  });
   const [status, setStatus] = useState<Record<string, StatusMessage>>({});
-  const [copied, setCopied] = useState(false);
+  const clipboard = useClipboard();
   const frames = useRef<Record<string, HTMLIFrameElement | null>>({});
-
-  // Restore this member's last draft (their browser only).
-  useEffect(() => setDraft(loadDraft(type, initial)), [type, initial]);
-  useEffect(() => {
-    try { localStorage.setItem(storageKey(type), JSON.stringify(draft)); } catch { /* private mode */ }
-  }, [type, draft]);
 
   const entries = useMemo(() => draftToEntries(draft, sample.programme, sample.edition), [draft, sample]);
 
@@ -73,13 +64,8 @@ export default function TemplateEditor({ type, templateLabel, formats, sample, s
     `# src/content/programmes/${entries.programme.id}.yaml\n${programmeYaml(entries.programme)}\n` +
     `# src/content/editions/${year}/${entries.programme.id}.yaml\n${editionYaml(entries.edition)}`;
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* clipboard blocked: the text is still shown below */ }
-  };
+  // Clipboard blocked: nothing happens, the text is still shown below
+  const copy = () => clipboard.copy(message);
   const sendWhatsapp = () => {
     const a = document.createElement('a');
     a.href = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -209,7 +195,7 @@ export default function TemplateEditor({ type, templateLabel, formats, sample, s
             संकेतस्थळावर काहीही जतन होत नाही. तयार झाल्यावर खालील मजकूर कॉपी करा किंवा WhatsApp वर पाठवा.
           </p>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" onClick={copy}>{copied ? <CheckIcon /> : <CopyIcon />} {copied ? 'कॉपी झाले' : 'कॉपी करा'}</Button>
+            <Button type="button" onClick={copy}>{clipboard.copied ? <CheckIcon /> : <CopyIcon />} {clipboard.copied ? 'कॉपी झाले' : 'कॉपी करा'}</Button>
             <Button type="button" variant="secondary" onClick={sendWhatsapp}><SiWhatsapp /> WhatsApp वर पाठवा</Button>
             <Button type="button" variant="ghost" onClick={reset}><ArrowCounterClockwiseIcon /> नमुना पुन्हा आणा</Button>
           </div>

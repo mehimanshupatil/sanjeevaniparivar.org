@@ -1,5 +1,6 @@
 import { useImmer } from 'use-immer';
-import { useLocalStorage } from '@mantine/hooks';
+import { useClipboard, useLocalStorage } from '@mantine/hooks';
+import { downloadFile } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -90,7 +91,6 @@ type FormState = {
   draft: boolean;
   body: string;
   slug: string;
-  copied: boolean;
   status: 'idle' | 'publishing' | 'success' | 'error';
   errorMsg: string;
 };
@@ -99,6 +99,7 @@ export default function BlogCreateForm() {
   const today = new Date().toISOString().slice(0, 10);
 
   const [storedPat, setStoredPat, removeStoredPat] = useLocalStorage({ key: PAT_KEY, defaultValue: '' });
+  const clipboard = useClipboard();
   const patSaved = storedPat.length > 0;
 
   const [f, update] = useImmer<FormState>({
@@ -112,7 +113,6 @@ export default function BlogCreateForm() {
     draft: false,
     body: '',
     slug: '',
-    copied: false,
     status: 'idle',
     errorMsg: '',
   });
@@ -132,19 +132,7 @@ export default function BlogCreateForm() {
   const isReady = f.title.trim() && f.excerpt.trim() && f.body.trim();
 
   function download() {
-    const blob = new Blob([mdx], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${derivedSlug}.mdx`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function copy() {
-    navigator.clipboard.writeText(mdx).then(() => {
-      update(d => { d.copied = true; });
-      setTimeout(() => update(d => { d.copied = false; }), 2000);
-    });
+    downloadFile(new Blob([mdx], { type: 'text/plain' }), `${derivedSlug}.mdx`);
   }
 
   async function publish() {
@@ -302,8 +290,8 @@ export default function BlogCreateForm() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-700">Preview</h2>
-          <Button variant="outline" size="sm" onClick={copy} className="text-xs h-auto py-1">
-            {f.copied ? '✓ कॉपी झाले' : 'कॉपी करा'}
+          <Button variant="outline" size="sm" onClick={() => clipboard.copy(mdx)} className="text-xs h-auto py-1">
+            {clipboard.copied ? '✓ कॉपी झाले' : 'कॉपी करा'}
           </Button>
         </div>
         <pre className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-xs font-mono text-gray-600 overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
