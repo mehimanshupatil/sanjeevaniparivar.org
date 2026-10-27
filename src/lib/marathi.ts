@@ -41,12 +41,12 @@ export function parseTime(value: string): Time {
   return { h: +m[1], min: +m[2] };
 }
 
-/** पहाटे (4–6), सकाळी (6–12), दुपारी (12–17), सायंकाळी (17–20), रात्री (20–4) */
+/** पहाटे (4–6), सकाळी (6–12), दुपारी (12–16), सायंकाळी (16–20), रात्री (20–4) */
 function period(h: number): string {
   if (h < 4) return 'रात्री';
   if (h < 6) return 'पहाटे';
   if (h < 12) return 'सकाळी';
-  if (h < 17) return 'दुपारी';
+  if (h < 16) return 'दुपारी';
   if (h < 20) return 'सायंकाळी';
   return 'रात्री';
 }
@@ -55,7 +55,7 @@ function clock({ h, min }: Time): string {
   return `${mrNum(h % 12 || 12)}.${mrNum(String(min).padStart(2, '0'))}`;
 }
 
-/** "16:00" → "दुपारी ४.००" */
+/** "16:00" → "सायंकाळी ४.००" */
 export function formatTime(value: string): string {
   const t = parseTime(value);
   return `${period(t.h)} ${clock(t)}`;
@@ -67,7 +67,7 @@ export function formatAt(value: string): string {
 }
 
 /**
- * ("16:00","22:00") → "दुपारी ४.०० ते रात्री १०.०० वाजेपर्यंत"
+ * ("16:00","22:00") → "सायंकाळी ४.०० ते रात्री १०.०० वाजेपर्यंत"
  * ("09:00")         → "सकाळी ९.०० वाजल्यापासून"
  * ("09:00","11:00") → "सकाळी ९.०० ते ११.०० वाजेपर्यंत" (repeated period dropped)
  */

@@ -73,7 +73,7 @@ Each session is numbered and labelled automatically ("पुष्प पहि�
 
 A programme with `personal` wording gets a "वैयक्तिक निमंत्रण" section on its edition page (`/publicity/2026/grahak-peth/`). A member types the guest's name and village ("श्री नाव आडनाव, गाव"), sees the card update, and downloads the PNG or shares it (phones). Names are never stored or sent anywhere; the PNG is made in the browser.
 
-- Wording: `personal: { request, inauguration }` in the programme YAML. `request` can use `{{ organisers }}` (the organisers, joined with "आणि"), `{{ title }}` (without the year) and `{{ fullTitle }}`; `inauguration` uses `{{ by }}` and `{{ when }}` ("शनिवार, दिनांक ३१ ऑक्टोबर २०२६ रोजी दुपारी ४.०० वाजता").
+- Wording: `personal: { request, inauguration }` in the programme YAML. `request` can use `{{ organisers }}` (the organisers, joined with "आणि"), `{{ title }}` (without the year) and `{{ fullTitle }}`; `inauguration` uses `{{ by }}` and `{{ when }}` ("शनिवार, दिनांक ३१ ऑक्टोबर २०२६ रोजी सायंकाळी ४.०० वाजता").
 - The card follows the wording of a written invitation letter: स्थळ first, then each day as "शनिवार, दिनांक ३१ ऑक्टोबर २०२६" with its वेळ, joined by "आणि". Here "दिनांक" before each date is intended.
 - Per year: `inauguration: { by, date, at }` in the edition YAML. Without it the उद्घाटन box is left out.
 - Card: `src/publicity/personal/PersonalWhatsapp.tsx` (WhatsApp size only), page `/publicity/<year>/<programme>/vaiyaktik/whatsapp/`. The build renders it once with the sample name "आपले नाव, गाव", so an overflowing card fails CI. The edition page shows it in an iframe and posts the name in; `personal/client.ts` re-fits the card and makes the PNG with `modern-screenshot`.
@@ -179,7 +179,7 @@ Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site'
 - Proofread every Marathi string. Use formal written Marathi, e.g. "बरेच काही" not "बरंच काही".
 - Don't repeat the दिनांक heading as "दि." before each date.
 - Use "X ते Y वाजेपर्यंत", not "X वाजता ते Y वाजेपर्यंत". Open-ended: "सकाळी ९.०० वाजल्यापासून". If both times share a period, the second period word is dropped.
-- Time-of-day words: पहाटे (4–6), सकाळी (6–12), दुपारी (12–17), सायंकाळी (17–20), रात्री (20–4).
+- Time-of-day words: पहाटे (4–6), सकाळी (6–12), दुपारी (12–16), सायंकाळी (16–20), रात्री (20–4).
 - Suggest wording changes to the content owner before applying them; don't silently rewrite content.
 
 ## Events page

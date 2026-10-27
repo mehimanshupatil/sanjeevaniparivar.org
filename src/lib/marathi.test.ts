@@ -22,6 +22,8 @@ test('formatTime picks the time-of-day word', () => {
   assert.equal(formatTime('05:30'), 'पहाटे ५.३०');
   assert.equal(formatTime('09:00'), 'सकाळी ९.००');
   assert.equal(formatTime('12:00'), 'दुपारी १२.००');
+  assert.equal(formatTime('15:59'), 'दुपारी ३.५९');
+  assert.equal(formatTime('16:00'), 'सायंकाळी ४.००');
   assert.equal(formatTime('17:15'), 'सायंकाळी ५.१५');
   assert.equal(formatTime('22:00'), 'रात्री १०.००');
   assert.equal(formatTime('00:30'), 'रात्री १२.३०');
@@ -50,7 +52,7 @@ test('formatAt', () => {
 });
 
 test('formatRange', () => {
-  assert.equal(formatRange('16:00', '22:00'), 'दुपारी ४.०० ते रात्री १०.०० वाजेपर्यंत');
+  assert.equal(formatRange('16:00', '22:00'), 'सायंकाळी ४.०० ते रात्री १०.०० वाजेपर्यंत');
   assert.equal(formatRange('09:00'), 'सकाळी ९.०० वाजल्यापासून');
   assert.equal(formatRange('09:00', '11:00'), 'सकाळी ९.०० ते ११.०० वाजेपर्यंत');
 });
