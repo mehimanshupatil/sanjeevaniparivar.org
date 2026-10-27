@@ -74,20 +74,22 @@ const personal = b.personal && {
     <section class="mt-12 rounded-2xl bg-white border border-gray-100 p-4 sm:p-6" data-personal data-page={personal.page} data-file-name={personal.fileName}>
       <h2 class="text-xl font-bold text-gray-900">वैयक्तिक निमंत्रण</h2>
       <p class="mt-1 text-sm text-gray-600">पाहुण्याचे नाव लिहा आणि निमंत्रण डाउनलोड करा. नाव कुठेही साठवले जात नाही.</p>
-      <div class="mt-6 grid gap-8 md:grid-cols-[minmax(0,360px)_1fr]">
-        <div class="rounded-lg overflow-hidden border border-gray-100 bg-gray-100" style="aspect-ratio: 1080 / 1920" data-personal-preview>
-          <iframe src={personal.page} title="वैयक्तिक निमंत्रण" class="border-0 pointer-events-none origin-top-left" style="width: 1080px; height: 1920px"></iframe>
-        </div>
-        <div class="flex flex-col gap-4">
+      <!-- Phones: name and buttons first, the card below at a smaller size; wider screens: card on the left -->
+      <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,360px)_1fr] md:gap-8">
+        <div class="flex flex-col gap-4 md:order-2">
           <label class="flex flex-col gap-1.5">
             <span class="text-sm font-semibold text-gray-800">पाहुण्याचे नाव, गाव</span>
-            <input type="text" data-personal-name placeholder="उदा. श्री. नाव आडनाव, गाव" autocomplete="off"
-              class="rounded-lg border border-gray-300 px-3 py-2 text-base focus:border-primary focus:outline-none" />
+            <input type="text" data-personal-name placeholder="उदा. श्री. नाव आडनाव, गाव" autocomplete="off" enterkeyhint="done"
+              class="rounded-lg border border-gray-300 px-3 py-3 text-base focus:border-primary focus:outline-none md:py-2" />
           </label>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" data-personal-download class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">PNG डाउनलोड</button>
-            <button type="button" data-personal-share hidden class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary disabled:opacity-50">शेअर करा</button>
+          <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <!-- Share is the main action where the device can share files (phones); styles swapped in the script -->
+            <button type="button" data-personal-share hidden class="rounded-lg bg-primary px-4 py-3 text-base font-semibold text-white disabled:opacity-50 sm:py-2 sm:text-sm">शेअर करा (WhatsApp)</button>
+            <button type="button" data-personal-download class="rounded-lg bg-primary px-4 py-3 text-base font-semibold text-white disabled:opacity-50 sm:py-2 sm:text-sm">PNG डाउनलोड</button>
           </div>
+        </div>
+        <div class="mx-auto w-full max-w-[280px] rounded-lg overflow-hidden border border-gray-100 bg-gray-100 md:order-1 md:max-w-none" style="aspect-ratio: 1080 / 1920" data-personal-preview>
+          <iframe src={personal.page} title="वैयक्तिक निमंत्रण" class="border-0 pointer-events-none origin-top-left" style="width: 1080px; height: 1920px"></iframe>
         </div>
       </div>
     </section>
@@ -97,7 +99,7 @@ const personal = b.personal && {
   {g.heading && <h2 class="mt-12 text-xl font-bold text-gray-900">{g.heading}</h2>}
   <div class="mt-6 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
     {g.outputs.map((o) => (
-      <section class="rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
+      <section class="min-w-0 rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
         <div class="flex items-baseline justify-between gap-2">
           <h2 class="font-bold text-gray-900">{o.label}</h2>
           <span class="text-xs font-mono text-gray-400">{o.size}</span>
@@ -145,46 +147,82 @@ const personal = b.personal && {
     new ResizeObserver(scale).observe(preview);
 
     const name = () => input.value.trim();
-    let timer: number | undefined;
-    input.addEventListener('input', () => {
-      clearTimeout(timer);
-      timer = window.setTimeout(() => post({ kind: 'personal-guest', name: name() }), 250);
-    });
-    // A name typed before the card page loaded
-    frame.addEventListener('load', () => { if (name()) post({ kind: 'personal-guest', name: name() }); });
+    const shareLabel = share.textContent ?? '';
+    // Phones: share the image straight to WhatsApp (Web Share API with files)
+    const canShare = navigator.canShare?.({ files: [new File([''], 'x.png', { type: 'image/png' })] }) ?? false;
+    // Keyboard "done" closes the keyboard so the card below is in view
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') input.blur(); });
 
-    /** Asks the card page for the PNG of the card as it is now. */
-    const png = () => new Promise<File>((resolve) => {
+    /** Asks the card page for the PNG of the card with this name. */
+    let lastId = 0;
+    const png = (guest: string) => new Promise<File>((resolve) => {
+      const id = ++lastId;
       const onReply = (e: MessageEvent<PersonalReply>) => {
-        if (e.source !== frame.contentWindow || e.data?.kind !== 'personal-png') return;
+        if (e.source !== frame.contentWindow || e.data?.kind !== 'personal-png' || e.data.id !== id) return;
         window.removeEventListener('message', onReply);
-        const who = name().replace(/[\\/:*?"<>|,]/g, '').replace(/\s+/g, '-');
+        const who = guest.replace(/[\\/:*?"<>|,]/g, '').replace(/\s+/g, '-');
         resolve(new File([e.data.blob], `${personal.dataset.fileName}${who ? `-${who}` : ''}.png`, { type: 'image/png' }));
       };
       window.addEventListener('message', onReply);
-      // Send the latest name first, in case the debounce hasn't fired yet
-      clearTimeout(timer);
-      post({ kind: 'personal-guest', name: name() });
-      post({ kind: 'personal-export' });
+      post({ kind: 'personal-guest', name: guest });
+      post({ kind: 'personal-export', id });
     });
+
+    // The PNG for the current name, made shortly after typing stops. Share must open within the
+    // tap (Safari refuses it after a wait), so it can't wait for the PNG to be made then.
+    let ready: { name: string; file: Promise<File> } | undefined;
+    const prepare = () => {
+      if (ready?.name !== name()) ready = { name: name(), file: png(name()) };
+      return ready.file;
+    };
+    let prepared: File | undefined;
+    // Without sharing, only the preview needs the name
+    const prepareSoon = () => {
+      if (!canShare) return post({ kind: 'personal-guest', name: name() });
+      prepare().then((f) => { if (ready?.name === name()) prepared = f; });
+    };
+
+    let timer: number | undefined;
+    input.addEventListener('input', () => {
+      prepared = undefined;
+      share.textContent = shareLabel;
+      clearTimeout(timer);
+      timer = window.setTimeout(prepareSoon, 400);
+    });
+    // The card page has loaded: show a name typed before then, and get the PNG ready
+    frame.addEventListener('load', prepareSoon);
+
     const busy = async (button: HTMLButtonElement, work: () => Promise<void>) => {
       button.disabled = true;
       try { await work(); } finally { button.disabled = false; }
     };
 
     download.addEventListener('click', () => busy(download, async () => {
-      const file = await png();
+      clearTimeout(timer);
+      const file = await prepare();
       downloadFile(file, file.name);
     }));
 
-    // Phones: share the image straight to WhatsApp (Web Share API with files)
-    const probe = new File([''], 'x.png', { type: 'image/png' });
-    if (navigator.canShare?.({ files: [probe] })) {
+    if (canShare) {
       share.hidden = false;
-      share.addEventListener('click', () => busy(share, async () => {
-        const file = await png();
-        await navigator.share({ files: [file] }).catch(() => {});
-      }));
+      // Download becomes the second choice
+      download.className = download.className.replace('bg-primary', 'border border-gray-300 bg-white').replace('text-white', 'text-gray-800');
+      share.addEventListener('click', async () => {
+        if (prepared && ready?.name === name()) {
+          // Still inside the tap: open the share sheet now
+          await navigator.share({ files: [prepared] }).catch(() => {});
+          return;
+        }
+        await busy(share, async () => {
+          clearTimeout(timer);
+          const file = await prepare();
+          prepared = file;
+          // Some browsers allow this after the wait; if not, the next tap shares at once
+          await navigator.share({ files: [file] }).catch((e: Error) => {
+            if (e.name === 'NotAllowedError') share.textContent = 'तयार — पुन्हा दाबा';
+          });
+        });
+      });
     }
   }
 

@@ -5,8 +5,9 @@ import { fitText, fillFrame } from '../fit';
 
 export type PersonalMessage =
   | { kind: 'personal-guest'; name: string }
-  | { kind: 'personal-export' };
-export type PersonalReply = { kind: 'personal-png'; blob: Blob };
+  | { kind: 'personal-export'; id: number };
+/** id: the request it answers, so a slow PNG for an older name is never used */
+export type PersonalReply = { kind: 'personal-png'; id: number; blob: Blob };
 
 const guest = document.querySelector<HTMLElement>('[data-guest]')!;
 const sample = guest.textContent ?? '';
@@ -26,7 +27,7 @@ window.addEventListener('message', async (e: MessageEvent<PersonalMessage>) => {
   } else if (e.data?.kind === 'personal-export') {
     await document.fonts.ready;
     const blob = await domToBlob(document.getElementById('frame')!, { type: 'image/png', scale: 1 });
-    if (blob) reply({ kind: 'personal-png', blob });
+    if (blob) reply({ kind: 'personal-png', id: e.data.id, blob });
   }
 });
 
