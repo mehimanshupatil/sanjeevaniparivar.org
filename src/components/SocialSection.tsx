@@ -29,7 +29,7 @@ export default function SocialSection() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${s.bg} text-white flex flex-col items-center p-8 rounded-2xl hover:-translate-y-1.5 hover:shadow-xl transition-all`}
+                className={`${s.bg} text-white flex flex-col items-center p-8 rounded-2xl motion-safe:hover:-translate-y-1 hover:shadow-xl transition-[translate,box-shadow]`}
               >
                 <Icon className="w-10 h-10 mb-3" />
                 <span className="text-base font-bold mb-1">{s.label}</span>

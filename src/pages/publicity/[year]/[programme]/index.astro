@@ -71,7 +71,7 @@ const personal = b.personal && {
   </div>
 
   {personal && (
-    <section class="mt-12 rounded-2xl bg-white border border-gray-100 p-4 sm:p-6" data-personal data-page={personal.page} data-file-name={personal.fileName}>
+    <section class="mt-12 rounded-3xl bg-white border border-gray-100 p-4 sm:p-6" data-personal data-page={personal.page} data-file-name={personal.fileName}>
       <h2 class="text-xl font-bold text-gray-900">वैयक्तिक निमंत्रण</h2>
       <p class="mt-1 text-sm text-gray-600">पाहुण्याचे नाव लिहा आणि निमंत्रण डाउनलोड करा. नाव कुठेही साठवले जात नाही.</p>
       <!-- Phones: name and buttons first, the card below at a smaller size; wider screens: card on the left -->
@@ -99,7 +99,7 @@ const personal = b.personal && {
   {g.heading && <h2 class="mt-12 text-xl font-bold text-gray-900">{g.heading}</h2>}
   <div class="mt-6 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
     {g.outputs.map((o) => (
-      <section class="min-w-0 rounded-2xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
+      <section class="min-w-0 rounded-3xl bg-white border border-gray-100 p-4 flex flex-col gap-4">
         <div class="flex items-baseline justify-between gap-2">
           <h2 class="font-bold text-gray-900">{o.label}</h2>
           <span class="text-xs font-mono text-gray-400">{o.size}</span>

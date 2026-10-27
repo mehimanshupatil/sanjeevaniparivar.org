@@ -173,7 +173,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
               {/* Back to home */}
               <a
                 href="/#kshetras"
-                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 text-sm font-semibold transition-[translate] motion-safe:hover:-translate-y-0.5"
                 style={{ borderColor: data.color, color: data.color }}
               >
                 ← {t({ mr: 'मुख्य पानावर परत', en: 'Back to Home' })}
@@ -197,7 +197,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
                   <a
                     key={post.slug}
                     href={`/blog/${post.slug}`}
-                    className="group flex flex-col gap-3 p-5 rounded-2xl border border-gray-100 hover:shadow-md transition-all bg-white shrink-0 w-72 snap-start"
+                    className="group flex flex-col gap-3 p-5 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white shrink-0 w-72 snap-start"
                   >
                     <div className="h-1 w-10 rounded-full" style={{ background: data.color }} />
                     <time className="text-xs text-gray-400">
@@ -234,7 +234,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
               <a
                 key={k.slug}
                 href={`/${k.slug}`}
-                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 hover:-translate-y-0.5 hover:shadow-md transition-all group"
+                className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 motion-safe:hover:-translate-y-1 hover:shadow-md transition-[translate,box-shadow] group"
               >
                 <span
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white shrink-0"

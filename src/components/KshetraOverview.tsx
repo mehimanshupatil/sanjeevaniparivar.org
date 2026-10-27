@@ -25,7 +25,7 @@ export default function KshetraOverview() {
             <a
               key={k.slug}
               href={`/${k.slug}`}
-              className="relative flex flex-col p-8 rounded-2xl text-white overflow-hidden group hover:-translate-y-2 hover:shadow-2xl transition-all"
+              className="relative flex flex-col p-8 rounded-2xl text-white overflow-hidden group motion-safe:hover:-translate-y-1 hover:shadow-2xl transition-[translate,box-shadow]"
               style={{ background: k.color }}
             >
               {/* Ghost number */}
@@ -49,7 +49,7 @@ export default function KshetraOverview() {
 
               <div className="mt-auto pt-6 flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
                 <span>{t({ mr: 'अधिक जाणून घ्या', en: 'Learn more' })}</span>
-                <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                <span className="motion-safe:group-hover:translate-x-1 transition-[translate] inline-block">→</span>
               </div>
             </a>
           ))}

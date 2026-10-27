@@ -21,7 +21,7 @@ export default function GalleryTeaser() {
           </div>
           <a
             href="/gallery"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-primary text-primary text-sm font-semibold hover:bg-primary hover:text-white transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-primary text-primary text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
           >
             {t({ mr: 'सर्व पाहा →', en: 'View all →' })}
           </a>
@@ -38,7 +38,7 @@ export default function GalleryTeaser() {
               <img
                 src={item.src}
                 alt={t(item.alt)}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover motion-safe:group-hover:scale-105 transition-[scale] duration-300"
                 loading="lazy"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src =

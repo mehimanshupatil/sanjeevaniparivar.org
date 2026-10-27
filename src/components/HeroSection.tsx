@@ -40,10 +40,9 @@ export default function HeroSection() {
               <LogoImage className="w-28 h-28 object-contain p-2" />
             </div>
             <div
-              className="absolute inset-[-10px] rounded-full pointer-events-none"
+              className="absolute inset-[-10px] rounded-full pointer-events-none motion-safe:animate-orbit"
               style={{
                 border: '2px dashed rgba(245,197,24,0.35)',
-                animation: 'orbitSpin 18s linear infinite',
               }}
             />
           </div>
@@ -117,14 +116,14 @@ export default function HeroSection() {
           <div className="flex gap-3 justify-center flex-wrap">
             <a
               href="#kshetras"
-              className="px-8 py-3.5 rounded-full font-bold text-sm transition-all hover:-translate-y-0.5 hover:shadow-xl"
+              className="px-8 py-3.5 rounded-full font-bold text-sm transition-[translate,box-shadow] motion-safe:hover:-translate-y-0.5 hover:shadow-xl"
               style={{ background: '#F5C518', color: '#1A1A2E' }}
             >
               {t(tr.hero.cta1)}
             </a>
             <a
               href="#contact"
-              className="px-8 py-3.5 rounded-full font-bold text-sm border-2 transition-all hover:-translate-y-0.5 hover:bg-white/10"
+              className="px-8 py-3.5 rounded-full font-bold text-sm border-2 transition-[translate,background-color] motion-safe:hover:-translate-y-0.5 hover:bg-white/10"
               style={{ borderColor: 'rgba(255,253,231,0.45)', color: '#FFFDE7' }}
             >
               {t(tr.hero.cta2)}

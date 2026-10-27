@@ -83,7 +83,7 @@ export default function Footer() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${s.bg} w-10 h-10 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform`}
+                    className={`${s.bg} w-10 h-10 rounded-xl flex items-center justify-center text-white motion-safe:hover:-translate-y-0.5 transition-[translate]`}
                     title={s.label}
                   >
                     <Icon className="w-5 h-5" strokeWidth={1.5} />

@@ -92,7 +92,7 @@ function PageContent({ kshetra, activity }: Props) {
                 {prev && (
                   <a
                     href={`/${kshetra.slug}/${prev.slug}`}
-                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current hover:-translate-y-0.5 transition-all group"
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current motion-safe:hover:-translate-y-0.5 transition-[translate,border-color] group"
                     style={{ ['--tw-border-opacity' as string]: '1' }}
                   >
                     <ArrowLeftIcon className="w-4 h-4 shrink-0" />
@@ -102,7 +102,7 @@ function PageContent({ kshetra, activity }: Props) {
                 {next && (
                   <a
                     href={`/${kshetra.slug}/${next.slug}`}
-                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current hover:-translate-y-0.5 transition-all ml-auto"
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:border-current motion-safe:hover:-translate-y-0.5 transition-[translate,border-color] ml-auto"
                   >
                     <span>{t(next.title)}</span>
                     <ArrowRightIcon className="w-4 h-4 shrink-0" />
@@ -150,7 +150,7 @@ function PageContent({ kshetra, activity }: Props) {
               {/* Back to kshetra */}
               <a
                 href={`/${kshetra.slug}`}
-                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 text-sm font-semibold transition-[translate] motion-safe:hover:-translate-y-0.5"
                 style={{ borderColor: kshetra.color, color: kshetra.color }}
               >
                 <ArrowLeftIcon className="w-4 h-4" />

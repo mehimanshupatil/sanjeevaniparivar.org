@@ -12,9 +12,9 @@ export default function BackToTop() {
 
   return (
     <Button
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() => window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}
       size="icon"
-      className="fixed bottom-6 right-6 z-50 size-11 rounded-full shadow-lg hover:-translate-y-1 hover:shadow-xl"
+      className="fixed bottom-6 right-6 z-50 size-11 rounded-full shadow-lg motion-safe:hover:-translate-y-0.5 hover:shadow-xl"
       aria-label="Back to top"
     >
       <ArrowUpIcon className="w-5 h-5" />

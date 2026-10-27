@@ -119,7 +119,7 @@ export default function ContactSection() {
               />
             </div>
 
-            <Button type="submit" className="w-full hover:-translate-y-0.5">
+            <Button type="submit" className="w-full motion-safe:hover:-translate-y-0.5">
               {t({ mr: 'संदेश पाठवा', en: 'Send message' })}
             </Button>
 

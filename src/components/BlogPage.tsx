@@ -43,7 +43,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
           <img
             src={post.image}
             alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover motion-safe:group-hover:scale-105 transition-[scale] duration-300"
           />
         </div>
       ) : (

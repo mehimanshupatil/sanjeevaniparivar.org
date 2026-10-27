@@ -289,7 +289,7 @@ function PageContent() {
 
               <a
                 href="/"
-                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 border-primary text-sm font-semibold text-primary transition-all hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl border-2 border-primary text-sm font-semibold text-primary transition-[translate] motion-safe:hover:-translate-y-0.5"
               >
                 <ArrowLeftIcon className="w-4 h-4" />
                 {t({ mr: 'मुख्य पानावर परत', en: 'Back to Home' })}

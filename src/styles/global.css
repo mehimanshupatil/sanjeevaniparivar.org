@@ -43,12 +43,9 @@
   --radius-xl3: 2rem;
 
   /* Animations */
-  --animate-scroll-dot: scrollDot 1.6s ease-in-out infinite;
-  --animate-fade-up:    fadeUp 0.6s ease forwards;
+  --animate-orbit:      orbitSpin 18s linear infinite;
   --animate-fade-in:    fadeIn 0.2s ease forwards;
   --animate-scale-in:   scaleIn 0.25s ease forwards;
-  --animate-accordion-down: accordionDown 0.2s ease-out;
-  --animate-accordion-up:   accordionUp 0.2s ease-out;
 }
 
 /* ── Tailwind v4: map shadcn CSS vars so bg-popover, bg-background, etc. work */
@@ -98,7 +95,6 @@
   }
 
   html {
-    scroll-behavior: smooth;
     font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
     font-size: 18px;
   }
@@ -108,27 +104,11 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
 /* ── Keyframes ───────────────────────────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes accordionDown {
-  from { height: 0; }
-  to   { height: var(--accordion-panel-height); }
-}
-
-@keyframes accordionUp {
-  from { height: var(--accordion-panel-height); }
-  to   { height: 0; }
-}
-
-@keyframes scrollDot {
-  0%   { top: 6px;  opacity: 1; }
-  100% { top: 20px; opacity: 0; }
-}
-
 @keyframes orbitSpin {
   to { transform: rotate(360deg); }
 }

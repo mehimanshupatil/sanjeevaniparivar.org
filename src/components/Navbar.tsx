@@ -271,7 +271,7 @@ function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () =
   const activeKshetra = KSHETRAS.find(k => pathname.startsWith('/' + k.slug))?.slug ?? null;
 
   return (
-    <div className="lg:hidden bg-white border-b-2 border-gray-100 shadow-md px-4 pb-5 pt-2 max-h-[80vh] overflow-y-auto">
+    <div className="lg:hidden bg-white border-b-2 border-gray-100 shadow-md px-4 pb-5 pt-2 max-h-[80vh] overflow-y-auto overscroll-contain">
       <ul className="flex flex-col gap-0.5">
         <li>
           <a href="/#about" onClick={closeMenu}

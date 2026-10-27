@@ -65,7 +65,7 @@ function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in"
       style={{ background: 'rgba(0,0,0,0.92)' }}
       role="dialog"
       aria-modal="true"
@@ -115,7 +115,7 @@ function Lightbox({
 
       {/* Content */}
       <div
-        className="max-w-4xl w-full flex flex-col items-center animate-scaleIn"
+        className="max-w-4xl w-full flex flex-col items-center motion-safe:animate-scale-in motion-reduce:animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         <img
@@ -276,7 +276,7 @@ function GalleryContent() {
                       <img
                         src={item.src}
                         alt={t(item.alt)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover motion-safe:group-hover:scale-105 transition-[scale] duration-300"
                         loading="lazy"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src =

@@ -58,7 +58,7 @@ export default function AboutSection() {
             {KSHETRAS.map((k) => (
               <div
                 key={k.slug}
-                className="p-6 rounded-2xl text-center hover:-translate-y-1 hover:shadow-lg transition-all"
+                className="p-6 rounded-2xl text-center motion-safe:hover:-translate-y-1 hover:shadow-lg transition-[translate,box-shadow]"
                 style={{ background: '#fff', border: `2px solid color-mix(in srgb, ${k.color} 13%, transparent)` }}
               >
                 <span className="text-3xl block mb-2">{KSHETRA_ICONS[k.slug]}</span>

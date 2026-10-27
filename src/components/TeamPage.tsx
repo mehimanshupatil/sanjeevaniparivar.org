@@ -77,7 +77,7 @@ function PageContent() {
             </p>
             <a
               href="/#contact"
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full font-bold text-sm text-white motion-safe:hover:-translate-y-0.5 transition-[translate]"
               style={{ background: '#C41E3A' }}
             >
               {t({ mr: 'संपर्क करा', en: 'Contact us' })}
