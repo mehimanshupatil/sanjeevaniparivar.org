@@ -1,6 +1,7 @@
 // Pure helpers for the WhatsApp sender (/publicity/whatsapp/): CSV, phone numbers, template
 // placeholders and the request body for Meta's API. No browser or network code here (tested).
 
+/** Graph API version, released 2026-07-29. Upgrade steps: docs/publicity.md → Sending on WhatsApp → Upkeep */
 export const GRAPH = 'https://graph.facebook.com/v26.0';
 
 /** The trust's WhatsApp sending number and account. Not secret (useless without a token);

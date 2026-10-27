@@ -90,6 +90,14 @@ A page for trust members to send an approved WhatsApp template to the people in 
 
 "Sent" only means WhatsApp accepted the message: delivery, read receipts and replies need a webhook server, which the site doesn't have. Replies and "STOP" should go to the trust's main number (in the WhatsApp Business app), so say so in the template. Pure logic and tests: `src/lib/whatsapp.ts`.
 
+### Upkeep
+
+- **Templates are owned by trust members in WhatsApp Manager, not by the site.** The page fetches the approved templates live, so changed wording, a new template, a new placeholder or a different header (image, video, document) needs no code change. Only a component the page doesn't know (carousel, flow, location header) needs code in `src/lib/whatsapp.ts`.
+- **The Graph API version is pinned** in `GRAPH` (`src/lib/whatsapp.ts`), now **v26.0**, released 2026-07-29, retirement date not yet announced. Each version lives about two years; Meta emails the app admins and warns on the App Dashboard before it's removed. Check the [versions table](https://developers.facebook.com/docs/graph-api/changelog/versions/) once a year.
+- **To upgrade:** read the changelog of each version between the old and the new one for the endpoints below, change `GRAPH`, update the version and date here, run `pnpm test`, then send a template to your own number from `/publicity/whatsapp/`.
+- Endpoints used: `GET /<phone-id>`, `GET /<waba-id>/message_templates`, `GET`/`POST /<template-id>` (`degrees_of_freedom_spec`), `POST /<phone-id>/messages`, `POST /<phone-id>/marketing_messages`, and `/<business-id>/owned_whatsapp_business_accounts` + `client_whatsapp_business_accounts` (only when a wrong account ID is entered). The newest, so the most likely to change: `marketing_messages` and `degrees_of_freedom_spec`.
+- No SDK on purpose: Meta's SDKs are for servers or ads, and a wrapper would need the same version upgrades.
+
 ## Template gallery and try-out editor (for trust members)
 
 - `/publicity/templates/` shows every template in every format, filled with sample content. Share this link; it isn't linked from the site or indexed.
