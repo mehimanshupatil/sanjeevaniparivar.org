@@ -23,7 +23,7 @@ export default function DetailsCards({ days, venue, compact = false, stacked = f
   const card = (tone: 'deep' | 'primary', icon: keyof typeof icons, label: string, body: ReactNode) => (
     <div className={cx(s.card, 'relative flex flex-col items-center rounded-[14px] text-center text-band-text', tone === 'deep' ? 'bg-deep' : 'bg-primary')}>
       <span className={cx(s.badge, 'absolute left-1/2 -translate-x-1/2 grid place-items-center rounded-full border-4 border-ground bg-band-accent')}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" className={cx(s.icon, 'fill-none stroke-deep stroke-[1.8]')} strokeLinecap="round" strokeLinejoin="round">{icons[icon]}</svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" className={cx(s.icon, 'fill-none stroke-deep stroke-[2]')} strokeLinecap="round" strokeLinejoin="round">{icons[icon]}</svg>
       </span>
       <span className={cx(s.label, 'font-ornate text-band-accent')}>{label}</span>
       {body}

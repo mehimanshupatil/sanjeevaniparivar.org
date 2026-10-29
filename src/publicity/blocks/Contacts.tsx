@@ -12,7 +12,7 @@ export default function Contacts({ heading = 'संपर्क', intro, contac
   return (
     <section className={cx('w-full flex flex-col items-center', compact ? 'gap-2' : 'gap-3')}>
       <h2 className={cx('flex items-center gap-3 font-ornate font-normal text-primary', compact ? 'text-[28px]' : 'text-[34px]')}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" className={cx('fill-none stroke-primary stroke-[1.8]', compact ? 'size-[26px]' : 'size-[30px]')} strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 24 24" aria-hidden="true" className={cx('-translate-y-[2px] fill-none stroke-primary stroke-[2]', compact ? 'size-[26px]' : 'size-[30px]')} strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
         </svg>
         {heading}

@@ -12,12 +12,12 @@ interface Props {
 
 export default function SessionList({ sessions, showTime = false, compact = false }: Props) {
   const s = compact
-    ? { row: 'gap-4 p-3', tile: 'w-[120px] py-2', label: 'text-[16px]', day: 'text-[46px]', month: 'text-[17px]', photo: 'w-[92px] h-[115px]', name: 'text-[25px]', role: 'text-[16px]', topic: 'text-[25px]', note: 'text-[15px]', gap: 'gap-3' }
-    : { row: 'gap-5 p-4', tile: 'w-[150px] py-3', label: 'text-[19px]', day: 'text-[60px]', month: 'text-[20px]', photo: 'w-[120px] h-[150px]', name: 'text-[31px]', role: 'text-[19px]', topic: 'text-[31px]', note: 'text-[17px]', gap: 'gap-4' };
+    ? { row: 'gap-4 p-3 rounded-[22px]', tile: 'w-[120px] py-2', label: 'text-[16px]', day: 'text-[46px]', month: 'text-[17px]', photo: 'w-[92px] h-[115px]', name: 'text-[25px]', role: 'text-[16px]', topic: 'text-[25px]', note: 'text-[15px]', gap: 'gap-3' }
+    : { row: 'gap-5 p-4 rounded-[26px]', tile: 'w-[150px] py-3', label: 'text-[19px]', day: 'text-[60px]', month: 'text-[20px]', photo: 'w-[120px] h-[150px]', name: 'text-[31px]', role: 'text-[19px]', topic: 'text-[31px]', note: 'text-[17px]', gap: 'gap-4' };
   return (
     <ol className={cx(s.gap, 'w-full flex flex-col')}>
       {sessions.map((x) => (
-        <li key={x.n} className={cx(s.row, 'flex items-center rounded-[12px] border-2 border-gold/60 bg-white/70')}>
+        <li key={x.n} className={cx(s.row, 'flex items-center border-2 border-gold/60 bg-white/70')}>
           <div className={cx(s.tile, 'flex-none self-stretch flex flex-col items-center justify-center rounded-[8px] bg-deep text-center text-band-text')}>
             <span className={cx(s.label, 'font-ornate text-band-accent')}>{x.label}</span>
             <span className={cx(s.day, 'font-ornate leading-[1.05]')}>{x.parts.day}</span>

@@ -13,7 +13,7 @@ export default function WhenWhere({ days, venue, compact = false }: Props) {
     ? { band: 'px-8 py-6', heading: 'mb-2.5 text-[26px]', icon: 'size-[26px]', hr: 'my-2.5', day: 'text-[24px]', time: 'text-[20px]', venue: 'text-[38px]' }
     : { band: 'px-9 py-[30px]', heading: 'mb-3.5 text-[30px]', icon: 'size-[30px]', hr: 'my-3.5', day: 'text-[26px]', time: 'text-[22px]', venue: 'text-[44px]' };
   const heading = cx(s.heading, 'flex items-center gap-3 font-ornate font-normal text-band-accent');
-  const icon = cx(s.icon, 'fill-none stroke-band-accent stroke-[1.8]');
+  const icon = cx(s.icon, '-translate-y-[2px] fill-none stroke-band-accent stroke-[2]');
   return (
     <section className={cx(s.band, 'w-full grid grid-cols-2 gap-8 rounded-[6px] bg-deep text-band-text')}>
       <div>
