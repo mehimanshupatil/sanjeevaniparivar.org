@@ -5,6 +5,7 @@ import { allEditions, type ResolvedEdition } from './resolve';
 import { editionTexts } from './message';
 import { googleCalendarUrl, type CalendarEvent } from '@/lib/calendar';
 import { FORMATS } from './formats';
+import type { GalleryItem } from '@/content/gallery';
 import { venueInline } from '@/lib/marathi';
 
 export interface Event {
@@ -88,6 +89,19 @@ export async function editionEvents(): Promise<Event[]> {
       page: pageOf(b),
     };
   });
+}
+
+/** Each edition's photos (क्षणचित्रे) for the gallery, newest event first */
+export async function eventGalleryItems(): Promise<GalleryItem[]> {
+  const editions = (await allEditions()).sort((a, b) => b.isoDates[0].localeCompare(a.isoDates[0]));
+  return editions.flatMap((b) => b.photos.map((p, i) => ({
+    id: `event-${b.id.replace('/', '-')}-${i + 1}`,
+    src: p.src,
+    alt: { mr: p.caption ?? b.fullTitle, en: b.en.title ? `${b.en.title} ${b.year}` : b.fullTitle },
+    caption: { mr: p.caption ? `${b.fullTitle} — ${p.caption}` : b.fullTitle, en: b.en.title ? `${b.en.title} ${b.year}` : b.fullTitle },
+    kshetra: b.kshetra,
+    year: b.year,
+  })));
 }
 
 /** IST date-time for schema.org: "2026-10-31T16:00:00+05:30", or the date alone */

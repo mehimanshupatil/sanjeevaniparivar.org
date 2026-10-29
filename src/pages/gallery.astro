@@ -2,6 +2,9 @@
 import { yearsOfService } from "@/lib/org";
 import Layout from "@/layouts/Layout.astro";
 import GalleryPage from "@/components/GalleryPage";
+import { eventGalleryItems } from "@/publicity/events";
+
+const eventPhotos = await eventGalleryItems();
 ---
 
 <Layout
@@ -9,5 +12,5 @@ import GalleryPage from "@/components/GalleryPage";
   description={`Photo gallery of Sanjeevani Parivar's activities across Education, Environment, Health and Enlightenment initiatives over ${yearsOfService} years.`}
   ogImage="/og/page/gallery.png"
 >
-  <GalleryPage client:load />
+  <GalleryPage client:load eventPhotos={eventPhotos} />
 </Layout>

@@ -193,6 +193,18 @@ Styling is Tailwind, from `src/publicity/publicity.css`, separate from the site'
 
 The events page `/events` is made entirely from the published editions (`src/publicity/events.ts`, at build time): each one is an event with a link to its invitation cards, so an event and its invitation never disagree. To add an event, add an edition; there is no separate events list. The event uses the title and year, the first day's time, the venue, the kshetra and the programme's `summary` (else the intro). For the English site, a programme can give `en: { title, summary }` and an edition `en: { venue }`; whatever is missing shows in Marathi. A multi-day event stays under "upcoming" until its last day.
 
+Each edition also has its own page, `/events/<year>/<programme>/` (`EventDetailPage.tsx`, data from `eventDetails()`): every day with an "Add to Google Calendar" link, `calendar.ics` with all days (`src/lib/calendar.ts`, tested; YAML times are IST), a map link, "share on WhatsApp" with the ready message, the 4:5 card, the details, and schema.org Event data for Google. Its link preview is the wide card. After the event the page says संपन्न and drops the calendar links by itself. The home page shows the next event under the hero, linking here.
+
+**After an event, add its photos:** put them in `public/assets/events/<year>/<programme>/` and list them in the edition:
+
+```yaml
+photos:
+  - src: /assets/events/2026/grahak-peth/udghatan.jpg
+    caption: उद्घाटन समारंभ
+```
+
+They appear as क्षणचित्रे on the event's page and at the top of the gallery (filtered by its kshetra and year). Only use photos the trust may publish.
+
 ## Archiving
 
 Rendered images are generated on every deploy and never committed. To keep the exact version that was shared, attach the files to a GitHub Release for that programme.

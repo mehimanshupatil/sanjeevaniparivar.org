@@ -266,5 +266,3 @@ export const GALLERY: GalleryItem[] = [
     year: 2019,
   },
 ];
-
-export const GALLERY_YEARS = [...new Set(GALLERY.map((g) => g.year))].sort((a, b) => b - a);

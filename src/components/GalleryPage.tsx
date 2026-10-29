@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import { GALLERY, GALLERY_YEARS, type GalleryItem } from '@/content/gallery';
+import { GALLERY, type GalleryItem } from '@/content/gallery';
 import { KSHETRAS as ALL_KSHETRAS, KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 import { yearsOfService, mr } from '@/lib/org';
 
@@ -150,13 +150,16 @@ function Lightbox({
   );
 }
 
-function GalleryContent() {
+function GalleryContent({ eventPhotos }: { eventPhotos: GalleryItem[] }) {
   const t = useT();
+  // Photos from event pages (the editions' photos:) first, then the fixed list
+  const items = [...eventPhotos, ...GALLERY];
+  const years = [...new Set(items.map((g) => g.year))].sort((a, b) => b - a);
   const [activeKshetra, setActiveKshetra] = useState<string>('all');
   const [activeYear, setActiveYear] = useState<number | 'all'>('all');
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
 
-  const filtered = GALLERY.filter((item) => {
+  const filtered = items.filter((item) => {
     const kshetraMatch = activeKshetra === 'all' || item.kshetra === activeKshetra;
     const yearMatch = activeYear === 'all' || item.year === activeYear;
     return kshetraMatch && yearMatch;
@@ -245,7 +248,7 @@ function GalleryContent() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t({ mr: 'सर्व वर्षे', en: 'All years' })}</SelectItem>
-              {GALLERY_YEARS.map((y) => (
+              {years.map((y) => (
                 <SelectItem key={y} value={String(y)}>{y}</SelectItem>
               ))}
             </SelectContent>
@@ -315,10 +318,11 @@ function GalleryContent() {
   );
 }
 
-export default function GalleryPage() {
+/** eventPhotos: the photos added to editions after their events (src/publicity/events.ts) */
+export default function GalleryPage({ eventPhotos = [] }: { eventPhotos?: GalleryItem[] }) {
   return (
     <LangProvider>
-      <GalleryContent />
+      <GalleryContent eventPhotos={eventPhotos} />
     </LangProvider>
   );
 }
