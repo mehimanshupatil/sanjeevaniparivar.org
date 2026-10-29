@@ -13,6 +13,7 @@ function PageContent() {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* Hero */}
       <section className="pt-[68px] bg-gradient-to-br from-primary via-primary-dark to-[#7B1019] min-h-[28vh] flex flex-col justify-end relative overflow-hidden">
@@ -85,6 +86,8 @@ function PageContent() {
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

@@ -10,7 +10,8 @@ export default function KshetraOverview() {
     <section
       id="kshetras"
       className="py-20"
-      style={{ background: 'var(--color-secondary-light)' }}
+      // Darker than the green पर्यावरण card so it stands out; white text passes contrast on it
+      style={{ background: 'color-mix(in srgb, var(--color-secondary) 60%, black)' }}
     >
       <div className="max-w-6xl mx-auto px-6">
         <SectionHeader
@@ -40,14 +41,14 @@ export default function KshetraOverview() {
               <div className="w-10 h-0.5 mb-6 bg-white/40" />
 
               <span
-                className="text-xs font-bold uppercase tracking-[0.15em] mb-4 opacity-70"
+                className="text-xs font-bold uppercase tracking-[0.15em] mb-4 opacity-90"
               >
                 {k.num}
               </span>
               <h3 className="text-xl font-extrabold mb-2 leading-tight">{t(k.label)}</h3>
-              <p className="text-sm font-medium opacity-70 mb-6 flex-1">{t(k.tagline)}</p>
+              <p className="text-sm font-medium opacity-90 mb-6 flex-1">{t(k.tagline)}</p>
 
-              <div className="mt-auto pt-6 flex items-center gap-2 text-sm font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
+              <div className="mt-auto pt-6 flex items-center gap-2 text-sm font-semibold">
                 <span>{t({ mr: 'अधिक जाणून घ्या', en: 'Learn more' })}</span>
                 <span className="motion-safe:group-hover:translate-x-1 transition-[translate] inline-block">→</span>
               </div>

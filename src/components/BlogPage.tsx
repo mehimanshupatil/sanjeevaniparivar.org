@@ -66,7 +66,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
           >
             {t(label)}
           </span>
-          <time className="text-xs text-gray-400">
+          <time className="text-xs text-gray-500">
             {d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
           </time>
         </div>
@@ -83,7 +83,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100 mt-auto">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-500">
             {post.author}
           </span>
           <span
@@ -157,13 +157,13 @@ function PageContent({ posts }: { posts: BlogPostSummary[] }) {
         </div>
 
         {/* Post count */}
-        <p className="text-xs text-gray-400 mb-6">
+        <p className="text-xs text-gray-500 mb-6">
           {filtered.length} {t({ mr: 'लेख', en: filtered.length === 1 ? 'post' : 'posts' })}
         </p>
 
         {/* Grid */}
         {filtered.length === 0 ? (
-          <p className="text-sm text-gray-400 py-12 text-center border border-dashed border-gray-200 rounded-2xl">
+          <p className="text-sm text-gray-500 py-12 text-center border border-dashed border-gray-200 rounded-2xl">
             {t({ mr: 'या विभागात सध्या कोणताही लेख नाही.', en: 'No posts in this category yet.' })}
           </p>
         ) : (

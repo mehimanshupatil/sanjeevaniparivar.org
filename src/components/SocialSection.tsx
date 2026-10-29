@@ -33,7 +33,7 @@ export default function SocialSection() {
               >
                 <Icon className="w-10 h-10 mb-3" />
                 <span className="text-base font-bold mb-1">{s.label}</span>
-                <span className="text-xs opacity-80">{s.handle}</span>
+                <span className="text-xs opacity-90">{s.handle}</span>
               </a>
             );
           })}

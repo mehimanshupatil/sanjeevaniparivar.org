@@ -93,6 +93,7 @@ function PageContent() {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* Hero */}
       <section
@@ -298,6 +299,8 @@ function PageContent() {
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

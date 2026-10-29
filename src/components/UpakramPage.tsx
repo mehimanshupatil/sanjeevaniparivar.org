@@ -20,6 +20,7 @@ function PageContent({ kshetra, activity }: Props) {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* Hero */}
       <section
@@ -160,6 +161,8 @@ function PageContent({ kshetra, activity }: Props) {
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

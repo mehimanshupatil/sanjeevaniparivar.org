@@ -70,6 +70,7 @@ function PageContent() {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* Hero */}
       <section className="pt-[68px] bg-gradient-to-br from-primary via-primary-dark to-primary-darker min-h-[28vh] flex flex-col justify-end relative overflow-hidden">
@@ -121,7 +122,7 @@ function PageContent() {
                 <div className="p-5 flex flex-col gap-1 flex-1">
                   <p className="font-bold text-gray-900">{t(l.label)}</p>
                   <p className="text-sm text-gray-600">{t(l.desc)}</p>
-                  <p className="text-xs text-gray-400 font-mono mt-1">{l.format} · {l.size} px</p>
+                  <p className="text-xs text-gray-500 font-mono mt-1">{l.format} · {l.size} px</p>
                   <a href={l.src} download className={`${buttonVariants({ variant: 'outline' })} mt-4 self-start`}>
                     <DownloadSimpleIcon />
                     {t({ mr: 'डाउनलोड', en: 'Download' })}
@@ -296,7 +297,7 @@ function PageContent() {
           <div className="rounded-2xl border border-gray-100 divide-y divide-gray-100">
             {NAMES.map((n) => (
               <div key={n.label.en} className="grid sm:grid-cols-[10rem_1fr] gap-1 sm:gap-6 p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-400 sm:pt-1">{t(n.label)}</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 sm:pt-1">{t(n.label)}</p>
                 <div>
                   <p className="text-lg font-bold text-gray-900">{n.value}</p>
                   <p className="text-sm text-gray-500">{t(n.note)}</p>
@@ -326,6 +327,8 @@ function PageContent() {
           <a href={`mailto:${BRAND_EMAIL}`} className={buttonVariants({ size: 'lg' })}>{BRAND_EMAIL}</a>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

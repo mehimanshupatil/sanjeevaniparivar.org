@@ -193,6 +193,7 @@ function GalleryContent({ eventPhotos }: { eventPhotos: GalleryItem[] }) {
   return (
     <>
       <Navbar />
+      <main>
 
       {/* Hero */}
       <section className="pt-[68px] bg-gradient-to-br from-primary via-primary-dark to-[#7B1019] min-h-[30vh] flex flex-col justify-end relative overflow-hidden">
@@ -260,12 +261,12 @@ function GalleryContent({ eventPhotos }: { eventPhotos: GalleryItem[] }) {
       <section className="py-12 bg-gray-50 min-h-[50vh]">
         <div className="max-w-6xl mx-auto px-6">
           {filtered.length === 0 ? (
-            <p className="text-center text-gray-400 py-20 text-sm">
+            <p className="text-center text-gray-500 py-20 text-sm">
               {t({ mr: 'कोणतेही छायाचित्र सापडले नाही.', en: 'No photos found.' })}
             </p>
           ) : (
             <>
-              <p className="text-xs text-gray-400 mb-6">
+              <p className="text-xs text-gray-500 mb-6">
                 {filtered.length} {t({ mr: 'छायाचित्रे', en: 'photos' })}
               </p>
               <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
@@ -312,6 +313,8 @@ function GalleryContent({ eventPhotos }: { eventPhotos: GalleryItem[] }) {
           onNext={goNext}
         />
       )}
+
+      </main>
 
       <Footer />
     </>

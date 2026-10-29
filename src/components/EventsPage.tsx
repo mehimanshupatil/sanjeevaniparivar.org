@@ -29,7 +29,7 @@ function EventCard({ ev }: { ev: Event }) {
         <span className="text-[10px] font-bold uppercase mt-0.5" style={{ color }}>
           {d.toLocaleDateString('en-IN', { month: 'short' })}
         </span>
-        <span className="text-[10px] text-gray-400 mt-0.5">{d.getFullYear()}</span>
+        <span className="text-[10px] text-gray-500 mt-0.5">{d.getFullYear()}</span>
         {ev.endDate && (
           <span className="text-[10px] font-semibold mt-0.5" style={{ color }}>
             – {new Date(ev.endDate).getDate()} {new Date(ev.endDate).toLocaleDateString('en-IN', { month: 'short' })}
@@ -45,13 +45,13 @@ function EventCard({ ev }: { ev: Event }) {
           >
             {t(KSHETRA_LABEL[ev.kshetra])}
           </span>
-          {ev.time && <span className="text-xs text-gray-400">{ev.time}</span>}
+          {ev.time && <span className="text-xs text-gray-500">{ev.time}</span>}
         </div>
         <h3 className="font-bold text-gray-900 mb-1 text-base">
           <a href={ev.page} className="hover:text-primary">{t(ev.title)}</a>
         </h3>
         <p className="text-sm text-gray-500 mb-1.5">{t(ev.desc)}</p>
-        {t(ev.venue) && <p className="text-xs text-gray-400">📍 {t(ev.venue)}</p>}
+        {t(ev.venue) && <p className="text-xs text-gray-500">📍 {t(ev.venue)}</p>}
         <a href={ev.page} className="mt-2 inline-block text-xs font-semibold text-primary hover:underline">
           {t({ mr: 'सविस्तर माहिती →', en: 'Details →' })}
         </a>
@@ -133,7 +133,7 @@ function PageContent({ events }: { events: Event[] }) {
             {t({ mr: 'आगामी', en: 'Upcoming' })}
           </p>
           {filteredUpcoming.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center border border-dashed border-gray-200 rounded-2xl">
+            <p className="text-sm text-gray-500 py-8 text-center border border-dashed border-gray-200 rounded-2xl">
               {t({ mr: 'या क्षेत्रात सध्या कोणताही आगामी कार्यक्रम नाही.', en: 'No upcoming events in this category.' })}
             </p>
           ) : (
@@ -145,11 +145,11 @@ function PageContent({ events }: { events: Event[] }) {
 
         {/* Past */}
         <section>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">
             {t({ mr: 'मागील कार्यक्रम', en: 'Past Events' })}
           </p>
           {filteredPast.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center border border-dashed border-gray-200 rounded-2xl">
+            <p className="text-sm text-gray-500 py-8 text-center border border-dashed border-gray-200 rounded-2xl">
               {t({ mr: 'या क्षेत्रात मागील कार्यक्रम नाहीत.', en: 'No past events in this category.' })}
             </p>
           ) : (

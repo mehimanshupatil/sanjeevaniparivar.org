@@ -27,6 +27,7 @@ function PageContent({ event: e }: { event: EventDetail }) {
     <>
       <Navbar />
 
+      <main>
       {/* Hero */}
       <section className="pt-[68px] min-h-[36vh] flex flex-col justify-end relative overflow-hidden" style={{ background: color }}>
         <div className="absolute inset-0 pointer-events-none opacity-[0.07]"
@@ -201,13 +202,14 @@ function PageContent({ event: e }: { event: EventDetail }) {
                 </a>
               )}
             </div>
-            <p className="flex items-center gap-1.5 text-xs text-gray-400">
+            <p className="flex items-center gap-1.5 text-xs text-gray-500">
               <ShareNetworkIcon className="size-3.5" />
               {t({ mr: 'ही लिंक शेअर केल्यास निमंत्रणाचे चित्र दिसते.', en: 'Sharing this link shows the invitation card.' })}
             </p>
           </aside>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

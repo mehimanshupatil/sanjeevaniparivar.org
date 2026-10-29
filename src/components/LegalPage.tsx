@@ -17,6 +17,7 @@ function PageContent({ doc }: { doc: LegalDoc }) {
   return (
     <>
       <Navbar />
+      <main>
 
       <section className="pt-[68px] bg-gradient-to-br from-primary via-primary-dark to-[#7B1019]">
         <div className="max-w-3xl mx-auto px-6 pb-10 pt-14">
@@ -38,6 +39,8 @@ function PageContent({ doc }: { doc: LegalDoc }) {
           ))}
         </div>
       </article>
+
+      </main>
 
       <Footer />
     </>

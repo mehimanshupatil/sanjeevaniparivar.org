@@ -25,6 +25,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
   return (
     <>
       <Navbar />
+      <main>
 
       {/* ── HERO ──────────────────────────────────── */}
       <section
@@ -200,7 +201,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
                     className="group flex flex-col gap-3 p-5 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white shrink-0 w-72 snap-start"
                   >
                     <div className="h-1 w-10 rounded-full" style={{ background: data.color }} />
-                    <time className="text-xs text-gray-400">
+                    <time className="text-xs text-gray-500">
                       {d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </time>
                     <h3 className="font-bold text-gray-900 leading-snug group-hover:underline">
@@ -246,7 +247,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
                   <strong className="block text-sm font-bold text-gray-900">
                     {t(k.label)}
                   </strong>
-                  <span className="text-xs text-gray-400">{t(k.tagline)}</span>
+                  <span className="text-xs text-gray-500">{t(k.tagline)}</span>
                 </div>
                 <span className="ml-auto text-gray-300 group-hover:text-gray-500 transition-colors">→</span>
               </a>
@@ -254,6 +255,8 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </>

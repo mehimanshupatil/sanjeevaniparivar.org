@@ -46,12 +46,12 @@ export default function VyakhyanmalaTable() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] mb-1" style={{ color: COLOR }}>
             व्याख्यानमाला — संपूर्ण यादी
           </p>
-          <p className="text-sm text-gray-400">{VYAKHYANE.length} व्याख्याने · {totalEditions} वर्षे</p>
+          <p className="text-sm text-gray-500">{VYAKHYANE.length} व्याख्याने · {totalEditions} वर्षे</p>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <Input
             placeholder="वक्ते, विषय शोधा…"
             value={query}
@@ -62,7 +62,7 @@ export default function VyakhyanmalaTable() {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-sm text-gray-400 py-10 text-center">कोणतेही परिणाम सापडले नाहीत.</p>
+        <p className="text-sm text-gray-500 py-10 text-center">कोणतेही परिणाम सापडले नाहीत.</p>
       )}
 
       {/* Table — grouped by edition */}
@@ -105,12 +105,12 @@ export default function VyakhyanmalaTable() {
                   <tbody className="divide-y divide-gray-50">
                     {lectures.map((v) => (
                       <tr key={v.lecture_no} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-3.5 font-mono text-xs text-gray-400 tabular-nums">
+                        <td className="px-5 py-3.5 font-mono text-xs text-gray-500 tabular-nums">
                           {String(v.lecture_no).padStart(2, '0')}
                         </td>
                         <td className="px-4 py-3.5 font-medium text-gray-800">{v.speaker}</td>
                         <td className="px-4 py-3.5 text-gray-600">{v.topic}</td>
-                        <td className="px-4 py-3.5 text-gray-400 whitespace-nowrap text-xs">{v.date}</td>
+                        <td className="px-4 py-3.5 text-gray-500 whitespace-nowrap text-xs">{v.date}</td>
                         <td className="px-4 py-3.5">
                           {v.youtubeUrl && (
                             <a
@@ -137,13 +137,13 @@ export default function VyakhyanmalaTable() {
                   <div key={v.lecture_no} className="px-4 py-4">
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <span className="font-medium text-gray-800 text-sm leading-snug">{v.speaker}</span>
-                      <span className="font-mono text-xs text-gray-400 shrink-0 mt-0.5">
+                      <span className="font-mono text-xs text-gray-500 shrink-0 mt-0.5">
                         #{String(v.lecture_no).padStart(2, '0')}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 mb-1">{v.topic}</p>
                     <div className="flex items-center gap-3">
-                      <p className="text-xs text-gray-400">{v.date}</p>
+                      <p className="text-xs text-gray-500">{v.date}</p>
                       {v.youtubeUrl && (
                         <a
                           href={v.youtubeUrl}

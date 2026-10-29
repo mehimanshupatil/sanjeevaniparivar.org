@@ -27,9 +27,9 @@ export default function Footer() {
 
           {/* Kshetras */}
           <div>
-            <h4 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
+            <h3 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
               {t(f.kshetras)}
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {[
                 { href: '/shikshan',   label: tr.nav.education     },
@@ -48,9 +48,9 @@ export default function Footer() {
 
           {/* Pages */}
           <div>
-            <h4 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
+            <h3 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
               {t({ mr: 'पाने', en: 'Pages' })}
-            </h4>
+            </h3>
             <ul className="space-y-2">
               {[
                 { href: '/events',  label: { mr: 'कार्यक्रम',   en: 'Events'   } },
@@ -71,9 +71,9 @@ export default function Footer() {
 
           {/* Social — from shared constants */}
           <div>
-            <h4 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
+            <h3 className="text-sm font-bold text-white mb-4 pb-2 border-b-2 border-primary inline-block">
               {t(f.social)}
-            </h4>
+            </h3>
             <div className="flex gap-2 flex-wrap">
               {SOCIAL_LINKS.map((s) => {
                 const Icon = s.icon;
@@ -95,7 +95,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
+        <div className="border-t border-white/10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/60">
           <span>{t(f.copyright)}</span>
           <span className="flex gap-4">
             <a href="/privacy" className="hover:text-gold transition-colors">{t({ mr: 'गोपनीयता धोरण', en: 'Privacy Policy' })}</a>
