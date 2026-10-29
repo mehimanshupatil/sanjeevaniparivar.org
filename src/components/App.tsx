@@ -11,6 +11,7 @@ import NumbersSection from './NumbersSection';
 import KshetraOverview from './KshetraOverview';
 import GalleryTeaser from './GalleryTeaser';
 import SocialSection from './SocialSection';
+import VolunteerSection from './VolunteerSection';
 import ContactSection from './ContactSection';
 import BackToTop from './BackToTop';
 import Footer from './Footer';
@@ -29,6 +30,7 @@ export default function App({ upcoming = [] }: { upcoming?: Event[] }) {
         <KshetraOverview />
         <GalleryTeaser />
         <SocialSection />
+        <VolunteerSection />
         <ContactSection />
       </main>
       <Footer />

@@ -81,6 +81,9 @@ export default function ContactSection() {
               <div>
                 <strong className="block text-sm font-bold text-primary mb-1">{t(c.joinUs)}</strong>
                 <p className="text-sm text-gray-500">{t(c.joinDesc)}</p>
+                <a href="#join" className="mt-1 inline-block text-sm font-semibold text-primary hover:underline">
+                  {t({ mr: 'सहभागी व्हा →', en: 'Volunteer →' })}
+                </a>
               </div>
             </div>
           </div>

@@ -48,7 +48,7 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/publicity/templates/`, `/publicity/templates/[type]/` | Template gallery + try-out editor for trust members (`TemplateEditor.tsx`), sample pages at `/publicity/templates/[type]/[format]/` |
 
 ## Homepage section order (App.tsx)
-HeroSection → UpcomingEvent (next event, hidden when none) → AboutSection → NumbersSection (counts computed from data) → KshetraOverview → GalleryTeaser → SocialSection → ContactSection → Footer + BackToTop
+HeroSection → UpcomingEvent (next event, hidden when none) → AboutSection → NumbersSection (counts computed from data) → KshetraOverview → GalleryTeaser → SocialSection → VolunteerSection (#join, mailto like the contact form) → ContactSection → Footer + BackToTop
 
 ## Content files (src/content/)
 - `kshetras.ts` — 4 kshetras, 25 activities with slugs + body text (facts from the 17th annual report, 2025–26)
