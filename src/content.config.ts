@@ -118,6 +118,9 @@ const editions = defineCollection({
     })).optional(),
     /** Who opens the programme (उद्घाटन) and when; shown on the personal invitation */
     inauguration: z.object({ by: z.string(), date: isoDate, at: hhmm }).optional(),
+    /** After the event: its photos (क्षणचित्रे), under public/assets/events/<year>/<programme>/.
+     *  Shown on the event's page and in the gallery. */
+    photos: z.array(z.object({ src: z.string(), caption: z.string().optional() })).optional(),
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */
     draft: z.boolean().optional(),
   }).refine((e) => !e.sessions || e.sessions.length === e.days.length,

@@ -34,7 +34,9 @@ Website for Sanjeevani Parivar, a public trust in Vasai, Maharashtra. Founded 19
 | `/` | `App.tsx` |
 | `/shikshan` `/paryavaran` `/aarogya` `/prabodhana` | `KshetraPage.tsx` |
 | `/[kshetra]/[upakram]` | `UpakramPage.tsx` (25 pages) |
-| `/donate` | `DonatePage.tsx` — bank/UPI still placeholder `—` |
+| `/donate` | `DonatePage.tsx` — bank details + UPI QR |
+| `/events` | `EventsPage.tsx` — upcoming + past, made from Publicity editions |
+| `/events/[year]/[programme]` | `EventDetailPage.tsx` — one event: days, Google Calendar + `calendar.ics`, map, WhatsApp share, 4:5 card, details, photos (`photos:` in the edition YAML); schema.org Event JSON-LD; link preview = `wide.png`. Data: `eventDetails()` in `src/publicity/events.ts`, calendar logic `src/lib/calendar.ts` (tested) |
 | `/gallery` | `GalleryPage.tsx` |
 | `/team` | `TeamPage.tsx` — कार्यकारी मंडळ 2024–2029 (office bearers + members) |
 | `/brand` | `BrandPage.tsx` — logo downloads, colours, fonts, name rules; data in `src/content/brand.ts`, assets in `/public/assets/brand/` |
@@ -52,7 +54,7 @@ HeroSection → AboutSection → KshetraOverview → GalleryTeaser → SocialSec
 - `kshetras.ts` — 4 kshetras, 25 activities with slugs + body text (facts from the 17th annual report, 2025–26)
 - `vyakhyanmala.ts` — lectures 2003–2026; fields: `lecture_no, edition, year, speaker, topic, youtubeUrl, date`
 - `gallery.ts` — 16 items; images expected at `/public/assets/gallery/`
-- Events (`/events`) — made from the published Publicity editions (`src/publicity/events.ts`); no separate list
+- Events (`/events`, `/events/<year>/<programme>/`) — made from the published Publicity editions (`src/publicity/events.ts`); no separate list. After an event, add `photos: [{ src, caption }]` to its edition (files under `public/assets/events/<year>/<programme>/`)
 - `team.ts` — the कार्यकारी मंडळ from the annual report; update when a new committee is elected
 - `src/lib/org.ts` — counts that grow each year (years of service since 1994, व्याख्यानमाला edition since 2003, वृक्षवाढदिवस since 2006), computed at build time: use these, never type the numbers
 

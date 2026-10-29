@@ -31,7 +31,7 @@ export default function Navbar() {
   useWindowEvent('scroll', () => setScrolled(window.scrollY > 20), { passive: true });
 
   const closeMenu = () => setMenuOpen(false);
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const isKshetraActive = KSHETRAS.some((k) => pathname.startsWith('/' + k.slug));
 
   return (
@@ -343,7 +343,7 @@ function MobileMenu({ pathname, closeMenu }: { pathname: string; closeMenu: () =
 
         <li>
           <a href="/events" onClick={closeMenu}
-             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname === '/events' ? 'bg-gold-light text-primary' : 'text-gray-700 hover:bg-gold-light hover:text-primary')}>
+             className={cn('block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors', pathname.startsWith('/events') ? 'bg-gold-light text-primary' : 'text-gray-700 hover:bg-gold-light hover:text-primary')}>
             {t({ mr: 'कार्यक्रम', en: 'Events' })}
           </a>
         </li>

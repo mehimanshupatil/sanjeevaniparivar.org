@@ -47,14 +47,14 @@ function EventCard({ ev }: { ev: Event }) {
           </span>
           {ev.time && <span className="text-xs text-gray-400">{ev.time}</span>}
         </div>
-        <h3 className="font-bold text-gray-900 mb-1 text-base">{t(ev.title)}</h3>
+        <h3 className="font-bold text-gray-900 mb-1 text-base">
+          <a href={ev.page} className="hover:text-primary">{t(ev.title)}</a>
+        </h3>
         <p className="text-sm text-gray-500 mb-1.5">{t(ev.desc)}</p>
         {t(ev.venue) && <p className="text-xs text-gray-400">📍 {t(ev.venue)}</p>}
-        {ev.invitation && (
-          <a href={ev.invitation} className="mt-2 inline-block text-xs font-semibold text-primary hover:underline">
-            {t({ mr: 'निमंत्रण पत्रिका पहा →', en: 'View invitation →' })}
-          </a>
-        )}
+        <a href={ev.page} className="mt-2 inline-block text-xs font-semibold text-primary hover:underline">
+          {t({ mr: 'सविस्तर माहिती →', en: 'Details →' })}
+        </a>
       </div>
     </div>
   );

@@ -1,0 +1,28 @@
+---
+// /events/2026/grahak-peth/ — one event's page, made from its Publicity edition (src/publicity/events.ts).
+import Layout from "@/layouts/Layout.astro";
+import EventDetailPage from "@/components/EventDetailPage";
+import { eventDetails, type EventDetail } from "@/publicity/events";
+
+export async function getStaticPaths() {
+  return (await eventDetails()).map(({ edition, event }) => {
+    const [year, programme] = edition.id.split("/");
+    return { params: { year, programme }, props: { event } };
+  });
+}
+
+interface Props {
+  event: EventDetail;
+}
+const { event } = Astro.props;
+---
+
+<Layout
+  title={`${event.title.mr} | संजीवनी परिवार`}
+  description={event.desc.en || event.desc.mr || event.title.en}
+  ogImage={event.ogImage ?? "/og/page/events.png"}
+  ogImageAlt={event.title.mr}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(event.jsonLd)} />
+  <EventDetailPage client:load event={event} />
+</Layout>
