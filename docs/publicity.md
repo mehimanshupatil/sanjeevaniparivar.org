@@ -79,6 +79,12 @@ A programme with `personal` wording gets a "वैयक्तिक निम�
 - Per year: `inauguration: { by, date, at }` in the edition YAML. Without it the उद्घाटन box is left out.
 - Card: `src/publicity/personal/PersonalCard.tsx`, 1080×1350 (4:5, the chat-message size: it is sent to one guest in a WhatsApp chat), page `/publicity/<year>/<programme>/vaiyaktik/instagram/`. The build renders it once with the sample name "आपले नाव, गाव", so an overflowing card fails CI. The edition page shows it in an iframe and posts the name in; `personal/client.ts` re-fits the card and makes the PNG with `modern-screenshot`.
 
+## Message text and link preview
+
+Each edition's download page also gives the text to send with the cards, made from the same YAML by `src/publicity/message.ts` (tested): a WhatsApp message (`*bold*` headings, every detail: dates, venue, attractions, rules, groups, lectures, note, closing, contacts) and an Instagram/Facebook caption (the same without `*`, hashtags at the end). The wide and 4:5 cards leave those details out, so send the text with them. Each has a copy button. No emoji, as on the cards.
+
+The download page's link preview (`og:image`) is the edition's `wide.png`, so a shared link shows the invitation.
+
 ## Sending on WhatsApp (`/publicity/whatsapp/`)
 
 A page for trust members to send an approved WhatsApp template to the people in a CSV, through Meta's API, straight from the browser (the site has no server; Graph API allows browser calls). Not linked from the site, noindex.
@@ -86,7 +92,7 @@ A page for trust members to send an approved WhatsApp template to the people in 
 1. Access token (a System User token with only the WhatsApp permissions), phone number ID and WhatsApp Business Account ID. "या उपकरणावर साठवा" keeps them in this browser's localStorage; "विसरा" removes them.
 2. "जोडा" checks the number and loads the APPROVED templates. For a marketing template it shows whether Meta's automatic creative optimizations (image filters, text formatting, …) are on, with a button to turn them all off so the invitation goes as designed.
 3. A CSV with a header row (e.g. नाव, गाव, फोन). Numbers are normalised (10-digit Indian mobiles get 91); bad numbers and repeats are not selected. The list is never stored.
-4. Each placeholder (`{{1}}`, `{{name}}`, URL-button variables) comes from a CSV column or one text for everyone. An image header uses the link of a published card (the same image for everyone; Meta fetches it, so no uploads). Preview and the exact JSON are shown.
+4. Pick the invitation (an edition, or one lecture of a series). An image header gets its `wide` card (1200×628, the shape WhatsApp shows a header in, uncropped; the same image for everyone; Meta fetches it, so no uploads), and its details are offered for the placeholders: placeholders named `{{title}}`, `{{date}}`, `{{time}}`, `{{venue}}`, `{{speaker}}`, `{{topic}}` are filled from it at once. Any placeholder (`{{1}}`, `{{name}}`, URL-button variables) can instead come from a CSV column or one text for everyone. The values come from `apiFields` in `src/publicity/message.ts`, one line each (the API refuses new lines). Preview and the exact JSON are shown.
 5. Send: one message at a time, status per row, stop, re-send the failed ones, download the results as CSV. Marketing templates go to `/marketing_messages` (falls back to Cloud API by itself), others to `/messages`.
 
 "Sent" only means WhatsApp accepted the message: delivery, read receipts and replies need a webhook server, which the site doesn't have. Replies and "STOP" should go to the trust's main number (in the WhatsApp Business app), so say so in the template. Pure logic and tests: `src/lib/whatsapp.ts`.

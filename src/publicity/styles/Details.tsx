@@ -46,10 +46,6 @@ export default function Details({ edition: b, compact = false, narrow = false }:
   }
 }
 
-/** Venue lines on one line: "वाघेश्वरी मंदिर," + "वाघोली" → "वाघेश्वरी मंदिर, वाघोली"; lines without a comma get one */
-export const venueInline = (lines: string[]) =>
-  lines.reduce((s, l, i) => (i === 0 ? l : `${s}${/[,،]$/.test(s.trim()) ? ' ' : ', '}${l}`), '');
-
 /** Heavy types need more room for their details, so the styles shrink their headers. */
 export const isHeavy = (b: ResolvedEdition) =>
   b.sessions.length > 0 || b.groups.length > 0 || b.rules.length > 2 || b.items.length > 6;

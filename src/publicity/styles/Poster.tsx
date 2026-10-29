@@ -6,7 +6,8 @@ import { decorUrl } from '../assets';
 import { cx } from '../cx';
 import Portrait from '../blocks/Portrait';
 import Contacts from '../blocks/Contacts';
-import Details, { isHeavy, venueInline } from './Details';
+import { venueInline } from '@/lib/marathi';
+import Details, { isHeavy } from './Details';
 
 export default function Poster({ edition: b, format }: TemplateProps) {
   const compact = format.height < 1500;

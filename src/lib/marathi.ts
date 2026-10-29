@@ -109,3 +109,7 @@ export function fillPlaceholders(text: string, values: Record<string, string>): 
     return values[name];
   });
 }
+
+/** Venue lines on one line: "वाघेश्वरी मंदिर," + "वाघोली" → "वाघेश्वरी मंदिर, वाघोली"; lines without a comma get one */
+export const venueInline = (lines: string[]) =>
+  lines.reduce((s, l, i) => (i === 0 ? l : `${s}${/[,،]$/.test(s.trim()) ? ' ' : ', '}${l}`), '');

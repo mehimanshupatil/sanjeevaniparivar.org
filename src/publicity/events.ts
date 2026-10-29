@@ -2,7 +2,7 @@
 // (build time only), so an event and its invitation never disagree. To add an event, add an edition.
 import type { Bilingual } from '@/i18n/translations';
 import { allEditions } from './resolve';
-import { venueInline } from './styles/Details';
+import { venueInline } from '@/lib/marathi';
 
 export interface Event {
   id: string;

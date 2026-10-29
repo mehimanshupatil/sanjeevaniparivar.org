@@ -4,13 +4,19 @@
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import WhatsappSender from '@/components/publicity/WhatsappSender';
 import { cardEditions } from '@/publicity/resolve';
+import { apiFields } from '@/publicity/message';
 
-// Meta fetches the header image itself, so it must be the published URL, never localhost.
+// Each edition's wide card (and each lecture's): the shape WhatsApp shows a template's header
+// image in, with its date, venue, … for the placeholders. Meta fetches the image itself, so it
+// must be the published URL, never localhost.
 const site = Astro.site!.origin;
-const images = (await cardEditions())
-  .filter((e) => e.formats.includes('whatsapp'))
+const invitations = (await cardEditions())
+  .filter((e) => e.formats.includes('wide'))
   .sort((a, b) => b.year - a.year)
-  .map((e) => ({ label: `${e.fullTitle} — WhatsApp निमंत्रण`, url: `${site}/publicity/${e.id}/whatsapp.png` }));
+  .flatMap((e) => [
+    { label: e.fullTitle, url: `${site}/publicity/${e.id}/wide.png`, fields: apiFields(e) },
+    ...e.sessions.map((x) => ({ label: `${e.fullTitle} — ${x.label} (${x.speaker.name})`, url: `${site}/publicity/${e.id}/${x.n}/wide.png`, fields: apiFields(e, x) })),
+  ]);
 ---
 <PublicityPreviewLayout title="WhatsApp वरून निमंत्रण पाठवा">
   <Fragment slot="crumbs">
@@ -23,5 +29,5 @@ const images = (await cardEditions())
     मंजूर साचा निवडा, CSV यादी द्या आणि पाठवा. संदेश थेट या ब्राउझरमधून Meta कडे जातात; token फक्त या उपकरणावर राहतो आणि यादी कुठेही साठवली जात नाही.
   </p>
 
-  <WhatsappSender client:only="react" images={images} />
+  <WhatsappSender client:only="react" invitations={invitations} />
 </PublicityPreviewLayout>

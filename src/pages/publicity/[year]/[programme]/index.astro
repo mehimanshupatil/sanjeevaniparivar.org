@@ -6,6 +6,7 @@ import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import { cardEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 import { TEMPLATES, type Template } from '@/publicity/templates';
 import { STYLES, type StyleId } from '@/publicity/styles';
+import { editionTexts } from '@/publicity/message';
 
 export async function getStaticPaths() {
   const editions = await cardEditions();
@@ -53,13 +54,22 @@ const groups = [
     : [],
 ];
 
+// The text to send with the cards: the details the wide and 4:5 cards leave out
+const texts = editionTexts(b);
+const textBlocks = [
+  { id: 'whatsapp', label: 'WhatsApp संदेश', note: 'गट व वैयक्तिक संदेशासाठी, चित्रासोबत (*ठळक* WhatsApp मध्ये ठळक दिसते)', text: texts.whatsapp },
+  { id: 'caption', label: 'Instagram / Facebook मजकूर', note: 'पोस्टखालील मजकूर (caption), शेवटी हॅशटॅग', text: texts.caption },
+];
+// Link preview: the wide card is the shape WhatsApp and Facebook show for a link
+const ogImage = b.formats.includes('wide') ? { path: `${base}/wide.png`, width: FORMATS.wide.width, height: FORMATS.wide.height } : undefined;
+
 // Personal invitation: the card is an iframe of /vaiyaktik/instagram/ (4:5, the chat-message size), with the name the member types
 const personal = b.personal && {
   page: `${base}/vaiyaktik/instagram/`,
   fileName: `${b.programme}-${b.year}-nimantran`,
 };
 ---
-<PublicityPreviewLayout title={b.fullTitle}>
+<PublicityPreviewLayout title={b.fullTitle} ogImage={ogImage}>
   <Fragment slot="crumbs">
     <span class="text-gray-300">/</span>
     <span class="text-gray-500">{b.fullTitle}</span>
@@ -95,6 +105,25 @@ const personal = b.personal && {
       </div>
     </section>
   )}
+
+  <section class="mt-12">
+    <h2 class="text-xl font-bold text-gray-900">संदेशाचा मजकूर</h2>
+    <p class="mt-1 text-sm text-gray-600">कार्डवर नसलेली सविस्तर माहिती (आकर्षणे, नियम, संपर्क) या मजकुरात आहे. कॉपी करून चित्रासोबत पाठवा.</p>
+    <div class="mt-6 grid gap-6 md:grid-cols-2">
+      {textBlocks.map((t) => (
+        <div class="min-w-0 rounded-3xl bg-white border border-gray-100 p-4 flex flex-col gap-3" data-copy-block>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="font-bold text-gray-900">{t.label}</h3>
+              <p class="text-xs text-gray-500">{t.note}</p>
+            </div>
+            <button type="button" data-copy class="flex-none rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-dark transition-[scale,background-color] duration-150 ease-out enabled:active:scale-[0.96]">कॉपी करा</button>
+          </div>
+          <pre data-copy-text class="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-gray-50 p-3 font-sans text-sm text-gray-800">{t.text}</pre>
+        </div>
+      ))}
+    </div>
+  </section>
 
   {groups.map((g) => (<>
   {g.heading && <h2 class="mt-12 text-xl font-bold text-gray-900">{g.heading}</h2>}
@@ -227,6 +256,20 @@ const personal = b.personal && {
       });
     }
   }
+
+  // Message texts: copy, and say so on the button for a moment
+  document.querySelectorAll<HTMLElement>('[data-copy-block]').forEach((block) => {
+    const button = block.querySelector<HTMLButtonElement>('[data-copy]')!;
+    const text = block.querySelector('[data-copy-text]')!.textContent ?? '';
+    const label = button.textContent;
+    let timer: number | undefined;
+    button.addEventListener('click', async () => {
+      const ok = await navigator.clipboard.writeText(text).then(() => true, () => false);
+      button.textContent = ok ? 'कॉपी झाले ✓' : 'कॉपी झाले नाही';
+      clearTimeout(timer);
+      timer = window.setTimeout(() => { button.textContent = label; }, 2000);
+    });
+  });
 
   // In `pnpm dev` the PNGs don't exist yet: swap in the live Publicity page, scaled down.
   document.querySelectorAll<HTMLAnchorElement>('[data-preview]').forEach((link) => {

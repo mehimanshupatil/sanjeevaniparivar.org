@@ -13,18 +13,22 @@ import {
   GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
   CREATIVE_FEATURES, optimizationsOn, apiError, type WaTemplate,
 } from '@/lib/whatsapp';
+import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
+
+interface Invitation { label: string; url: string; fields: ApiFields }
 
 interface Props {
-  /** Published invitation cards, offered as the header image */
-  images: { label: string; url: string }[];
+  /** Published invitations (an edition or one lecture): its wide card for the header image, and
+   *  its date, venue, … for the placeholders */
+  invitations: Invitation[];
 }
 
 interface Settings { token: string; phoneNumberId: string; wabaId: string }
 const STORAGE_KEY = 'sp-whatsapp';
 const EMPTY: Settings = { token: '', phoneNumberId: WA_PHONE_NUMBER_ID, wabaId: WA_BUSINESS_ACCOUNT_ID };
 
-/** A column of the CSV, or text typed once for everyone */
-type Source = { column: number } | { text: string };
+/** A column of the CSV, text typed once for everyone, or a detail of the chosen invitation */
+type Source = { column: number } | { text: string } | { field: keyof ApiFields };
 type RowStatus = { state: 'sending' } | { state: 'sent'; id: string } | { state: 'failed'; error: string };
 
 /** Errors that will fail every message the same way: stop instead of trying the rest */
@@ -44,7 +48,7 @@ async function graph<T>(path: string, token: string, body?: object): Promise<T> 
 const section = 'rounded-2xl bg-white border border-gray-100 p-4 sm:p-6 flex flex-col gap-4';
 const PHONE_HEADER = /phone|mobile|number|whatsapp|फोन|मोबा|क्रमांक|नंबर/i;
 
-export default function WhatsappSender({ images }: Props) {
+export default function WhatsappSender({ invitations }: Props) {
   // ── 1. Settings ──
   const [settings, setSettings] = useState<Settings>(EMPTY);
   const [saved, setSaved] = useState(false);
@@ -171,11 +175,24 @@ export default function WhatsappSender({ images }: Props) {
   const media = template && headerMedia(template);
   // No default: picking the wrong programme's card would go to everyone
   const [mediaLink, setMediaLink] = useState('');
-  const valuesFor = (row: string[]) => Object.fromEntries(slots.map((s) => {
-    const src = sources[s.key];
-    return [s.key, !src ? '' : 'column' in src ? row[src.column] ?? '' : src.text];
-  }));
-  const missing = slots.filter((s) => { const src = sources[s.key]; return !src || ('text' in src && !src.text.trim()); });
+  const [invitation, setInvitation] = useState<Invitation>();
+  const valueOf = (src: Source | undefined, row: string[]) =>
+    !src ? '' : 'column' in src ? row[src.column] ?? '' : 'field' in src ? invitation?.fields[src.field] ?? '' : src.text;
+  const valuesFor = (row: string[]) => Object.fromEntries(slots.map((s) => [s.key, valueOf(sources[s.key], row)]));
+  const missing = slots.filter((s) => { const src = sources[s.key]; return !src || (!('column' in src) && !valueOf(src, []).trim()); });
+  /** Choosing an invitation sets the header image, and fills placeholders named like its details ({{date}}, {{venue}}, …) */
+  const chooseInvitation = (url: string) => {
+    const inv = invitations.find((i) => i.url === url);
+    if (!inv) return;
+    setInvitation(inv);
+    if (media) setMediaLink(inv.url);
+    const named = Object.fromEntries(slots.flatMap((s) =>
+      !sources[s.key] && s.name in inv.fields ? [[s.key, { field: s.name as keyof ApiFields }]] : []));
+    setSources({ ...sources, ...named });
+  };
+  const fieldItems = invitation
+    ? (Object.keys(invitation.fields) as (keyof ApiFields)[]).map((f) => ({ value: `field:${f}`, label: `निमंत्रणातून: ${API_FIELD_LABELS[f]}` }))
+    : [];
 
   // Preview with the first selected person's values
   const first = recipients[[...selected].sort((a, b) => a - b)[0]];
@@ -184,7 +201,7 @@ export default function WhatsappSender({ images }: Props) {
   const sample = useMemo(() => {
     if (!template || !first?.phone || missing.length || (media && !mediaLink)) return undefined;
     try { return buildMessage(template, first.phone, previewValues, mediaLink); } catch { return undefined; }
-  }, [template, first, sources, mediaLink]);
+  }, [template, first, sources, mediaLink, invitation]);
 
   // ── 5. Send ──
   const [sending, setSending] = useState(false);
@@ -372,26 +389,35 @@ export default function WhatsappSender({ images }: Props) {
       {template && csv && (
         <section className={section}>
           <h2 className="text-lg font-bold text-gray-900">४. संदेशातील माहिती</h2>
+          {invitations.length > 0 && (
+            <div className="space-y-1.5">
+              <Label>निमंत्रण</Label>
+              <Select items={invitations.map((i) => ({ value: i.url, label: i.label }))} value={invitation?.url ?? null}
+                onValueChange={(v) => v && chooseInvitation(v)}>
+                <SelectTrigger className="w-full sm:w-[420px]"><SelectValue placeholder="प्रकाशित निमंत्रण निवडा" /></SelectTrigger>
+                <SelectContent>{invitations.map((i) => <SelectItem key={i.url} value={i.url}>{i.label}</SelectItem>)}</SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">
+                {media === 'image' ? 'त्याचे रुंद चित्र (१२०० × ६२८, WhatsApp संदेशात न कापता दिसणारे) व ' : ''}
+                दिनांक, वेळ, स्थळ खालील जागांसाठी मिळतात.
+              </p>
+            </div>
+          )}
           {media && (
             <div className="space-y-1.5">
-              <Label htmlFor="wa-media">{media === 'image' ? 'चित्र' : 'फाईल'} (सर्वांना तेच)</Label>
-              <Select items={images.map((im) => ({ value: im.url, label: im.label }))} value={images.some((im) => im.url === mediaLink) ? mediaLink : null}
-                onValueChange={(v) => v && setMediaLink(v)}>
-                <SelectTrigger className="w-full sm:w-[420px]"><SelectValue placeholder="प्रकाशित निमंत्रण निवडा" /></SelectTrigger>
-                <SelectContent>{images.map((im) => <SelectItem key={im.url} value={im.url}>{im.label}</SelectItem>)}</SelectContent>
-              </Select>
+              <Label htmlFor="wa-media">{media === 'image' ? 'चित्राचा दुवा' : 'फाईलचा दुवा'} (सर्वांना तेच)</Label>
               <Input id="wa-media" value={mediaLink} onChange={(e) => setMediaLink(e.target.value.trim())} placeholder="https://…" />
               <p className="text-xs text-gray-500">Meta हे चित्र या दुव्यावरून घेते; ते संकेतस्थळावर प्रकाशित असले पाहिजे.</p>
             </div>
           )}
           {slots.map((s) => {
             const src = sources[s.key];
-            const items = [...columnItems, { value: 'text', label: 'सर्वांसाठी एकच मजकूर' }];
+            const items = [...columnItems, ...fieldItems, { value: 'text', label: 'सर्वांसाठी एकच मजकूर' }];
             return (
               <div key={s.key} className="grid gap-2 sm:grid-cols-[160px_260px_1fr] sm:items-center">
                 <Label className="font-mono">{s.where === 'body' ? '' : `${s.where} `}{`{{${s.name}}}`}</Label>
-                <Select items={items} value={!src ? null : 'column' in src ? String(src.column) : 'text'}
-                  onValueChange={(v) => setSources({ ...sources, [s.key]: v === 'text' ? { text: '' } : { column: Number(v) } })}>
+                <Select items={items} value={!src ? null : 'column' in src ? String(src.column) : 'field' in src ? `field:${src.field}` : 'text'}
+                  onValueChange={(v) => v && setSources({ ...sources, [s.key]: v === 'text' ? { text: '' } : v.startsWith('field:') ? { field: v.slice(6) as keyof ApiFields } : { column: Number(v) } })}>
                   <SelectTrigger className="w-full"><SelectValue placeholder="कुठून?" /></SelectTrigger>
                   <SelectContent>{items.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
                 </Select>
