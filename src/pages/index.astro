@@ -12,6 +12,13 @@ import { yearsOfService } from "@/lib/org";
  */
 import Layout from "@/layouts/Layout.astro";
 import App from "@/components/App";
+import { editionEvents } from "@/publicity/events";
+
+// Not over yet at build time, soonest first; the browser re-checks (UpcomingEvent.tsx)
+const today = new Date().toISOString().slice(0, 10);
+const upcoming = (await editionEvents())
+  .filter((e) => (e.endDate ?? e.date) >= today)
+  .sort((a, b) => a.date.localeCompare(b.date));
 ---
 
 <Layout
@@ -19,5 +26,5 @@ import App from "@/components/App";
   description={`Sanjeevani Parivar is a leading social organization from Vasai working in Education, Environment, Health & Enlightenment for ${yearsOfService}+ years.`}
   ogImage="/og/home.png"
 >
-  <App client:load />
+  <App client:load upcoming={upcoming} />
 </Layout>
