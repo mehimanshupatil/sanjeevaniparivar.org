@@ -9,7 +9,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'celebration',
     kshetra: 'shikshan',
     theme: 'sahitya',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     invite: '॥ संजीवनी परिवार ॥',
     intro: 'वाचनाची आवड जोपासण्यासाठी तसेच डॉ. ए. पी. जे. अब्दुल कलाम यांच्या स्मृतीस अभिवादन करण्यासाठी संजीवनी परिवाराच्या वाचन अभियानांतर्गत “वाचन प्रेरणा दिन” साजरा करण्यात येणार आहे.',

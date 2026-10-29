@@ -25,6 +25,8 @@ import * as lecturesSample from './lectures/sample';
 import CompetitionWhatsapp from './competition/Whatsapp';
 import CompetitionInstagram from './competition/Instagram';
 import * as competitionSample from './competition/sample';
+import Wide from './wide/Wide';
+import SessionWide from './wide/SessionWide';
 
 export interface Template {
   /** Marathi name shown in the template gallery */
@@ -55,50 +57,50 @@ export const TEMPLATES = {
   fair: {
     label: 'बाजार / जत्रा',
     description: 'ग्राहक पेठेसारखे कार्यक्रम: तारखा, स्थळ आणि आकर्षणांची यादी',
-    layouts: { whatsapp: FairWhatsapp, instagram: FairInstagram },
+    layouts: { whatsapp: FairWhatsapp, instagram: FairInstagram, wide: Wide },
     sample: fairSample,
     editorSections: ['items', 'closing'],
   },
   workshop: {
     label: 'कार्यशाळा',
     description: 'आकाशकंदील, शाडूमाती गणेशमूर्ती यांसारख्या कार्यशाळा: नियम, सूचना आणि नोंदणीसाठी संपर्क',
-    layouts: { whatsapp: WorkshopWhatsapp, instagram: WorkshopInstagram },
+    layouts: { whatsapp: WorkshopWhatsapp, instagram: WorkshopInstagram, wide: Wide },
     sample: workshopSample,
     editorSections: ['rules', 'note', 'contacts'],
   },
   plantation: {
     label: 'वृक्षारोपण',
     description: 'वृक्षवाढदिवस, वृक्षारोपण यांसारखे उपक्रम: घोषवाक्य, तारीख, स्थळ आणि सहभागाचे आवाहन',
-    layouts: { whatsapp: PlantationWhatsapp, instagram: PlantationInstagram },
+    layouts: { whatsapp: PlantationWhatsapp, instagram: PlantationInstagram, wide: Wide },
     sample: plantationSample,
     editorSections: ['closing', 'contacts'],
   },
   cleanup: {
     label: 'स्वच्छता अभियान',
     description: 'मंदिर, शाळा, समुद्र किनारा स्वच्छता: घोषवाक्य, दिनदर्शिकेसारखी तारीख, स्थळ आणि सहभागाचे आवाहन',
-    layouts: { whatsapp: CleanupWhatsapp, instagram: CleanupInstagram },
+    layouts: { whatsapp: CleanupWhatsapp, instagram: CleanupInstagram, wide: Wide },
     sample: cleanupSample,
     editorSections: ['closing', 'contacts'],
   },
   celebration: {
     label: 'दिन / सोहळा',
     description: 'मराठी भाषा गौरव दिन, वाचन प्रेरणा दिन, विद्यार्थी गौरव यांसारखे कार्यक्रम: उद्देश, दिनांक-वेळ-स्थळ, कार्यक्रमाचे स्वरूप आणि उपस्थितीचे आवाहन',
-    layouts: { whatsapp: CelebrationWhatsapp, instagram: CelebrationInstagram },
+    layouts: { whatsapp: CelebrationWhatsapp, instagram: CelebrationInstagram, wide: Wide },
     sample: celebrationSample,
     editorSections: ['note', 'closing'],
   },
   lectures: {
     label: 'व्याख्यानमाला',
     description: 'संजीवनी व्याख्यानमालेसारखी व्याख्याने: सर्व पुष्पांची एक पत्रिका आणि प्रत्येक वक्त्यासाठी स्वतंत्र पत्रिका (छायाचित्र, विषय, परिचय)',
-    layouts: { whatsapp: LecturesWhatsapp, instagram: LecturesInstagram },
-    sessionLayouts: { whatsapp: LectureSessionWhatsapp, instagram: LectureSessionInstagram },
+    layouts: { whatsapp: LecturesWhatsapp, instagram: LecturesInstagram, wide: Wide },
+    sessionLayouts: { whatsapp: LectureSessionWhatsapp, instagram: LectureSessionInstagram, wide: SessionWide },
     sample: lecturesSample,
     editorSections: ['closing', 'contacts'],
   },
   competition: {
     label: 'स्पर्धा',
     description: 'वक्तृत्व स्पर्धेसारख्या स्पर्धा: गट व विषय, नियम, पालकांसाठी सूचना आणि नावनोंदणीसाठी संपर्क',
-    layouts: { whatsapp: CompetitionWhatsapp, instagram: CompetitionInstagram },
+    layouts: { whatsapp: CompetitionWhatsapp, instagram: CompetitionInstagram, wide: Wide },
     sample: competitionSample,
     editorSections: ['rules', 'note', 'contacts'],
   },

@@ -51,6 +51,7 @@ const types = Object.entries(TEMPLATES).map(([type, t]) => ({
               </a>
               <figcaption class="text-sm text-gray-600">
                 {f.label} <span class="font-mono text-xs text-gray-400">{f.width} × {f.height}</span>
+                <span class="block max-w-[240px] text-xs text-gray-500">{f.use}</span>
               </figcaption>
             </figure>
           );

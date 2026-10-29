@@ -15,7 +15,7 @@ export async function getStaticPaths() {
   return editions.flatMap((edition) => {
     const [year, programme] = edition.id.split('/');
     const styles = (Object.keys(STYLES) as StyleId[]).flatMap((style) =>
-      edition.formats.map((format) => ({
+      edition.formats.filter((f) => FORMATS[f].styles).map((format) => ({
         params: { year, programme, sub: style, format },
         props: { edition, format, style },
       })));

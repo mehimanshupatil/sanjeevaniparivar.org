@@ -10,7 +10,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'competition',
     kshetra: 'shikshan',
     theme: 'spardha',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     yearStyle: 'school',
     invite: '॥ विद्यार्थ्यांसाठी हक्काचे व्यासपीठ ॥',

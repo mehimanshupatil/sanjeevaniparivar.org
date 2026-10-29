@@ -12,7 +12,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'lectures',
     kshetra: 'prabodhana',
     theme: 'prabodhan',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     startedYear: 2003,
     invite: '॥ सस्नेह निमंत्रण ॥',

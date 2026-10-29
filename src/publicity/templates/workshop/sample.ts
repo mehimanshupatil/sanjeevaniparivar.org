@@ -9,7 +9,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'workshop',
     kshetra: 'shikshan',
     theme: 'kalaDalan',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     startedYear: 2020,
     invite: '॥ संजीवनी कलादालन ॥',

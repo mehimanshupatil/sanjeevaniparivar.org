@@ -10,7 +10,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'fair',
     kshetra: 'general',
     theme: 'diwali',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani', right: 'jaimuni' },
     invite: '॥ सस्नेह निमंत्रण ॥',
     tagline: 'दिवाळीच्या खरेदीचा आनंद, आपल्या माणसांसोबत!',

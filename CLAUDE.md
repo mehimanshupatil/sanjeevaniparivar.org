@@ -68,7 +68,7 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 - Dates and times only via `src/lib/marathi.ts` (tested: `pnpm test`); never hand-type weekdays or Marathi numerals
 - Type-check with `pnpm check` (astro check, also in CI). TypeScript is pinned to 6 — Astro's tooling doesn't support 7 yet
 - Styles: every edition is also rendered as `poster`, `rail` and `pass` (`src/publicity/styles/`, one component per style for all types) at `/publicity/<year>/<programme>/<style>/<format>`; the type's Template is the classic style
-- Formats: `whatsapp` (1080×1920, also a story) and `instagram` (1080×1350 feed post, compact blocks). Possible next steps (ask before starting): landscape print template with bleed, 1080×1080 square post, more themes (Ganeshotsav, Navratri, Gudi Padwa, Sankranti), event page + WhatsApp text from the same YAML
+- Formats: `whatsapp` (1080×1920: WhatsApp status, Instagram/Facebook stories), `instagram` (1080×1350, compact blocks: WhatsApp chat/group messages, Instagram/Facebook feed posts) and `wide` (1200×628, one shared layout in `templates/wide/`: WhatsApp API template header, Facebook event cover; no Styles). Possible next steps (ask before starting): landscape print template with bleed, 1080×1080 square post, more themes (Ganeshotsav, Navratri, Gudi Padwa, Sankranti), event page + WhatsApp text from the same YAML
 
 ## Coding preferences
 - **mailto links**: use `document.createElement('a'); a.href = ...; a.click()` — not `window.location.href`

@@ -36,14 +36,15 @@ A template has one layout per format:
 
 | Format | Size | Use | Layout file in each type folder |
 |---|---|---|---|
-| `whatsapp` | 1080×1920 (9:16) | WhatsApp card; also works as an Instagram or WhatsApp story | `Whatsapp.tsx`, every section |
-| `instagram` | 1080×1350 (4:5) | Instagram feed post | `Instagram.tsx`, compact sizes; leaves out long paragraphs for the post caption (fair: intro + closing; workshop: intro + the registration sentence) |
+| `whatsapp` (स्टेटस / स्टोरी) | 1080×1920 (9:16) | WhatsApp status, Instagram and Facebook stories | `Whatsapp.tsx`, every section |
+| `instagram` (पोस्ट / संदेश) | 1080×1350 (4:5) | Images sent in WhatsApp chats and groups, Instagram and Facebook feed posts. The chat bubble shows 4:5 whole; a 9:16 card is cut off until tapped | `Instagram.tsx`, compact sizes; leaves out long paragraphs for the post caption (fair: intro + closing; workshop: intro + the registration sentence) |
+| `wide` (API संदेश / इव्हेंट कव्हर) | 1200×628 (1.91:1) | The image header of a WhatsApp API template message (`/publicity/whatsapp/`: WhatsApp crops the header to about 1.91:1, so a portrait card loses its top and bottom), a Facebook event cover, a link preview | One shared layout for every type, `templates/wide/Wide.tsx` (lecture sessions: `SessionWide.tsx`): logos, invitation, title and year beside a date/venue panel, the call below. The details go in the message text |
 
-A programme lists the formats it needs: `formats: [whatsapp, instagram]`. The build fails if its type has no layout for one of them.
+A programme lists the formats it needs: `formats: [whatsapp, instagram, wide]`. The build fails if its type has no layout for one of them.
 
 ## Styles: every edition in four looks
 
-Besides its type's own Template ("classic"), every edition is rendered in three more Styles, for every format. Members pick which to share (e.g. the poster first, the pass as a reminder). The edition's download page lists them all.
+Besides its type's own Template ("classic"), every edition is rendered in three more Styles, for every portrait format (`wide` has its one layout only: in a chat bubble the styles look alike). Members pick which to share (e.g. the poster first, the pass as a reminder). The edition's download page lists them all.
 
 | Style | URL | Look |
 |---|---|---|
@@ -76,7 +77,7 @@ A programme with `personal` wording gets a "वैयक्तिक निम�
 - Wording: `personal: { request, inauguration }` in the programme YAML. `request` can use `{{ organisers }}` (the organisers, joined with "आणि"), `{{ title }}` (without the year) and `{{ fullTitle }}`; `inauguration` uses `{{ by }}` and `{{ when }}` ("शनिवार, दिनांक ३१ ऑक्टोबर २०२६ रोजी सायंकाळी ४.०० वाजता").
 - The card follows the wording of a written invitation letter: स्थळ first, then each day as "शनिवार, दिनांक ३१ ऑक्टोबर २०२६" with its वेळ, joined by "आणि". Here "दिनांक" before each date is intended.
 - Per year: `inauguration: { by, date, at }` in the edition YAML. Without it the उद्घाटन box is left out.
-- Card: `src/publicity/personal/PersonalWhatsapp.tsx` (WhatsApp size only), page `/publicity/<year>/<programme>/vaiyaktik/whatsapp/`. The build renders it once with the sample name "आपले नाव, गाव", so an overflowing card fails CI. The edition page shows it in an iframe and posts the name in; `personal/client.ts` re-fits the card and makes the PNG with `modern-screenshot`.
+- Card: `src/publicity/personal/PersonalCard.tsx`, 1080×1350 (4:5, the chat-message size: it is sent to one guest in a WhatsApp chat), page `/publicity/<year>/<programme>/vaiyaktik/instagram/`. The build renders it once with the sample name "आपले नाव, गाव", so an overflowing card fails CI. The edition page shows it in an iframe and posts the name in; `personal/client.ts` re-fits the card and makes the PNG with `modern-screenshot`.
 
 ## Sending on WhatsApp (`/publicity/whatsapp/`)
 

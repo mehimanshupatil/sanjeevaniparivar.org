@@ -9,7 +9,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'cleanup',
     kshetra: 'paryavaran',
     theme: 'swachhata',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     invite: '॥ स्वच्छ किनारा, सुंदर किनारा ॥',
     intro: 'संजीवनी परिवारातर्फे दरवर्षीप्रमाणे समुद्र किनाऱ्यावरील प्लास्टिक व कचरा गोळा करून किनारा स्वच्छ करण्यात येणार आहे. हातमोजे व पिशव्या आयोजकांतर्फे दिल्या जातील.',

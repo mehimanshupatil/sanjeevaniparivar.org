@@ -7,7 +7,7 @@ title:
 type: plantation
 kshetra: paryavaran
 theme: paryavaran
-formats: [whatsapp, instagram]
+formats: [whatsapp, instagram, wide]
 startedYear: 2005   # संजीवनी वनराई प्रकल्प — "{{ yearsRunning }}वा वाढदिवस": 2026 मध्ये २१
 
 logos:

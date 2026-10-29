@@ -22,18 +22,19 @@ const { edition: b } = Astro.props;
 const base = `/publicity/${b.id}`;
 /** Saved file name, e.g. grahak-peth-2026-whatsapp.png — says what it is once downloaded. */
 const fileName = (format: string, suffix: string) => `${b.programme}-${b.year}-${format}${suffix}`;
-const outputsAt = (dir: string, namePart: string) => b.formats.map((id) => {
+const outputsAt = (dir: string, namePart: string, formats = b.formats) => formats.map((id) => {
   const f = FORMATS[id];
   const name = namePart ? `${namePart}-${id}` : id;
   return {
     id,
     label: f.label,
+    use: f.use,
     size: `${f.width} × ${f.height}`,
     width: f.width,
     height: f.height,
     page: `${dir}/${id}/`,
     files: [
-      { href: `${dir}/${id}.png`, name: fileName(name, '.png'), label: 'PNG', note: 'WhatsApp / सोशल मीडिया' },
+      { href: `${dir}/${id}.png`, name: fileName(name, '.png'), label: 'PNG', note: 'शेअर करण्यासाठी' },
       { href: `${dir}/${id}@2x.png`, name: fileName(name, '-hd.png'), label: 'PNG HD', note: `छपाई (${f.width * 2} × ${f.height * 2})` },
       { href: `${dir}/${id}.pdf`, name: fileName(name, '.pdf'), label: 'PDF', note: 'छपाई' },
     ],
@@ -45,16 +46,16 @@ const groups = [
   // Every edition is also rendered in each style; members pick which to share.
   ...(Object.keys(STYLES) as StyleId[]).map((id) => ({
     heading: `${STYLES[id].label} — ${STYLES[id].description}`,
-    outputs: outputsAt(`${base}/${id}`, id),
+    outputs: outputsAt(`${base}/${id}`, id, b.formats.filter((f) => FORMATS[f].styles)),
   })),
   ...(TEMPLATES[b.type] as Template).sessionLayouts
     ? b.sessions.map((x) => ({ heading: `${x.label} — ${x.speaker.name}`, outputs: outputsAt(`${base}/${x.n}`, `pushpa-${x.n}`) }))
     : [],
 ];
 
-// Personal invitation: the card is an iframe of /vaiyaktik/whatsapp/, with the name the member types
+// Personal invitation: the card is an iframe of /vaiyaktik/instagram/ (4:5, the chat-message size), with the name the member types
 const personal = b.personal && {
-  page: `${base}/vaiyaktik/whatsapp/`,
+  page: `${base}/vaiyaktik/instagram/`,
   fileName: `${b.programme}-${b.year}-nimantran`,
 };
 ---
@@ -88,8 +89,8 @@ const personal = b.personal && {
             <button type="button" data-personal-download class="rounded-lg bg-primary px-4 py-3 text-base font-semibold text-white disabled:opacity-50 sm:py-2 sm:text-sm">PNG डाउनलोड</button>
           </div>
         </div>
-        <div class="mx-auto w-full max-w-[280px] rounded-lg overflow-hidden border border-gray-100 bg-gray-100 md:order-1 md:max-w-none" style="aspect-ratio: 1080 / 1920" data-personal-preview>
-          <iframe src={personal.page} title="वैयक्तिक निमंत्रण" class="border-0 pointer-events-none origin-top-left" style="width: 1080px; height: 1920px"></iframe>
+        <div class="mx-auto w-full max-w-[280px] rounded-lg overflow-hidden border border-gray-100 bg-gray-100 md:order-1 md:max-w-none" style="aspect-ratio: 1080 / 1350" data-personal-preview>
+          <iframe src={personal.page} title="वैयक्तिक निमंत्रण" class="border-0 pointer-events-none origin-top-left" style="width: 1080px; height: 1350px"></iframe>
         </div>
       </div>
     </section>
@@ -104,6 +105,7 @@ const personal = b.personal && {
           <h2 class="font-bold text-gray-900">{o.label}</h2>
           <span class="text-xs font-mono text-gray-400">{o.size}</span>
         </div>
+        <p class="-mt-2 text-sm text-gray-600">{o.use}</p>
 
         <a href={o.files[0].href} target="_blank" class="block rounded-lg overflow-hidden border border-gray-100 bg-gray-100"
            style={`aspect-ratio: ${o.width} / ${o.height}`} data-preview data-page={o.page} data-width={o.width}>

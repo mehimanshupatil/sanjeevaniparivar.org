@@ -1,17 +1,17 @@
 ---
-// /publicity/2026/grahak-peth/vaiyaktik/whatsapp/ — the personal invitation card for editions whose
+// /publicity/2026/grahak-peth/vaiyaktik/instagram/ — 4:5, the chat-message size: the personal invitation card for editions whose
 // programme has `personal` wording. The edition's page shows it in an iframe, posts the guest's
 // name in and gets the PNG back (src/publicity/personal/client.ts). The build renders it once with
 // the sample name, so an overflowing card fails CI like any other.
 import PublicityLayout from '@/publicity/PublicityLayout.astro';
-import PersonalWhatsapp from '@/publicity/personal/PersonalWhatsapp';
+import PersonalCard from '@/publicity/personal/PersonalCard';
 import { cardEditions, FORMATS, type ResolvedEdition } from '@/publicity/resolve';
 
 export async function getStaticPaths() {
   const editions = await cardEditions();
   return editions.filter((e) => e.personal).map((edition) => {
     const [year, programme] = edition.id.split('/');
-    return { params: { year, programme, format: 'whatsapp' }, props: { edition } };
+    return { params: { year, programme, format: 'instagram' }, props: { edition } };
   });
 }
 
@@ -21,7 +21,7 @@ interface Props {
 const { edition } = Astro.props;
 ---
 <PublicityLayout title={`${edition.fullTitle} — वैयक्तिक निमंत्रण`} theme={edition.theme}>
-  <PersonalWhatsapp edition={edition} format={FORMATS.whatsapp} guest="आपले नाव, गाव" />
+  <PersonalCard edition={edition} format={FORMATS.instagram} guest="आपले नाव, गाव" />
   <script>
     import '@/publicity/personal/client';
   </script>

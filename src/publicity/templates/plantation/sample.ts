@@ -9,7 +9,7 @@ export const programme: Entry<ProgrammeData> = {
     type: 'plantation',
     kshetra: 'paryavaran',
     theme: 'paryavaran',
-    formats: ['whatsapp', 'instagram'],
+    formats: ['whatsapp', 'instagram', 'wide'],
     logos: { left: 'sanjeevani' },
     invite: '॥ झाडे लावा, झाडे जगवा ॥',
     intro: 'संजीवनी परिवारातर्फे दरवर्षीप्रमाणे गावातील शाळा, मंदिर व रस्त्यांच्या कडेने देशी झाडांचे वृक्षारोपण करण्यात येणार आहे. लावलेल्या प्रत्येक रोपाची वर्षभर काळजी घेतली जाईल.',

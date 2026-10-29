@@ -31,6 +31,6 @@ window.addEventListener('message', async (e: MessageEvent<PersonalMessage>) => {
   }
 });
 
-// Opened on its own: /publicity/2026/grahak-peth/vaiyaktik/whatsapp/?name=…
+// Opened on its own: /publicity/2026/grahak-peth/vaiyaktik/instagram/?name=…
 const name = new URLSearchParams(location.search).get('name');
 if (name) setGuest(name);
