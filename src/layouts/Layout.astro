@@ -6,6 +6,8 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   ogType?: "website" | "article";
+  /** Keep the page out of search results */
+  noindex?: boolean;
 }
 
 const {
@@ -14,6 +16,7 @@ const {
   ogImage,
   ogImageAlt = "Sanjeevani Parivar",
   ogType = "website",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -58,6 +61,7 @@ const jsonLd = {
     <meta name="author" content="Sanjeevani Parivar" />
     <meta name="google" content="notranslate" />
     <meta name="theme-color" content="#C41E3A" />
+    {noindex && <meta name="robots" content="noindex" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />

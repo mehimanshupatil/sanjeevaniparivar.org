@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from '@astrojs/mdx';
 
 /**
- * Tools that make official-looking cards and receipts (template gallery + editor, donation receipt).
+ * Tools that make official-looking cards (template gallery + editor).
  * Routed only under `pnpm dev`, so they are never built or deployed: anyone could use them there.
  */
 const devOnlyPages = () => ({
@@ -15,7 +15,6 @@ const devOnlyPages = () => ({
       if (command !== 'dev') return;
       injectRoute({ pattern: '/publicity/templates', entrypoint: './src/dev-pages/templates/index.astro' });
       injectRoute({ pattern: '/publicity/templates/[type]', entrypoint: './src/dev-pages/templates/[type].astro' });
-      injectRoute({ pattern: '/publicity/receipt', entrypoint: './src/dev-pages/receipt.astro' });
     },
   },
 });
@@ -27,7 +26,7 @@ export default defineConfig({
     mdx(),
     devOnlyPages(),
     react(),
-    sitemap({ filter: (page) => !page.includes('/publicity/') }),  // Publicity pages are render targets, not site pages
+    sitemap({ filter: (page) => !page.includes('/publicity/') && !page.includes('/verify/') }),  // Publicity pages are render targets, not site pages; /verify/ is for receipt QR codes
   ],
   vite: {
     plugins: [tailwindcss()],

@@ -1,0 +1,14 @@
+---
+// /verify/#<receipt> — where a digital donation receipt's QR code leads (noindex, not in the sitemap).
+import Layout from "@/layouts/Layout.astro";
+import ReceiptVerify from "@/components/ReceiptVerify";
+---
+
+<Layout
+  title="पावती पडताळणी | संजीवनी परिवार — Sanjeevani Parivar"
+  description="Check that a Sanjeevani Parivar digital donation receipt is genuine."
+  ogImage="/og/page/donate.png"
+  noindex
+>
+  <ReceiptVerify client:only="react" />
+</Layout>

@@ -20,8 +20,13 @@ export function jpegSize(jpeg: Uint8Array): { width: number; height: number } {
   throw new Error('JPEG has no size');
 }
 
+/** A clickable area over the image, as fractions of its width and height from the top left */
+export interface PdfLink { x: number; y: number; w: number; h: number; url: string }
+
+const pdfString = (s: string) => `(${s.replace(/[\\()]/g, '\\$&')})`;
+
 /** The JPEG fills a page of the given width in points (A5 = 419.53pt); the height follows the image */
-export function jpegToPdf(jpeg: Uint8Array, pageWidthPt: number): Uint8Array {
+export function jpegToPdf(jpeg: Uint8Array, pageWidthPt: number, links: PdfLink[] = []): Uint8Array {
   const { width, height } = jpegSize(jpeg);
   const w = pageWidthPt;
   const h = Math.round((pageWidthPt * height) / width * 100) / 100;
@@ -41,7 +46,12 @@ export function jpegToPdf(jpeg: Uint8Array, pageWidthPt: number): Uint8Array {
   push('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
   obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
   obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
-  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${w} ${h}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
+  // PDF y runs up from the bottom of the page
+  const annots = links.map((l) => {
+    const rect = [l.x * w, (1 - l.y - l.h) * h, (l.x + l.w) * w, (1 - l.y) * h].map((n) => Math.round(n * 100) / 100);
+    return `<< /Type /Annot /Subtype /Link /Rect [${rect.join(' ')}] /Border [0 0 0] /A << /S /URI /URI ${pdfString(l.url)} >> >>`;
+  });
+  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${w} ${h}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R${annots.length ? ` /Annots [${annots.join(' ')}]` : ''} >>`);
   obj(4, [enc.encode(`<< /Type /XObject /Subtype /Image /Width ${width} /Height ${height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`), jpeg, enc.encode('\nendstream')]);
   obj(5, `<< /Length ${draw.length} >>\nstream\n${draw}\nendstream`);
 

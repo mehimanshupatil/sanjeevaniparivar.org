@@ -1,0 +1,20 @@
+---
+// /publicity/receipt/ — digital copy of a donation receipt, for trust members (noindex). Public, but
+// a receipt is made only with the issuer's private key, which signs its QR for /verify/. Made in
+// the browser; the donor's details are never stored.
+import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
+import ReceiptMaker from '@/components/publicity/ReceiptMaker';
+---
+<PublicityPreviewLayout title="देणगी पावती">
+  <Fragment slot="crumbs">
+    <span class="text-gray-300">/</span>
+    <span class="text-gray-500">पावती</span>
+  </Fragment>
+
+  <h1 class="text-3xl font-extrabold text-gray-900">देणगी पावती</h1>
+  <p class="mt-2 mb-8 max-w-2xl text-gray-600">
+    छापील पावतीची डिजिटल प्रत. पावती पुस्तकातील तोच क्रमांक लिहा. पावती याच ब्राउझरमध्ये तयार होते; देणगीदाराची माहिती कुठेही साठवली किंवा पाठवली जात नाही. पावतीवरील QR स्कॅन करून कोणीही ती खरी आहे का ते तपासू शकतो.
+  </p>
+
+  <ReceiptMaker client:only="react" />
+</PublicityPreviewLayout>

@@ -11,6 +11,7 @@
     "build:publicity": "node scripts/render-publicity.mjs --strict",
     "publicity": "node scripts/render-publicity.mjs",
     "photos": "node scripts/photos.mjs",
+    "receipt-key": "node scripts/receipt-key.mjs",
     "test": "node --test \"src/**/*.test.ts\"",
     "check": "astro check"
   },

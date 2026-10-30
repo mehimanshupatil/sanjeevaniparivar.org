@@ -1,9 +1,11 @@
 // Digital donation receipt for trust members (/publicity/receipt/): a copy of the paper receipt,
 // with the same serial number typed from the receipt book. Made in the browser as a PDF; the
-// donor's details are never stored or sent anywhere.
+// donor's details are never stored or sent anywhere. The page is public, so a receipt is made only
+// with the issuer's private key, which signs the QR that /verify/ checks (src/lib/receipt-sign.ts).
 import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { domToBlob } from 'modern-screenshot';
-import { DownloadSimpleIcon, ShareNetworkIcon, WarningIcon } from '@phosphor-icons/react';
+import { DownloadSimpleIcon, KeyIcon, ShareNetworkIcon, WarningIcon } from '@phosphor-icons/react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,8 +14,14 @@ import { downloadFile } from '@/lib/utils';
 import { amountWordsEn, amountWordsMr, formatRupees, MAX_AMOUNT } from '@/lib/amount';
 import { dateParts, parseDate } from '@/lib/marathi';
 import { jpegToPdf } from '@/lib/pdf';
+import { importSigningKey, keyIdFor, signReceipt, type PublicKeys } from '@/lib/receipt-sign';
 import { PAYMENT_MODES, RECEIPT_TRUST, type PaymentMode } from '@/content/receipt';
 import { KSHETRA_LABEL } from '@/content/kshetras';
+import RECEIPT_KEYS from '@/content/receipt-keys.json';
+
+const KEYS: PublicKeys = RECEIPT_KEYS;
+const KEY_STORAGE = 'sp-receipt-key';
+const VERIFY_URL = `https://${RECEIPT_TRUST.website}/verify/#`;
 
 /** A5 portrait width in points */
 const A5_WIDTH_PT = 419.53;
@@ -50,6 +58,45 @@ export default function ReceiptMaker() {
     mode.ref && !r.reference.trim() && 'व्यवहार / धनादेश क्र.',
   ].filter(Boolean) as string[];
 
+  // ── Signing key: kept in this browser only; without it no receipt can be made ──
+  const [signer, setSigner] = useState<{ key: CryptoKey; keyId: string }>();
+  const [secret, setSecret] = useState('');
+  const [keyError, setKeyError] = useState<string>();
+  async function unlock(text: string, save: boolean) {
+    try {
+      const { key, publicKey } = await importSigningKey(text);
+      const keyId = keyIdFor(publicKey, KEYS);
+      if (!keyId) { setKeyError('ही की संस्थेच्या यादीत नाही, किंवा रद्द केली आहे.'); return; }
+      setSigner({ key, keyId }); setSecret(''); setKeyError(undefined);
+      if (save) try { localStorage.setItem(KEY_STORAGE, text.trim()); } catch { /* storage blocked: typed again next time */ }
+    } catch {
+      setKeyError('की चुकीची आहे.');
+    }
+  }
+  const forget = () => {
+    try { localStorage.removeItem(KEY_STORAGE); } catch { /* nothing saved */ }
+    setSigner(undefined);
+  };
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(KEY_STORAGE);
+      if (saved) unlock(saved, false);
+    } catch { /* storage blocked */ }
+  }, []);
+
+  // The QR's link: re-signed whenever the details change, so it always matches the receipt
+  const [token, setToken] = useState<string>();
+  useEffect(() => {
+    setToken(undefined);
+    if (!signer || missing.length) return;
+    let live = true;
+    signReceipt(signer.key, signer.keyId, {
+      serial: r.serial.trim(), date: r.date, amount, name: r.name.trim(), mode: r.mode,
+      reference: mode.ref ? r.reference.trim() : '', purpose: r.purpose.trim(),
+    }).then((t) => live && setToken(t));
+    return () => { live = false; };
+  }, [signer, r]);
+
   const sheet = useRef<HTMLDivElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
@@ -65,7 +112,11 @@ export default function ReceiptMaker() {
     await document.fonts.ready;
     const jpeg = await domToBlob(sheet.current!, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff' });
     if (!jpeg) throw new Error('पावतीचे चित्र तयार झाले नाही');
-    const pdf = jpegToPdf(new Uint8Array(await jpeg.arrayBuffer()), A5_WIDTH_PT);
+    // The QR is also a link in the PDF: a donor who opens it on their phone can't scan their own screen
+    const page = sheet.current!.getBoundingClientRect();
+    const qr = sheet.current!.querySelector('[data-qr]')!.getBoundingClientRect();
+    const link = { x: (qr.left - page.left) / page.width, y: (qr.top - page.top) / page.height, w: qr.width / page.width, h: qr.height / page.height, url: VERIFY_URL + token };
+    const pdf = jpegToPdf(new Uint8Array(await jpeg.arrayBuffer()), A5_WIDTH_PT, [link]);
     return new File([pdf as BlobPart], fileName, { type: 'application/pdf' });
   }
 
@@ -91,6 +142,28 @@ export default function ReceiptMaker() {
             संस्थेचा नोंदणी क्रमांक अजून भरलेला नाही (src/content/receipt.ts) — तो पावतीवर छापला जाणार नाही.
           </p>
         )}
+
+        <section className={section}>
+          <h2 className="font-bold text-gray-900 flex items-center gap-2"><KeyIcon className="size-5" /> स्वाक्षरी की</h2>
+          {signer ? (
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <span className="text-green-800">✔ की {signer.keyId} ({KEYS[signer.keyId].who}) या ब्राउझरमध्ये आहे.</span>
+              <Button variant="ghost" size="sm" onClick={forget}>की विसरा</Button>
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-gray-600">
+                पावती तयार करण्यासाठी संस्थेने आपल्याला दिलेली खाजगी की लागते. ती पावतीवरील QR वर स्वाक्षरी करते, ज्यावरून देणगीदार पावती खरी आहे का ते तपासू शकतात.
+                की एकदाच लिहा; ती फक्त या ब्राउझरमध्ये राहते. इतरांच्या किंवा सामायिक उपकरणावर जतन करू नका.
+              </p>
+              <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => { e.preventDefault(); unlock(secret, true); }}>
+                <Input type="password" value={secret} onChange={(e) => setSecret(e.target.value)} placeholder="खाजगी की" autoComplete="off" aria-label="खाजगी की" />
+                <Button type="submit" disabled={!secret.trim()}>की जतन करा</Button>
+              </form>
+            </>
+          )}
+          {keyError && <p className="text-sm text-red-700">{keyError}</p>}
+        </section>
 
         <section className={section}>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -132,13 +205,14 @@ export default function ReceiptMaker() {
         </section>
 
         <section className={section}>
+          {!signer && <p className="text-sm text-gray-500">आधी स्वाक्षरी की लिहा.</p>}
           {missing.length > 0 && <p className="text-sm text-gray-500">भरायचे बाकी: {missing.join(', ')}</p>}
           <div className="flex flex-wrap gap-3">
-            <Button disabled={busy || missing.length > 0} onClick={() => run('download')}>
+            <Button disabled={busy || !token} onClick={() => run('download')}>
               <DownloadSimpleIcon /> PDF डाउनलोड
             </Button>
             {canShare && (
-              <Button variant="outline" disabled={busy || missing.length > 0} onClick={() => run('share')}>
+              <Button variant="outline" disabled={busy || !token} onClick={() => run('share')}>
                 <ShareNetworkIcon /> WhatsApp वर पाठवा
               </Button>
             )}
@@ -150,7 +224,7 @@ export default function ReceiptMaker() {
       </div>
 
       <div className="overflow-x-auto">
-        <ReceiptSheet ref={sheet} r={r} amount={amountOk ? amount : undefined} />
+        <ReceiptSheet ref={sheet} r={r} amount={amountOk ? amount : undefined} token={token} />
       </div>
     </div>
   );
@@ -167,7 +241,7 @@ function Field({ label, id, children }: { label: string; id: string; children: R
 
 const blank = <span className="text-gray-300">—</span>;
 
-function ReceiptSheet({ r, amount, ref }: { r: Receipt; amount?: number; ref: Ref<HTMLDivElement> }) {
+function ReceiptSheet({ r, amount, token, ref }: { r: Receipt; amount?: number; token?: string; ref: Ref<HTMLDivElement> }) {
   const mode = PAYMENT_MODES.find((m) => m.id === r.mode)!;
   let date: { mr: string; en: string } | undefined;
   try {
@@ -215,15 +289,23 @@ function ReceiptSheet({ r, amount, ref }: { r: Receipt; amount?: number; ref: Re
           </tbody>
         </table>
 
-        <p className="mt-5 text-sm text-center">
-          आपल्या देणगीबद्दल मनःपूर्वक आभार!<br />
-          <span className="text-gray-600">Thank you for your generous donation.</span>
-        </p>
+        <div className="mt-5 flex items-center gap-6">
+          <p className="flex-1 text-sm">
+            आपल्या देणगीबद्दल मनःपूर्वक आभार!<br />
+            <span className="text-gray-600">Thank you for your generous donation.</span>
+            <span className="mt-3 block text-xs text-gray-500">
+              पावती खरी आहे का ते तपासण्यासाठी QR स्कॅन करा (PDF मध्ये QR वर टॅप करा).<br />Scan the QR code (or tap it in the PDF) to verify this receipt.
+            </span>
+          </p>
+          {token
+            ? <QRCodeSVG data-qr value={VERIFY_URL + token} size={144} level="L" marginSize={0} className="shrink-0" />
+            : <div className="size-36 shrink-0 border-2 border-dashed border-gray-200 grid place-items-center text-xs text-gray-300">QR</div>}
+        </div>
       </div>
 
       <footer className="px-8 py-3 bg-gray-50 text-[11px] text-gray-500 text-center leading-relaxed">
-        ही संगणकाद्वारे तयार केलेली पावती आहे; यावर स्वाक्षरीची आवश्यकता नाही.<br />
-        This is a computer-generated receipt and does not require a signature.
+        ही संगणकाद्वारे तयार केलेली पावती आहे; यावर स्वाक्षरीची आवश्यकता नाही. QR ने पडताळणी होणारी पावतीच ग्राह्य.<br />
+        This is a computer-generated receipt and does not require a signature. Valid only if its QR code verifies.
       </footer>
     </div>
   );

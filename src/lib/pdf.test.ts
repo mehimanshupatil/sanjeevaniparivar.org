@@ -26,4 +26,12 @@ test('jpegToPdf: page keeps the image shape, xref points at each object', async 
   const offsets = [...text.slice(xref).matchAll(/^(\d{10}) 00000 n $/gm)].map((m) => Number(m[1]));
   assert.equal(offsets.length, 5);
   offsets.forEach((o, i) => assert.ok(text.slice(o).startsWith(`${i + 1} 0 obj`), `object ${i + 1}`));
+  assert.doesNotMatch(text, /\/Annots/);
+});
+
+test('jpegToPdf: links become URI annotations, measured from the bottom', async () => {
+  const pdf = jpegToPdf(await jpeg(800, 1000), 400, [{ x: 0.5, y: 0.1, w: 0.25, h: 0.2, url: 'https://x.org/v/#a(b)' }]);
+  const text = new TextDecoder('latin1').decode(pdf);
+  assert.match(text, /\/Annots \[<< \/Type \/Annot \/Subtype \/Link \/Rect \[200 350 300 450\]/);
+  assert.ok(text.includes('/URI (https://x.org/v/#a\\(b\\))'));
 });
