@@ -46,19 +46,36 @@ test('a changed amount, another key or a removed key fails', async () => {
   const token = await signReceipt(key, 'k1', FIELDS);
 
   const [payload, signature] = token.split('.');
-  const json = new TextDecoder().decode(fromB64url(payload)).replace('20000', '200000');
-  const forged = `${toB64url(new TextEncoder().encode(json))}.${signature}`;
-  assert.deepEqual(await verifyReceipt(forged, keys), { ok: false, reason: 'bad-signature' });
+  // Edits the packed bytes, whose ASCII fields read as themselves
+  const edit = (from: string, to: string) => {
+    const bytes = String.fromCharCode(...fromB64url(payload)).replace(from, to);
+    return `${toB64url(Uint8Array.from(bytes, (c) => c.charCodeAt(0)))}.${signature}`;
+  };
+  assert.deepEqual(await verifyReceipt(edit('20000', '200000'), keys), { ok: false, reason: 'bad-signature' });
 
   // Signed with key a but claiming to be key b
-  const claimsB = new TextDecoder().decode(fromB64url(payload)).replace('"k1"', '"k2"');
-  assert.deepEqual(await verifyReceipt(`${toB64url(new TextEncoder().encode(claimsB))}.${signature}`, keys), { ok: false, reason: 'bad-signature' });
+  assert.deepEqual(await verifyReceipt(edit('k1', 'k2'), keys), { ok: false, reason: 'bad-signature' });
 
   assert.deepEqual(await verifyReceipt(token, { k2: keys.k2 }), { ok: false, reason: 'unknown-key' });
 });
 
+test('details are packed small: one byte per Marathi letter', async () => {
+  const { key } = await deriveSigningKey(A);
+  const [payload] = (await signReceipt(key, 'k1', FIELDS)).split('.');
+  const chars = [FIELDS.serial, FIELDS.date, String(FIELDS.amount), FIELDS.name, FIELDS.village, FIELDS.mode, FIELDS.reference, FIELDS.programme, FIELDS.purpose]
+    .reduce((n, t) => n + [...t].length, 0);
+  assert.equal(fromB64url(payload).length, 1 + 3 + chars + 9);
+});
+
+test('letters outside Devanagari and ASCII survive', async () => {
+  const { key, publicKey } = await deriveSigningKey(A);
+  const keys: PublicKeys = { k1: { key: publicKey, who: 'test' } };
+  const fields = { ...FIELDS, name: 'José — ₹ 😀 र्\u200dया', purpose: 'line\nbreak' };
+  assert.deepEqual(await verifyReceipt(await signReceipt(key, 'k1', fields), keys), { ok: true, keyId: 'k1', fields });
+});
+
 test('junk is malformed', async () => {
-  for (const t of ['', 'abc', 'a.b.c', '!!!.###', `${toB64url(new TextEncoder().encode('[2]'))}.AAAA`]) {
+  for (const t of ['', 'abc', 'a.b.c', '!!!.###', `${toB64url(new TextEncoder().encode('[2]'))}.AAAA`, `${toB64url(Uint8Array.from([1, 0x31, 0]))}.AAAA`, `${toB64url(Uint8Array.from([1, 0x0a, 0]))}.AAAA`]) {
     assert.deepEqual(await verifyReceipt(t, {}), { ok: false, reason: 'malformed' }, t);
   }
 });

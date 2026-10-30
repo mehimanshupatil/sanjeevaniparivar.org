@@ -77,26 +77,72 @@ export function keyIdFor(publicKey: string, keys: PublicKeys): string | undefine
   return Object.keys(keys).find((id) => keys[id].key === publicKey);
 }
 
+// The details are packed small so the QR stays easy to scan: a version byte, then each field with
+// printable ASCII as itself, a Devanagari letter (U+0900–U+097F) as one byte 0x80–0xFF, anything
+// else as 0x01 + its UTF-8, and 0x00 after each field.
+const ESCAPE = 0x01;
+const END = 0x00;
+
+function packText(text: string, out: number[]) {
+  for (const ch of text) {
+    const cp = ch.codePointAt(0)!;
+    if (cp >= 0x20 && cp < 0x7f) out.push(cp);
+    else if (cp >= 0x900 && cp < 0x980) out.push(0x80 + cp - 0x900);
+    else out.push(ESCAPE, ...enc.encode(ch));
+  }
+  out.push(END);
+}
+
+/** The fields after the version byte, or undefined if the bytes aren't packed text */
+function unpackTexts(bytes: Uint8Array): string[] | undefined {
+  const utf8 = new TextDecoder('utf-8', { fatal: true });
+  const texts: string[] = [];
+  let text = '';
+  for (let i = 1; i < bytes.length; i++) {
+    const b = bytes[i];
+    if (b === END) { texts.push(text); text = ''; }
+    else if (b >= 0x80) text += String.fromCodePoint(0x900 + b - 0x80);
+    else if (b >= 0x20 && b < 0x7f) text += String.fromCharCode(b);
+    else if (b === ESCAPE && i + 1 < bytes.length) {
+      const lead = bytes[i + 1];
+      const size = lead < 0x80 ? 1 : lead >= 0xf0 ? 4 : lead >= 0xe0 ? 3 : 2;
+      text += utf8.decode(bytes.subarray(i + 1, i + 1 + size));
+      i += size;
+    } else return undefined;
+  }
+  return text ? undefined : texts;
+}
+
 /** "<details>.<signature>", both base64url: goes after /verify/# */
 export async function signReceipt(key: CryptoKey, keyId: string, f: SignedFields): Promise<string> {
-  const payload = enc.encode(JSON.stringify([VERSION, keyId, f.serial, f.date, f.amount, f.name, f.village, f.mode, f.reference, f.programme, f.purpose]));
+  const bytes = [VERSION];
+  for (const text of [keyId, f.serial, f.date, String(f.amount), f.name, f.village, f.mode, f.reference, f.programme, f.purpose]) packText(text, bytes);
+  const payload = Uint8Array.from(bytes);
   const signature = new Uint8Array(await crypto.subtle.sign(ED25519, key, payload));
   return `${toB64url(payload)}.${toB64url(signature)}`;
 }
 
+/** The fields after the version byte, with the amount as a number */
+function readPayload(payload: Uint8Array): any[] | undefined {
+  if (payload[0] !== VERSION) return undefined;
+  const texts = unpackTexts(payload);
+  if (texts?.length !== 10 || !/^\d+(\.\d+)?$/.test(texts[3])) return undefined;
+  return [...texts.slice(0, 3), Number(texts[3]), ...texts.slice(4)];
+}
+
 export async function verifyReceipt(token: string, keys: PublicKeys): Promise<Verdict> {
-  let payload: Uint8Array<ArrayBuffer>, signature: Uint8Array<ArrayBuffer>, data: unknown;
+  let payload: Uint8Array<ArrayBuffer>, signature: Uint8Array<ArrayBuffer>, data: any[] | undefined;
   try {
     const [p, s, ...rest] = token.trim().split('.');
     if (!p || !s || rest.length) return { ok: false, reason: 'malformed' };
     payload = fromB64url(p);
     signature = fromB64url(s);
-    data = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(payload));
+    data = readPayload(payload);
   } catch {
     return { ok: false, reason: 'malformed' };
   }
-  if (!Array.isArray(data) || data[0] !== VERSION || data.length !== 11) return { ok: false, reason: 'malformed' };
-  const [, keyId, serial, date, amount, name, village, mode, reference, programme, purpose] = data;
+  if (!data) return { ok: false, reason: 'malformed' };
+  const [keyId, serial, date, amount, name, village, mode, reference, programme, purpose] = data;
   const known = typeof keyId === 'string' && Object.hasOwn(keys, keyId) ? keys[keyId] : undefined;
   if (!known) return { ok: false, reason: 'unknown-key' };
 
