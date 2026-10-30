@@ -1,17 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fromB64url, importSigningKey, keyIdFor, signReceipt, toB64url, verifyReceipt, type PublicKeys, type SignedFields } from './receipt-sign.ts';
+import { deriveSigningKey, fromB64url, keyIdFor, passphraseOk, publicKeyOk, signReceipt, toB64url, verifyReceipt, type PublicKeys, type SignedFields } from './receipt-sign.ts';
 
-async function keyPair() {
-  const pair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']) as CryptoKeyPair;
-  return {
-    secret: toB64url(new Uint8Array(await crypto.subtle.exportKey('pkcs8', pair.privateKey))),
-    publicKey: toB64url(new Uint8Array(await crypto.subtle.exportKey('raw', pair.publicKey))),
-  };
-}
+const A = 'mango river kite window';
+const B = 'tiger lamp cloud basket';
 
 const FIELDS: SignedFields = {
-  serial: '1234', date: '2026-10-30', amount: 12500, name: 'श्री. रमेश पाटील', mode: 'upi', reference: '432198765012', purpose: 'सर्वसाधारण',
+  serial: '1400', date: '2026-09-19', amount: 20000, name: 'यतिश अशोक पाटील', village: 'भुईगांव', mode: 'bank', reference: 'NEFT 1234',
+  programme: 'वार्षिक', purpose: 'संजीवनी परिवाराकरिता',
 };
 
 test('base64url round-trips', () => {
@@ -20,10 +16,23 @@ test('base64url round-trips', () => {
   assert.doesNotMatch(toB64url(bytes), /[+/=]/);
 });
 
+test('passphraseOk wants 4 words or 20 characters', () => {
+  for (const p of ['mahalakshmidahanu', 'sanjeevani1994', 'mango river kite']) assert.equal(passphraseOk(p), false, p);
+  for (const p of [A, 'आंबा-खिडकी-नदी-पतंग', 'averylongpasswordwithnospaces']) assert.equal(passphraseOk(p), true, p);
+});
+
+test('the same passphrase always gives the same key; spaces and capitals do not matter', async () => {
+  const a = await deriveSigningKey(A);
+  assert.equal((await deriveSigningKey('  Mango-River  KITE window ')).publicKey, a.publicKey);
+  assert.notEqual((await deriveSigningKey(B)).publicKey, a.publicKey);
+  assert.ok(publicKeyOk(a.publicKey));
+  assert.equal(publicKeyOk('abc'), false);
+  assert.equal(a.key.extractable, false);
+});
+
 test('a signed receipt verifies, with its details', async () => {
-  const k = await keyPair();
-  const keys: PublicKeys = { k1: { key: k.publicKey, who: 'test' } };
-  const { key, publicKey } = await importSigningKey(k.secret);
+  const { key, publicKey } = await deriveSigningKey(A);
+  const keys: PublicKeys = { k1: { key: publicKey, who: 'test' } };
   assert.equal(keyIdFor(publicKey, keys), 'k1');
 
   const token = await signReceipt(key, 'k1', FIELDS);
@@ -31,13 +40,13 @@ test('a signed receipt verifies, with its details', async () => {
 });
 
 test('a changed amount, another key or a removed key fails', async () => {
-  const [a, b] = [await keyPair(), await keyPair()];
+  const [a, b] = [await deriveSigningKey(A), await deriveSigningKey(B)];
   const keys: PublicKeys = { k1: { key: a.publicKey, who: 'a' }, k2: { key: b.publicKey, who: 'b' } };
-  const { key } = await importSigningKey(a.secret);
+  const { key } = a;
   const token = await signReceipt(key, 'k1', FIELDS);
 
   const [payload, signature] = token.split('.');
-  const json = new TextDecoder().decode(fromB64url(payload)).replace('12500', '125000');
+  const json = new TextDecoder().decode(fromB64url(payload)).replace('20000', '200000');
   const forged = `${toB64url(new TextEncoder().encode(json))}.${signature}`;
   assert.deepEqual(await verifyReceipt(forged, keys), { ok: false, reason: 'bad-signature' });
 
@@ -52,8 +61,4 @@ test('junk is malformed', async () => {
   for (const t of ['', 'abc', 'a.b.c', '!!!.###', `${toB64url(new TextEncoder().encode('[2]'))}.AAAA`]) {
     assert.deepEqual(await verifyReceipt(t, {}), { ok: false, reason: 'malformed' }, t);
   }
-});
-
-test('a private key that is not Ed25519 PKCS#8 is refused', async () => {
-  await assert.rejects(importSigningKey('not-a-key'));
 });

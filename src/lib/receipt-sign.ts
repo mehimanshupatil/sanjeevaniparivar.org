@@ -1,7 +1,8 @@
 // Signed donation receipts. Each digital receipt carries a QR whose link holds the receipt's details
-// and an Ed25519 signature over them. The private key stays on the issuer's device; the public keys
-// are in src/content/receipt-keys.json, so /verify/ can check a receipt with no server. The details
-// travel in the link's #fragment, which browsers never send to the server.
+// and an Ed25519 signature over them. The private key is made from the issuer's passphrase each time
+// and never stored or sent; the public keys are in src/content/receipt-keys.json, so /verify/ can
+// check a receipt with no server. The details travel in the link's #fragment, which browsers never
+// send to the server.
 
 export interface SignedFields {
   serial: string;
@@ -9,8 +10,10 @@ export interface SignedFields {
   date: string;
   amount: number;
   name: string;
+  village: string;
   mode: string;
   reference: string;
+  programme: string;
   purpose: string;
 }
 
@@ -35,11 +38,38 @@ export function fromB64url(text: string): Uint8Array<ArrayBuffer> {
   return Uint8Array.from(s, (c) => c.charCodeAt(0));
 }
 
-/** The private key as the issuer types it (base64url PKCS#8), with the public half to look up its id */
-export async function importSigningKey(secret: string): Promise<{ key: CryptoKey; publicKey: string }> {
-  const key = await crypto.subtle.importKey('pkcs8', fromB64url(secret.trim()), ED25519, true, ['sign']);
-  const { x } = await crypto.subtle.exportKey('jwk', key);
+// The public key is published, so anyone can try passphrases offline against it: the passphrase
+// must be strong (passphraseOk), and every guess costs PBKDF2_ROUNDS of SHA-256.
+const PBKDF2_ROUNDS = 600_000;
+const SALT = enc.encode('sanjeevaniparivar.org/receipt/v1');
+/** PKCS#8 wrapper for a raw 32-byte Ed25519 private key (RFC 8410) */
+const PKCS8_PREFIX = Uint8Array.from([0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20]);
+
+/** 4 or more words, or 20 or more characters */
+export function passphraseOk(passphrase: string): boolean {
+  const p = passphrase.trim();
+  return p.split(/[\s\-_.,]+/).filter((w) => w.length >= 2).length >= 4 || p.length >= 20;
+}
+
+/**
+ * The issuer's signing key, made from their passphrase: the same passphrase always gives the same
+ * key. Spaces and capitals don't matter. `publicKey` is what goes in receipt-keys.json.
+ */
+export async function deriveSigningKey(passphrase: string, extractable = false): Promise<{ key: CryptoKey; publicKey: string }> {
+  const normal = passphrase.trim().toLowerCase().split(/[\s\-_.,]+/).join(' ');
+  const base = await crypto.subtle.importKey('raw', enc.encode(normal), 'PBKDF2', false, ['deriveBits']);
+  const seed = new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: SALT, iterations: PBKDF2_ROUNDS }, base, 256));
+  const pkcs8 = new Uint8Array([...PKCS8_PREFIX, ...seed]);
+  // Exported once to read the public half, then imported again so the stored key can't be read out
+  const open = await crypto.subtle.importKey('pkcs8', pkcs8, ED25519, true, ['sign']);
+  const { x } = await crypto.subtle.exportKey('jwk', open);
+  const key = extractable ? open : await crypto.subtle.importKey('pkcs8', pkcs8, ED25519, false, ['sign']);
   return { key, publicKey: x! };
+}
+
+/** A public key as sent by an issuer: 32 bytes, base64url */
+export function publicKeyOk(text: string): boolean {
+  try { return /^[A-Za-z0-9_-]{43}$/.test(text) && fromB64url(text).length === 32; } catch { return false; }
 }
 
 /** Id of the public key matching this private key, if it's one of the trust's */
@@ -49,7 +79,7 @@ export function keyIdFor(publicKey: string, keys: PublicKeys): string | undefine
 
 /** "<details>.<signature>", both base64url: goes after /verify/# */
 export async function signReceipt(key: CryptoKey, keyId: string, f: SignedFields): Promise<string> {
-  const payload = enc.encode(JSON.stringify([VERSION, keyId, f.serial, f.date, f.amount, f.name, f.mode, f.reference, f.purpose]));
+  const payload = enc.encode(JSON.stringify([VERSION, keyId, f.serial, f.date, f.amount, f.name, f.village, f.mode, f.reference, f.programme, f.purpose]));
   const signature = new Uint8Array(await crypto.subtle.sign(ED25519, key, payload));
   return `${toB64url(payload)}.${toB64url(signature)}`;
 }
@@ -65,13 +95,13 @@ export async function verifyReceipt(token: string, keys: PublicKeys): Promise<Ve
   } catch {
     return { ok: false, reason: 'malformed' };
   }
-  if (!Array.isArray(data) || data[0] !== VERSION || data.length !== 9) return { ok: false, reason: 'malformed' };
-  const [, keyId, serial, date, amount, name, mode, reference, purpose] = data;
+  if (!Array.isArray(data) || data[0] !== VERSION || data.length !== 11) return { ok: false, reason: 'malformed' };
+  const [, keyId, serial, date, amount, name, village, mode, reference, programme, purpose] = data;
   const known = typeof keyId === 'string' && Object.hasOwn(keys, keyId) ? keys[keyId] : undefined;
   if (!known) return { ok: false, reason: 'unknown-key' };
 
   const publicKey = await crypto.subtle.importKey('raw', fromB64url(known.key), ED25519, false, ['verify']);
   const valid = await crypto.subtle.verify(ED25519, publicKey, signature, payload).catch(() => false);
   if (!valid) return { ok: false, reason: 'bad-signature' };
-  return { ok: true, keyId, fields: { serial, date, amount, name, mode, reference, purpose } };
+  return { ok: true, keyId, fields: { serial, date, amount, name, village, mode, reference, programme, purpose } };
 }

@@ -93,6 +93,20 @@ export function schoolYearMr(value: string | Date): string {
   return `${mrNum(start)}-${mrNum(String(start + 1).slice(2))}`;
 }
 
+/** The financial year (April to March) a date falls in: 2026-03-31 → "२०२५-२६", 2026-04-01 → "२०२६-२७" */
+export function financialYearMr(value: string | Date): string {
+  const d = parseDate(value);
+  const start = d.getUTCMonth() >= 3 ? d.getUTCFullYear() : d.getUTCFullYear() - 1;
+  return `${mrNum(start)}-${mrNum(String(start + 1).slice(2))}`;
+}
+
+/** 2026-09-19 → "१९/०९/२०२६", as written on receipts */
+export function numericDateMr(value: string | Date): string {
+  const d = parseDate(value);
+  const two = (n: number) => String(n).padStart(2, '0');
+  return mrNum(`${two(d.getUTCDate())}/${two(d.getUTCMonth() + 1)}/${d.getUTCFullYear()}`);
+}
+
 /** ["A","B","C"] → "A, B आणि C" */
 export function joinMr(list: string[]): string {
   if (list.length < 2) return list.join('');

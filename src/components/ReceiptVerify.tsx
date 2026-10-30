@@ -7,7 +7,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { verifyReceipt, type PublicKeys, type Verdict } from '@/lib/receipt-sign';
 import { amountWordsEn, amountWordsMr, formatRupees } from '@/lib/amount';
-import { dateParts } from '@/lib/marathi';
+import { dateParts, financialYearMr } from '@/lib/marathi';
 import { PAYMENT_MODES, RECEIPT_TRUST } from '@/content/receipt';
 import RECEIPT_KEYS from '@/content/receipt-keys.json';
 
@@ -56,14 +56,15 @@ function Valid({ fields: f }: { fields: Extract<Verdict, { ok: true }>['fields']
   const t = useT();
   const mode = PAYMENT_MODES.find((m) => m.id === f.mode);
   let date = f.date;
-  try { const p = dateParts(f.date); date = `${p.day} ${p.month} ${p.year}`; } catch { /* show as signed */ }
+  try { const p = dateParts(f.date); date = `${p.day} ${p.month} ${p.year} (${t({ mr: 'वर्ष', en: 'FY' })} ${financialYearMr(f.date)})`; } catch { /* show as signed */ }
   const rows: [{ mr: string; en: string }, string][] = [
     [{ mr: 'पावती क्र.', en: 'Receipt No.' }, f.serial],
     [{ mr: 'दिनांक', en: 'Date' }, date],
-    [{ mr: 'देणगीदार', en: 'Received from' }, f.name],
-    [{ mr: 'रक्कम', en: 'Amount' }, `₹ ${formatRupees(f.amount)}/- (${t({ mr: `${amountWordsMr(f.amount)} रुपये`, en: `Rupees ${amountWordsEn(f.amount)}` })})`],
+    [{ mr: 'देणगीदार', en: 'Received from' }, f.village ? `${f.name}, ${f.village}` : f.name],
+    [{ mr: 'रक्कम', en: 'Amount' }, `₹ ${formatRupees(f.amount)}/- (${t({ mr: `${amountWordsMr(f.amount)} रुपये मात्र`, en: `Rupees ${amountWordsEn(f.amount)} only` })})`],
     [{ mr: 'माध्यम', en: 'Mode' }, `${mode ? t(mode) : f.mode}${f.reference ? ` — ${f.reference}` : ''}`],
-    [{ mr: 'उद्देश', en: 'Towards' }, f.purpose],
+    [{ mr: 'कार्यक्रम', en: 'Programme' }, f.programme],
+    [{ mr: 'निमित्त', en: 'Towards' }, f.purpose],
   ];
 
   return (
