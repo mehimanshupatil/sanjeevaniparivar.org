@@ -179,131 +179,130 @@ export default function ReceiptMaker() {
   }
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_auto] items-start">
-      <div className="flex flex-col gap-6">
-        <section className={section}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="क्रमांक (पावती पुस्तकातील)" id="serial">
-              <Input id="serial" value={r.serial} onChange={(e) => set('serial')(e.target.value)} placeholder="उदा. 1400" />
-            </Field>
-            <Field label="दिनांक" id="date">
-              <Input id="date" type="date" value={r.date} onChange={(e) => set('date')(e.target.value)} />
-            </Field>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="श्री / श्रीमती" id="name">
-              <Input id="name" value={r.name} onChange={(e) => set('name')(e.target.value)} autoComplete="off" />
-            </Field>
-            <Field label="गांव" id="village">
-              <Input id="village" value={r.village} onChange={(e) => set('village')(e.target.value)} autoComplete="off" />
-            </Field>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="रक्कम (रु.)" id="amount">
-              <Input id="amount" inputMode="numeric" value={r.amount} onChange={(e) => set('amount')(e.target.value.replace(/[^0-9]/g, ''))} placeholder="उदा. 20000" />
-            </Field>
-            <Field label="कार्यक्रम" id="programme">
-              <Input id="programme" list="programmes" value={r.programme} onChange={(e) => set('programme')(e.target.value)} />
-              <datalist id="programmes">{RECEIPT_PROGRAMMES.map((p) => <option key={p} value={p} />)}</datalist>
-            </Field>
-          </div>
-          <Field label="निमित्त" id="purpose">
-            <Input id="purpose" value={r.purpose} onChange={(e) => set('purpose')(e.target.value)} />
+    // Phones: details, preview, buttons, passphrase. Wide screens: the preview beside the rest
+    <div className="grid gap-6 items-start xl:grid-cols-[minmax(0,1fr)_auto] xl:grid-rows-[auto_auto_1fr]">
+      <section className={section}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="क्रमांक (पावती पुस्तकातील)" id="serial">
+            <Input id="serial" value={r.serial} onChange={(e) => set('serial')(e.target.value)} placeholder="उदा. 1400" />
           </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="माध्यम" id="mode">
-              <Select items={PAYMENT_MODES.map((m) => ({ value: m.id, label: m.mr }))} value={r.mode} onValueChange={(v) => v && set('mode')(v as PaymentMode)}>
-                <SelectTrigger id="mode" className="w-full"><SelectValue /></SelectTrigger>
-                <SelectContent>{PAYMENT_MODES.map((m) => <SelectItem key={m.id} value={m.id}>{m.mr}</SelectItem>)}</SelectContent>
-              </Select>
+          <Field label="दिनांक" id="date">
+            <Input id="date" type="date" value={r.date} onChange={(e) => set('date')(e.target.value)} />
+          </Field>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="श्री / श्रीमती" id="name">
+            <Input id="name" value={r.name} onChange={(e) => set('name')(e.target.value)} autoComplete="off" />
+          </Field>
+          <Field label="गांव" id="village">
+            <Input id="village" value={r.village} onChange={(e) => set('village')(e.target.value)} autoComplete="off" />
+          </Field>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="रक्कम (रु.)" id="amount">
+            <Input id="amount" inputMode="numeric" value={r.amount} onChange={(e) => set('amount')(e.target.value.replace(/[^0-9]/g, ''))} placeholder="उदा. 20000" />
+          </Field>
+          <Field label="कार्यक्रम" id="programme">
+            <Input id="programme" list="programmes" value={r.programme} onChange={(e) => set('programme')(e.target.value)} />
+            <datalist id="programmes">{RECEIPT_PROGRAMMES.map((p) => <option key={p} value={p} />)}</datalist>
+          </Field>
+        </div>
+        <Field label="निमित्त" id="purpose">
+          <Input id="purpose" value={r.purpose} onChange={(e) => set('purpose')(e.target.value)} />
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="माध्यम" id="mode">
+            <Select items={PAYMENT_MODES.map((m) => ({ value: m.id, label: m.mr }))} value={r.mode} onValueChange={(v) => v && set('mode')(v as PaymentMode)}>
+              <SelectTrigger id="mode" className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>{PAYMENT_MODES.map((m) => <SelectItem key={m.id} value={m.id}>{m.mr}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
+          {mode.ref && (
+            <Field label={mode.ref} id="reference">
+              <Input id="reference" value={r.reference} onChange={(e) => set('reference')(e.target.value)} autoComplete="off" />
             </Field>
-            {mode.ref && (
-              <Field label={mode.ref} id="reference">
-                <Input id="reference" value={r.reference} onChange={(e) => set('reference')(e.target.value)} autoComplete="off" />
-              </Field>
-            )}
-          </div>
-        </section>
+          )}
+        </div>
+      </section>
 
-        <section className={section}>
-          {!signer && <p className="text-sm text-gray-500">आधी खाली स्वाक्षरीसाठी पासवर्डने उघडा.</p>}
-          {missing.length > 0 && <p className="text-sm text-gray-500">भरायचे बाकी: {missing.join(', ')}</p>}
-          <div className="flex flex-wrap gap-3">
-            <Button disabled={busy || !token} onClick={() => run('download')}>
-              <DownloadSimpleIcon /> PDF डाउनलोड
+      <div className="overflow-x-auto xl:col-start-2 xl:row-span-3 xl:row-start-1">
+      <ReceiptSheet ref={sheet} r={r} amount={amountOk ? amount : undefined} token={token} />
+      </div>
+
+      <section className={section}>
+        {!signer && <p className="text-sm text-gray-500">आधी खाली स्वाक्षरीसाठी पासवर्डने उघडा.</p>}
+        {missing.length > 0 && <p className="text-sm text-gray-500">भरायचे बाकी: {missing.join(', ')}</p>}
+        <div className="flex flex-wrap gap-3">
+          <Button disabled={busy || !token} onClick={() => run('download')}>
+            <DownloadSimpleIcon /> PDF डाउनलोड
+          </Button>
+          {canShare && (
+            <Button variant="outline" disabled={busy || !token} onClick={() => run('share')}>
+              <ShareNetworkIcon /> WhatsApp वर पाठवा
             </Button>
-            {canShare && (
-              <Button variant="outline" disabled={busy || !token} onClick={() => run('share')}>
-                <ShareNetworkIcon /> WhatsApp वर पाठवा
-              </Button>
-            )}
-            <Button variant="ghost" disabled={busy} onClick={() => setR(EMPTY())}>नवीन पावती</Button>
+          )}
+          <Button variant="ghost" disabled={busy} onClick={() => setR(EMPTY())}>नवीन पावती</Button>
+        </div>
+        {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
+        {error && <p className="text-sm text-red-700">{error}</p>}
+      </section>
+
+      <section className={section}>
+        <h2 className="font-bold text-gray-900 flex items-center gap-2"><KeyIcon className="size-5" /> स्वाक्षरी</h2>
+        {signer ? (
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <span className="text-green-800">✔ {KEYS[signer.keyId].who} ({signer.keyId}) यांच्या नावाने पावत्या तयार होतील.</span>
+            <Button variant="ghost" size="sm" onClick={forget}>बाहेर पडा</Button>
           </div>
-          {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
-          {error && <p className="text-sm text-red-700">{error}</p>}
-        </section>
-
-        <section className={section}>
-          <h2 className="font-bold text-gray-900 flex items-center gap-2"><KeyIcon className="size-5" /> स्वाक्षरी</h2>
-          {signer ? (
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <span className="text-green-800">✔ {KEYS[signer.keyId].who} ({signer.keyId}) यांच्या नावाने पावत्या तयार होतील.</span>
-              <Button variant="ghost" size="sm" onClick={forget}>बाहेर पडा</Button>
-            </div>
-          ) : (
-            <>
-              <p className="text-sm text-gray-600 max-w-3xl">
-                पावतीवरील QR वर आपल्या पासवर्डने स्वाक्षरी होते; त्यावरून देणगीदार पावती खरी आहे का ते तपासू शकतात.
-                पासवर्ड कुठेही साठवला किंवा पाठवला जात नाही आणि तो कोणालाही सांगू नका.
-              </p>
-              <form className="flex flex-col gap-3 max-w-3xl" onSubmit={(e) => { e.preventDefault(); unlock(); }}>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="relative flex-1">
-                    <Input
-                      type={shown ? 'text' : 'password'} value={passphrase} aria-label="पासवर्ड" placeholder="पासवर्ड (किमान ४ शब्द)" autoComplete="off" className="pr-10"
-                      onChange={(e) => { setPassphrase(e.target.value); setUnregistered(undefined); }}
-                    />
-                    <Button
-                      type="button" variant="ghost" size="icon-sm" className="absolute right-0.5 top-1/2 -translate-y-1/2"
-                      aria-label={shown ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'} aria-pressed={shown} onClick={() => setShown((v) => !v)}
-                    >
-                      {shown ? <EyeSlashIcon /> : <EyeIcon />}
-                    </Button>
-                  </div>
-                  <Button type="submit" disabled={!passphrase.trim() || checking}>{checking ? 'तपासत आहे…' : 'उघडा'}</Button>
+        ) : (
+          <>
+            <p className="text-sm text-gray-600 max-w-3xl">
+              पावतीवरील QR वर आपल्या पासवर्डने स्वाक्षरी होते; त्यावरून देणगीदार पावती खरी आहे का ते तपासू शकतात.
+              पासवर्ड कुठेही साठवला किंवा पाठवला जात नाही आणि तो कोणालाही सांगू नका.
+            </p>
+            <form className="flex flex-col gap-3 max-w-3xl" onSubmit={(e) => { e.preventDefault(); unlock(); }}>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Input
+                    type={shown ? 'text' : 'password'} value={passphrase} aria-label="पासवर्ड" placeholder="पासवर्ड (किमान ४ शब्द)" autoComplete="off" className="pr-10"
+                    onChange={(e) => { setPassphrase(e.target.value); setUnregistered(undefined); }}
+                  />
+                  <Button
+                    type="button" variant="ghost" size="icon-sm" className="absolute right-0.5 top-1/2 -translate-y-1/2"
+                    aria-label={shown ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'} aria-pressed={shown} onClick={() => setShown((v) => !v)}
+                  >
+                    {shown ? <EyeSlashIcon /> : <EyeIcon />}
+                  </Button>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-                  <Label className="font-normal">
-                    <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} /> हे उपकरण लक्षात ठेवा
-                  </Label>
-                  <button type="button" className="text-primary font-semibold hover:underline" onClick={() => { setPassphrase(suggestPassphrase()); setSuggested(true); setShown(true); setUnregistered(undefined); }}>
-                    पहिल्यांदा? शब्द सुचवा
-                  </button>
-                </div>
-                {suggested && <p className="text-sm text-amber-800">हे शब्द कागदावर लिहून सुरक्षित ठेवा; पुढच्या वेळी हेच लिहावे लागतील.</p>}
-              </form>
-            </>
-          )}
-          {keyError && <p className="text-sm text-red-700">{keyError}</p>}
-          {unregistered && (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900 flex flex-col gap-3 max-w-3xl">
-              <p>
-                हा पासवर्ड संस्थेच्या यादीत नाही. चुकीचा लिहिला गेला असेल तर पुन्हा लिहा.
-                नवीन असल्यास, खालील <strong>सार्वजनिक की</strong> वेबसाईट व्यवस्थापकाला पाठवा (पासवर्ड नाही!). ती जोडल्यावर याच पासवर्डने पावत्या तयार करता येतील.
-              </p>
-              <code className="break-all rounded bg-white px-3 py-2 text-gray-900">{unregistered}</code>
-              <div className="flex flex-wrap gap-3">
-                <Button variant="outline" size="sm" onClick={() => navigator.clipboard.writeText(unregistered)}><CopySimpleIcon /> कॉपी करा</Button>
-                <Button variant="outline" size="sm" onClick={() => sendPublicKey(unregistered)}><SiWhatsapp /> WhatsApp वर पाठवा</Button>
+                <Button type="submit" disabled={!passphrase.trim() || checking}>{checking ? 'तपासत आहे…' : 'उघडा'}</Button>
               </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                <Label className="font-normal">
+                  <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} /> हे उपकरण लक्षात ठेवा
+                </Label>
+                <button type="button" className="text-primary font-semibold hover:underline" onClick={() => { setPassphrase(suggestPassphrase()); setSuggested(true); setShown(true); setUnregistered(undefined); }}>
+                  पहिल्यांदा? शब्द सुचवा
+                </button>
+              </div>
+              {suggested && <p className="text-sm text-amber-800">हे शब्द कागदावर लिहून सुरक्षित ठेवा; पुढच्या वेळी हेच लिहावे लागतील.</p>}
+            </form>
+          </>
+        )}
+        {keyError && <p className="text-sm text-red-700">{keyError}</p>}
+        {unregistered && (
+          <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900 flex flex-col gap-3 max-w-3xl">
+            <p>
+              हा पासवर्ड संस्थेच्या यादीत नाही. चुकीचा लिहिला गेला असेल तर पुन्हा लिहा.
+              नवीन असल्यास, खालील <strong>सार्वजनिक की</strong> वेबसाईट व्यवस्थापकाला पाठवा (पासवर्ड नाही!). ती जोडल्यावर याच पासवर्डने पावत्या तयार करता येतील.
+            </p>
+            <code className="break-all rounded bg-white px-3 py-2 text-gray-900">{unregistered}</code>
+            <div className="flex flex-wrap gap-3">
+              <Button variant="outline" size="sm" onClick={() => navigator.clipboard.writeText(unregistered)}><CopySimpleIcon /> कॉपी करा</Button>
+              <Button variant="outline" size="sm" onClick={() => sendPublicKey(unregistered)}><SiWhatsapp /> WhatsApp वर पाठवा</Button>
             </div>
-          )}
-        </section>
-      </div>
-
-      <div className="overflow-x-auto">
-        <ReceiptSheet ref={sheet} r={r} amount={amountOk ? amount : undefined} token={token} />
-      </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
