@@ -1,6 +1,7 @@
 ---
-// /publicity/receipt/ — digital copy of a donation receipt, for trust members (noindex, not linked
-// from the site). Made in the browser; the donor's details are never stored.
+// /publicity/receipt/ — digital copy of a donation receipt. Local only (`pnpm dev`, see
+// astro.config.mjs): never on the live site, where anyone could make receipts. Made in the
+// browser; the donor's details are never stored.
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import ReceiptMaker from '@/components/publicity/ReceiptMaker';
 ---

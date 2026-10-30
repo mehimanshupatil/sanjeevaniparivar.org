@@ -4,11 +4,28 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from "@tailwindcss/vite";
 import mdx from '@astrojs/mdx';
 
+/**
+ * Tools that make official-looking cards and receipts (template gallery + editor, donation receipt).
+ * Routed only under `pnpm dev`, so they are never built or deployed: anyone could use them there.
+ */
+const devOnlyPages = () => ({
+  name: 'dev-only-pages',
+  hooks: {
+    'astro:config:setup': ({ command, injectRoute }) => {
+      if (command !== 'dev') return;
+      injectRoute({ pattern: '/publicity/templates', entrypoint: './src/dev-pages/templates/index.astro' });
+      injectRoute({ pattern: '/publicity/templates/[type]', entrypoint: './src/dev-pages/templates/[type].astro' });
+      injectRoute({ pattern: '/publicity/receipt', entrypoint: './src/dev-pages/receipt.astro' });
+    },
+  },
+});
+
 // https://astro.build/config
 export default defineConfig({
   output: 'static',          // Pure static, no SSR
   integrations: [
     mdx(),
+    devOnlyPages(),
     react(),
     sitemap({ filter: (page) => !page.includes('/publicity/') }),  // Publicity pages are render targets, not site pages
   ],

@@ -107,7 +107,7 @@ A page for trust members to send an approved WhatsApp template to the people in 
 
 ## Template gallery and try-out editor (for trust members)
 
-- `/publicity/templates/` shows every template in every format, filled with sample content. Share this link; it isn't linked from the site or indexed.
+- `/publicity/templates/` shows every template in every format, filled with sample content. It and the editor below exist only under `pnpm dev` (`devOnlyPages` in `astro.config.mjs`, files in `src/dev-pages/`), never on the live site, where anyone could make official-looking cards with them. The sample cards (`/publicity/templates/<type>/<format>/`) are still built, for the CI check below.
 - `/publicity/templates/<type>/` ("वापरून पहा") lets a member type their programme's details into a Marathi form and see every format update live, with a warning if text doesn't fit. Nothing is saved on the site (the draft stays in their browser). "कॉपी करा" / "WhatsApp वर पाठवा" sends you the programme + edition YAML to add to `src/content/`.
 - Each type's sample lives in `src/publicity/templates/<type>/sample.ts`, deliberately near the template's limits. Sample pages are rendered in CI too, so a template change that makes the sample overflow fails the build.
 - Long titles shrink to fit between the side ornaments (`src/publicity/fit.ts`, marked `data-fit`); render waits for `html[data-publicity-ready]`.

@@ -1,6 +1,6 @@
 ---
 // /publicity/templates/ — every template, in every format, with sample content.
-// A shared link for trust members (not linked from the site, not indexed).
+// Local only (`pnpm dev`, see astro.config.mjs): never on the live site, where anyone could make cards.
 import PublicityPreviewLayout from '@/layouts/PublicityPreviewLayout.astro';
 import { TEMPLATES } from '@/publicity/templates';
 import { FORMATS, type FormatId } from '@/publicity/formats';
