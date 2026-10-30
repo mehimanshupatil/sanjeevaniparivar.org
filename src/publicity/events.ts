@@ -48,6 +48,8 @@ export interface EventDetail extends Event {
   call: string[];
   contacts: { name: string; phone: string; phoneMr: string }[];
   photos: { src: string; caption?: string }[];
+  /** The full album (Google Photos/Drive) */
+  album?: string;
   /** wa.me link with the full WhatsApp message and this page's link */
   whatsappShare: string;
   /** schema.org Event, for Google's event results */
@@ -141,6 +143,7 @@ export async function eventDetails(): Promise<{ edition: ResolvedEdition; event:
         call: b.closing.filter((c) => c.emphasis).map((c) => c.text),
         contacts: b.contacts,
         photos: b.photos,
+        album: b.album,
         whatsappShare: `https://wa.me/?text=${encodeURIComponent(`${editionTexts(b).whatsapp}\n\n${url}`)}`,
         jsonLd: {
           '@context': 'https://schema.org',

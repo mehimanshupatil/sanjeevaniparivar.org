@@ -121,6 +121,8 @@ const editions = defineCollection({
     /** After the event: its photos (क्षणचित्रे), under public/assets/events/<year>/<programme>/.
      *  Shown on the event's page and in the gallery. */
     photos: z.array(z.object({ src: z.string(), caption: z.string().optional() })).optional(),
+    /** After the event: link to the full album (Google Photos/Drive), where the originals are kept */
+    album: z.url().optional(),
     /** Not published: shown in `pnpm dev` only, until the details are confirmed */
     draft: z.boolean().optional(),
   }).refine((e) => !e.sessions || e.sessions.length === e.days.length,

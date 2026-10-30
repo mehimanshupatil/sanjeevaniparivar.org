@@ -25,6 +25,8 @@ export interface ResolvedEdition {
   isoTimes: { from?: string; to?: string }[];
   /** Photos from the event (क्षणचित्रे), added after it */
   photos: { src: string; caption?: string }[];
+  /** Link to the full photo album, outside the site */
+  album?: string;
   summary?: string;
   /** English for the events page; edition fields override the programme's one by one */
   en: { title?: string; summary?: string; venue?: string };
@@ -90,7 +92,7 @@ export interface ResolvedSession {
  */
 export function resolveEdition(edition: Entry<EditionData>, programme: Entry<ProgrammeData>): ResolvedEdition {
   const p = programme.data;
-  const { programme: _ref, days, venue = [], draft: _draft, cards = true, sessions = [], inauguration, photos = [], ...overrides } = edition.data;
+  const { programme: _ref, days, venue = [], draft: _draft, cards = true, sessions = [], inauguration, photos = [], album, ...overrides } = edition.data;
   const text = { ...p, ...stripUndefined(overrides) };
 
   const year = parseDate(days[0].date).getUTCFullYear();
@@ -114,6 +116,7 @@ export function resolveEdition(edition: Entry<EditionData>, programme: Entry<Pro
     isoDates: days.map((d) => d.date),
     isoTimes: days.map((d) => ({ from: d.at ?? d.from, to: d.to })),
     photos,
+    album,
     summary: fill(text.summary),
     en: { ...p.en, ...stripUndefined(edition.data.en ?? {}) },
     year,

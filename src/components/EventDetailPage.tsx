@@ -156,7 +156,7 @@ function PageContent({ event: e }: { event: EventDetail }) {
               </div>
             )}
 
-            {e.photos.length > 0 && (
+            {(e.photos.length > 0 || e.album) && (
               <div>
                 <Heading color={color}>{t({ mr: 'क्षणचित्रे', en: 'Photos' })}</Heading>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -170,6 +170,11 @@ function PageContent({ event: e }: { event: EventDetail }) {
                     </figure>
                   ))}
                 </div>
+                {e.album && (
+                  <a href={e.album} target="_blank" rel="noopener" className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">
+                    {t({ mr: 'सर्व फोटो पहा →', en: 'See all photos →' })}
+                  </a>
+                )}
               </div>
             )}
           </div>

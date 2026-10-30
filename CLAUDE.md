@@ -54,7 +54,7 @@ HeroSection → UpcomingEvent (next event, hidden when none) → AboutSection �
 - `kshetras.ts` — 4 kshetras, 25 activities with slugs + body text (facts from the 17th annual report, 2025–26)
 - `vyakhyanmala.ts` — lectures 2003–2026; fields: `lecture_no, edition, year, speaker, topic, youtubeUrl, date`
 - `gallery.ts` — 16 items; images expected at `/public/assets/gallery/`
-- Events (`/events`, `/events/<year>/<programme>/`) — made from the published Publicity editions (`src/publicity/events.ts`); no separate list. After an event, add `photos: [{ src, caption }]` to its edition (files under `public/assets/events/<year>/<programme>/`)
+- Events (`/events`, `/events/<year>/<programme>/`) — made from the published Publicity editions (`src/publicity/events.ts`); no separate list. After an event, `pnpm photos <folder> <year>/<programme>` resizes the photos into `public/assets/events/<year>/<programme>/` and prints the `photos:` lines for its edition; `album:` links the full album (originals stay out of git)
 - `team.ts` — the कार्यकारी मंडळ from the annual report; update when a new committee is elected
 - `src/lib/org.ts` — counts that grow each year (years of service since 1994, व्याख्यानमाला edition since 2003, वृक्षवाढदिवस since 2006), computed at build time: use these, never type the numbers
 

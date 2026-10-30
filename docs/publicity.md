@@ -195,13 +195,22 @@ The events page `/events` is made entirely from the published editions (`src/pub
 
 Each edition also has its own page, `/events/<year>/<programme>/` (`EventDetailPage.tsx`, data from `eventDetails()`): every day with an "Add to Google Calendar" link, `calendar.ics` with all days (`src/lib/calendar.ts`, tested; YAML times are IST), a map link, "share on WhatsApp" with the ready message, the 4:5 card, the details, and schema.org Event data for Google. Its link preview is the wide card. After the event the page says संपन्न and drops the calendar links by itself. The home page shows the next event under the hero, linking here.
 
-**After an event, add its photos:** put them in `public/assets/events/<year>/<programme>/` and list them in the edition:
+**After an event, add its photos.** Pick 10–20 good ones and run:
+
+```sh
+pnpm photos ~/Downloads/grahak-peth 2026/grahak-peth
+```
+
+It turns each photo upright, shrinks it to at most 1600 px (JPEG, about 200–400 KB), drops its metadata (including the GPS location phones store), saves it in `public/assets/events/2026/grahak-peth/`, and prints the lines to paste into the edition (iPhone HEIC photos are converted on a Mac; existing files are skipped unless `--force`). Then fill in captions if you like and link the full album:
 
 ```yaml
 photos:
   - src: /assets/events/2026/grahak-peth/udghatan.jpg
     caption: उद्घाटन समारंभ
+album: https://photos.app.goo.gl/…
 ```
+
+Keep the full-size originals in Google Photos/Drive (the `album:` link, shown as "सर्व फोटो पहा →"), not in the repository: git keeps every file forever, and GitHub Pages limits the site to 1 GB.
 
 They appear as क्षणचित्रे on the event's page and at the top of the gallery (filtered by its kshetra and year). Only use photos the trust may publish.
 
