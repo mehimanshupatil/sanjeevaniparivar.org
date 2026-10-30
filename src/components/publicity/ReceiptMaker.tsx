@@ -226,6 +226,24 @@ export default function ReceiptMaker() {
         </section>
 
         <section className={section}>
+          {!signer && <p className="text-sm text-gray-500">आधी खाली स्वाक्षरीसाठी पासवर्डने उघडा.</p>}
+          {missing.length > 0 && <p className="text-sm text-gray-500">भरायचे बाकी: {missing.join(', ')}</p>}
+          <div className="flex flex-wrap gap-3">
+            <Button disabled={busy || !token} onClick={() => run('download')}>
+              <DownloadSimpleIcon /> PDF डाउनलोड
+            </Button>
+            {canShare && (
+              <Button variant="outline" disabled={busy || !token} onClick={() => run('share')}>
+                <ShareNetworkIcon /> WhatsApp वर पाठवा
+              </Button>
+            )}
+            <Button variant="ghost" disabled={busy} onClick={() => setR(EMPTY())}>नवीन पावती</Button>
+          </div>
+          {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
+          {error && <p className="text-sm text-red-700">{error}</p>}
+        </section>
+
+        <section className={section}>
           <h2 className="font-bold text-gray-900 flex items-center gap-2"><KeyIcon className="size-5" /> स्वाक्षरी</h2>
           {signer ? (
             <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -280,24 +298,6 @@ export default function ReceiptMaker() {
               </div>
             </div>
           )}
-        </section>
-
-        <section className={section}>
-          {!signer && <p className="text-sm text-gray-500">आधी वर स्वाक्षरीसाठी पासवर्डने उघडा.</p>}
-          {missing.length > 0 && <p className="text-sm text-gray-500">भरायचे बाकी: {missing.join(', ')}</p>}
-          <div className="flex flex-wrap gap-3">
-            <Button disabled={busy || !token} onClick={() => run('download')}>
-              <DownloadSimpleIcon /> PDF डाउनलोड
-            </Button>
-            {canShare && (
-              <Button variant="outline" disabled={busy || !token} onClick={() => run('share')}>
-                <ShareNetworkIcon /> WhatsApp वर पाठवा
-              </Button>
-            )}
-            <Button variant="ghost" disabled={busy} onClick={() => setR(EMPTY())}>नवीन पावती</Button>
-          </div>
-          {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
-          {error && <p className="text-sm text-red-700">{error}</p>}
         </section>
       </div>
 
