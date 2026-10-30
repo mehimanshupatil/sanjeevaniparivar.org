@@ -3,8 +3,8 @@
 
 export const RECEIPT_TRUST = {
   legalName: 'संजिवनी परिवार संस्था, नालासोपारा (प)',
-  /** Public trust register number, Palghar Division (e.g. "E-1234 (पालघर)"). Empty: the tool warns */
-  regNo: '',
+  /** Public trust register number, Palghar Division (from the annual report). Empty: the tool warns */
+  regNo: 'एफ-१७९४ (पालघर)',
   address: '“पारिजात”, वाघोली, निर्मळ रोड, ता. वसई, पिन - ४०१ ३०४',
   email: 'sanjeevani.parivar@gmail.com',
   website: 'sanjeevaniparivar.org',
