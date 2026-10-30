@@ -12,17 +12,20 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { downloadFile } from '@/lib/utils';
 import { amountWordsMr, formatRupees, MAX_AMOUNT } from '@/lib/amount';
 import { financialYearMr, numericDateMr } from '@/lib/marathi';
 import { jpegToPdf } from '@/lib/pdf';
 import { deriveSigningKey, keyIdFor, passphraseOk, signReceipt, type PublicKeys } from '@/lib/receipt-sign';
 import { suggestPassphrase } from '@/lib/passphrase';
-import { DEFAULT_PURPOSE, PAYMENT_MODES, RECEIPT_PROGRAMMES, RECEIPT_TRUST, type PaymentMode } from '@/content/receipt';
+import { DEFAULT_PURPOSE, PAYMENT_MODES, RECEIPT_PROGRAMMES, RECEIPT_TITLES, RECEIPT_TRUST, type PaymentMode } from '@/content/receipt';
 import RECEIPT_KEYS from '@/content/receipt-keys.json';
 
 const KEYS: PublicKeys = RECEIPT_KEYS;
+const KNOWN_PROGRAMMES = RECEIPT_PROGRAMMES.flatMap((g) => g.items);
+/** The कार्यक्रम dropdown's choice for a programme typed by hand */
+const OTHER = '__other';
 const VERIFY_URL = `https://${RECEIPT_TRUST.website}/verify/#`;
 /** A5 landscape width in points, like the paper receipt */
 const A5_WIDTH_PT = 595.28;
@@ -30,6 +33,7 @@ const A5_WIDTH_PT = 595.28;
 interface Receipt {
   serial: string;
   date: string;
+  title: string;
   name: string;
   village: string;
   amount: string;
@@ -41,7 +45,7 @@ interface Receipt {
 
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 const EMPTY = (): Receipt => ({
-  serial: '', date: today(), name: '', village: '', amount: '', programme: RECEIPT_PROGRAMMES[0], purpose: DEFAULT_PURPOSE, mode: 'cash', reference: '',
+  serial: '', date: today(), title: RECEIPT_TITLES[0], name: '', village: '', amount: '', programme: KNOWN_PROGRAMMES[0], purpose: DEFAULT_PURPOSE, mode: 'cash', reference: '',
 });
 
 interface Signer { key: CryptoKey; keyId: string }
@@ -66,6 +70,8 @@ export default function ReceiptMaker() {
   const [r, setR] = useState<Receipt>(EMPTY);
   const set = <K extends keyof Receipt>(k: K) => (v: Receipt[K]) => setR((x) => ({ ...x, [k]: v }));
   const mode = PAYMENT_MODES.find((m) => m.id === r.mode)!;
+  /** Typing a programme by hand ("इतर…"), or picking one from the list */
+  const [otherProgramme, setOtherProgramme] = useState(false);
 
   const amount = Number(r.amount);
   const amountOk = Number.isInteger(amount) && amount >= 1 && amount <= MAX_AMOUNT;
@@ -132,7 +138,7 @@ export default function ReceiptMaker() {
     if (!signer || missing.length) return;
     let live = true;
     signReceipt(signer.key, signer.keyId, {
-      serial: r.serial.trim(), date: r.date, amount, name: r.name.trim(), village: r.village.trim(), mode: r.mode,
+      serial: r.serial.trim(), date: r.date, amount, name: `${r.title} ${r.name.trim()}`, village: r.village.trim(), mode: r.mode,
       reference: mode.ref ? r.reference.trim() : '', programme: r.programme.trim(), purpose: r.purpose.trim(),
     }).then((t) => live && setToken(t));
     return () => { live = false; };
@@ -190,23 +196,51 @@ export default function ReceiptMaker() {
             <Input id="date" type="date" value={r.date} onChange={(e) => set('date')(e.target.value)} />
           </Field>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="श्री / श्रीमती" id="name">
+        <Field label="देणगीदाराचे नाव" id="name">
+          <div className="flex gap-2">
+            <Select items={RECEIPT_TITLES.map((t) => ({ value: t, label: t }))} value={r.title} onValueChange={(v) => v && set('title')(v)}>
+              <SelectTrigger aria-label="संबोधन" className="w-24 shrink-0"><SelectValue /></SelectTrigger>
+              <SelectContent>{RECEIPT_TITLES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+            </Select>
             <Input id="name" value={r.name} onChange={(e) => set('name')(e.target.value)} autoComplete="off" />
-          </Field>
+          </div>
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
           <Field label="गांव" id="village">
             <Input id="village" value={r.village} onChange={(e) => set('village')(e.target.value)} autoComplete="off" />
           </Field>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
           <Field label="रक्कम (रु.)" id="amount">
             <Input id="amount" inputMode="numeric" value={r.amount} onChange={(e) => set('amount')(e.target.value.replace(/[^0-9]/g, ''))} placeholder="उदा. 20000" />
           </Field>
-          <Field label="कार्यक्रम" id="programme">
-            <Input id="programme" list="programmes" value={r.programme} onChange={(e) => set('programme')(e.target.value)} />
-            <datalist id="programmes">{RECEIPT_PROGRAMMES.map((p) => <option key={p} value={p} />)}</datalist>
-          </Field>
         </div>
+        <Field label="कार्यक्रम" id="programme">
+          <Select
+            items={[...KNOWN_PROGRAMMES.map((p) => ({ value: p, label: p })), { value: OTHER, label: 'इतर…' }]}
+            value={otherProgramme ? OTHER : r.programme}
+            onValueChange={(v) => {
+              if (!v) return;
+              setOtherProgramme(v === OTHER);
+              set('programme')(v === OTHER ? '' : v);
+            }}
+          >
+            <SelectTrigger id="programme" className="w-full"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {RECEIPT_PROGRAMMES.map((g) => (
+                <SelectGroup key={g.label}>
+                  <SelectLabel>{g.label}</SelectLabel>
+                  {g.items.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                </SelectGroup>
+              ))}
+              <SelectGroup>
+                <SelectLabel>इतर</SelectLabel>
+                <SelectItem value={OTHER}>इतर… (स्वतः लिहा)</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {otherProgramme && (
+            <Input aria-label="कार्यक्रमाचे नाव" value={r.programme} onChange={(e) => set('programme')(e.target.value)} placeholder="कार्यक्रमाचे नाव" autoFocus />
+          )}
+        </Field>
         <Field label="निमित्त" id="purpose">
           <Input id="purpose" value={r.purpose} onChange={(e) => set('purpose')(e.target.value)} />
         </Field>
@@ -241,7 +275,7 @@ export default function ReceiptMaker() {
               <ShareNetworkIcon /> WhatsApp वर पाठवा
             </Button>
           )}
-          <Button variant="ghost" disabled={busy} onClick={() => setR(EMPTY())}>नवीन पावती</Button>
+          <Button variant="ghost" disabled={busy} onClick={() => { setR(EMPTY()); setOtherProgramme(false); }}>नवीन पावती</Button>
         </div>
         {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
         {error && <p className="text-sm text-red-700">{error}</p>}
@@ -355,7 +389,7 @@ function ReceiptSheet({ r, amount, token, ref }: { r: Receipt; amount?: number; 
                 <p className="whitespace-nowrap">दिनांक <Fill>{date}</Fill></p>
               </div>
               <p className="mt-2 leading-[2.6]">
-                <Pair>श्री/श्रीमती <Fill wide>{r.name.trim()}</Fill></Pair> <Pair>गांवः <Fill>{r.village.trim()}</Fill></Pair>{' '}
+                <Pair>{r.title} <Fill wide>{r.name.trim()}</Fill></Pair> <Pair>गांवः <Fill>{r.village.trim()}</Fill></Pair>{' '}
                 यांजकडून संजीवनी परिवारांस <Pair>वर्ष <Fill>{year}</Fill> करिता</Pair>{' '}
                 <Pair>(अक्षरी रुपये <Fill wide>{amount ? `${amountWordsMr(amount)} मात्र` : ''}</Fill></Pair>{' '}
                 <Pair>निमित्त - <Fill>{r.purpose.trim()}</Fill>)</Pair> <Pair>रु. <Fill>{amount ? `${formatRupees(amount)}/-` : ''}</Fill></Pair>{' '}

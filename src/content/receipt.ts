@@ -1,6 +1,7 @@
 // Trust details and choices for digital donation receipts (/publicity/receipt/), laid out like the
 // paper receipt book. Receipts carry the Legal Name and the trust's registration (GLOSSARY.md); the
 // old paper books still print the earlier name and number. No 80G: the trust doesn't have it.
+import { KSHETRAS } from './kshetras';
 
 export const RECEIPT_TRUST = {
   legalName: 'संजिवनी परिवार संस्था, नालासोपारा (प)',
@@ -21,8 +22,14 @@ export const PAYMENT_MODES = [
 
 export type PaymentMode = (typeof PAYMENT_MODES)[number]['id'];
 
-/** कार्यक्रम, as printed on the paper receipt; another can be typed */
-export const RECEIPT_PROGRAMMES = ['वार्षिक', 'व्याख्यानमाला', 'मेडिकल फंड'];
+/** Before the donor's name; मे. (मेसर्स) for a firm */
+export const RECEIPT_TITLES = ['श्री', 'श्रीमती', 'सौ.', 'कु.', 'डॉ.', 'मे.'];
+
+/** कार्यक्रम: the general fund (वार्षिक, as on the paper receipt), then every upakram by kshetra. Another can be typed */
+export const RECEIPT_PROGRAMMES: { label: string; items: string[] }[] = [
+  { label: 'सर्वसाधारण', items: ['वार्षिक'] },
+  ...KSHETRAS.map((k) => ({ label: k.label.mr, items: k.activities.map((a) => a.title.mr) })),
+];
 
 /** निमित्त, unless the donor gives another */
 export const DEFAULT_PURPOSE = 'संजीवनी परिवाराकरिता';
