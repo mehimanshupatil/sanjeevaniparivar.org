@@ -81,7 +81,7 @@ export default function ReceiptMaker() {
     !r.name.trim() && 'नाव',
     !amountOk && 'रक्कम (पूर्ण रुपये)',
     !r.programme.trim() && 'कार्यक्रम',
-    mode.ref && !r.reference.trim() && mode.ref,
+    mode.ref && !mode.optional && !r.reference.trim() && mode.ref,
   ].filter(Boolean) as string[];
 
   // ── Signing key, made from the issuer's passphrase ──
@@ -252,7 +252,7 @@ export default function ReceiptMaker() {
             </Select>
           </Field>
           {mode.ref && (
-            <Field label={mode.ref} id="reference">
+            <Field label={mode.optional ? `${mode.ref} (ऐच्छिक)` : mode.ref} id="reference">
               <Input id="reference" value={r.reference} onChange={(e) => set('reference')(e.target.value)} autoComplete="off" />
             </Field>
           )}

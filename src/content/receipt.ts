@@ -12,12 +12,12 @@ export const RECEIPT_TRUST = {
   website: 'sanjeevaniparivar.org',
 };
 
-/** `by`: how the receipt sentence ends ("… धनादेशाने मिळाले"); `ref`: label of the detail it needs */
+/** `by`: how the receipt sentence ends ("… धनादेशाने मिळाले"); `ref`: label of its detail; `optional`: the detail can be left out */
 export const PAYMENT_MODES = [
-  { id: 'cash', mr: 'रोख', en: 'Cash', by: 'रोखीने', ref: undefined },
-  { id: 'cheque', mr: 'धनादेश', en: 'Cheque', by: 'धनादेशाने', ref: 'धनादेश क्र., बँक' },
-  { id: 'bank', mr: 'NEFT / RTGS', en: 'NEFT / RTGS', by: 'NEFT / RTGS ने', ref: 'UTR क्र.' },
-  { id: 'upi', mr: 'UPI', en: 'UPI', by: 'UPI ने', ref: 'UTR क्र.' },
+  { id: 'cash', mr: 'रोख', en: 'Cash', by: 'रोखीने', ref: undefined, optional: false },
+  { id: 'cheque', mr: 'धनादेश', en: 'Cheque', by: 'धनादेशाने', ref: 'धनादेश क्र., बँक', optional: false },
+  { id: 'bank', mr: 'NEFT / RTGS', en: 'NEFT / RTGS', by: 'NEFT / RTGS ने', ref: 'UTR क्र.', optional: true },
+  { id: 'upi', mr: 'UPI', en: 'UPI', by: 'UPI ने', ref: 'UTR क्र.', optional: true },
 ] as const;
 
 export type PaymentMode = (typeof PAYMENT_MODES)[number]['id'];
