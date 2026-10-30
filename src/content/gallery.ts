@@ -15,7 +15,7 @@ export const GALLERY: GalleryItem[] = [
   // ── Shikshan ──────────────────────────────────────────────
   {
     id: 'sh-vakrutva-2016',
-    src: '/assets/uploads/2016/07/vakrutva_spardha.jpg',
+    src: '/assets/uploads/2016/06/vakrutva_spardha.jpg',
     alt: { mr: 'वक्तृत्व स्पर्धा २०१६', en: 'Elocution Competition 2016' },
     caption: { mr: 'वार्षिक वक्तृत्व स्पर्धा', en: 'Annual elocution competition' },
     kshetra: 'shikshan',
@@ -161,7 +161,7 @@ export const GALLERY: GalleryItem[] = [
   // ── Paryavaran ────────────────────────────────────────────
   {
     id: 'pa-vruksha-2016',
-    src: '/assets/uploads/2016/07/tree_birthday.jpg',
+    src: '/assets/uploads/2016/07/विद्यार्थी.jpg',
     alt: { mr: 'वृक्षवाढदिवस', en: 'Tree Birthday Celebration' },
     caption: { mr: 'वृक्षवाढदिवस उत्सव', en: 'Tree birthday celebration' },
     kshetra: 'paryavaran',
