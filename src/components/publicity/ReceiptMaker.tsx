@@ -154,7 +154,9 @@ export default function ReceiptMaker() {
     setCanShare(Boolean(navigator.canShare?.({ files: [probe] })));
   }, []);
 
-  const fileName = `पावती-${r.serial.trim().replace(/[^\p{L}\p{N}-]+/gu, '-')}.pdf`;
+  // pavti-<name>-<receipt no>.pdf; \p{M} keeps Marathi vowel signs (पाटील, not पटल)
+  const slug = (text: string) => text.trim().replace(/[^\p{L}\p{M}\p{N}]+/gu, '-').replace(/^-|-$/g, '');
+  const fileName = `${['पावती', slug(r.name), slug(r.serial)].filter(Boolean).join('-')}.pdf`;
 
   async function makePdf(): Promise<File> {
     await document.fonts.ready;
