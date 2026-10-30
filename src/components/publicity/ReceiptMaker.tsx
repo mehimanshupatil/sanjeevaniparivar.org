@@ -5,7 +5,7 @@
 // (src/lib/receipt-sign.ts).
 import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { domToBlob } from 'modern-screenshot';
-import { CopySimpleIcon, DownloadSimpleIcon, KeyIcon, ShareNetworkIcon } from '@phosphor-icons/react';
+import { CopySimpleIcon, DownloadSimpleIcon, EyeIcon, EyeSlashIcon, KeyIcon, ShareNetworkIcon } from '@phosphor-icons/react';
 import { SiWhatsapp } from '@icons-pack/react-simple-icons';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
@@ -82,6 +82,7 @@ export default function ReceiptMaker() {
   const [signer, setSigner] = useState<Signer>();
   const [passphrase, setPassphrase] = useState('');
   const [suggested, setSuggested] = useState(false);
+  const [shown, setShown] = useState(false);
   const [remember, setRemember] = useState(true);
   const [checking, setChecking] = useState(false);
   const [keyError, setKeyError] = useState<string>();
@@ -105,7 +106,7 @@ export default function ReceiptMaker() {
       const { key, publicKey } = await deriveSigningKey(passphrase);
       const keyId = keyIdFor(publicKey, KEYS);
       if (!keyId) { setUnregistered(publicKey); return; }
-      setSigner({ key, keyId }); setPassphrase(''); setSuggested(false);
+      setSigner({ key, keyId }); setPassphrase(''); setSuggested(false); setShown(false);
       if (remember) await keyStore('readwrite', (s) => s.put({ key, keyId }, 'signer')).catch(() => {});
     } finally {
       setChecking(false);
@@ -239,17 +240,25 @@ export default function ReceiptMaker() {
               </p>
               <form className="flex flex-col gap-3 max-w-3xl" onSubmit={(e) => { e.preventDefault(); unlock(); }}>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Input
-                    type={suggested ? 'text' : 'password'} value={passphrase} aria-label="पासवर्ड" placeholder="पासवर्ड (किमान ४ शब्द)" autoComplete="off"
-                    onChange={(e) => { setPassphrase(e.target.value); setUnregistered(undefined); }}
-                  />
+                  <div className="relative flex-1">
+                    <Input
+                      type={shown ? 'text' : 'password'} value={passphrase} aria-label="पासवर्ड" placeholder="पासवर्ड (किमान ४ शब्द)" autoComplete="off" className="pr-10"
+                      onChange={(e) => { setPassphrase(e.target.value); setUnregistered(undefined); }}
+                    />
+                    <Button
+                      type="button" variant="ghost" size="icon-sm" className="absolute right-0.5 top-1/2 -translate-y-1/2"
+                      aria-label={shown ? 'पासवर्ड लपवा' : 'पासवर्ड दाखवा'} aria-pressed={shown} onClick={() => setShown((v) => !v)}
+                    >
+                      {shown ? <EyeSlashIcon /> : <EyeIcon />}
+                    </Button>
+                  </div>
                   <Button type="submit" disabled={!passphrase.trim() || checking}>{checking ? 'तपासत आहे…' : 'उघडा'}</Button>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                   <Label className="font-normal">
                     <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} /> हे उपकरण लक्षात ठेवा
                   </Label>
-                  <button type="button" className="text-primary font-semibold hover:underline" onClick={() => { setPassphrase(suggestPassphrase()); setSuggested(true); setUnregistered(undefined); }}>
+                  <button type="button" className="text-primary font-semibold hover:underline" onClick={() => { setPassphrase(suggestPassphrase()); setSuggested(true); setShown(true); setUnregistered(undefined); }}>
                     पहिल्यांदा? शब्द सुचवा
                   </button>
                 </div>
