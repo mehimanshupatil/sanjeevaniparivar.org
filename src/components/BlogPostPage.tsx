@@ -76,7 +76,7 @@ function PageContent({ post }: { post: BlogPostProps }) {
             prose-h3:text-xl prose-h3:text-gray-800
             prose-p:text-gray-700 prose-p:leading-loose prose-p:text-[1.05rem]
             prose-li:text-gray-700 prose-li:leading-loose
-            prose-img:rounded-xl prose-img:mx-auto prose-img:shadow-sm prose-img:my-8 prose-img:border prose-img:border-gray-100
+            prose-img:rounded-xl prose-img:mx-auto prose-img:max-h-[70vh] prose-img:w-auto prose-img:shadow-sm prose-img:my-8 prose-img:border prose-img:border-gray-100
             prose-blockquote:not-italic prose-blockquote:border-l-4 prose-blockquote:border-primary/60
             prose-blockquote:bg-primary/4 prose-blockquote:rounded-r-xl prose-blockquote:py-0.5
             prose-blockquote:text-gray-700
