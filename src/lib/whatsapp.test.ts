@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCsv, toCsv, normalizePhone, templateSlots, buildMessage, fillText, sendPath, optimizationsOn, apiError, type WaTemplate } from './whatsapp.ts';
+import { parseCsv, toCsv, normalizePhone, templateSlots, buildMessage, fillText, sendPath, optimizationsOn, apiError, resultIds, withDelivery, type WaTemplate } from './whatsapp.ts';
 
 test('parseCsv: quotes, escaped quotes, CRLF, BOM, blank lines, Marathi', () => {
   const csv = '﻿नाव,फोन\r\n"म्हात्रे, संदीप",98765 43210\r\n\r\n"He said ""hi""",+91 98765-43211\n';
@@ -67,4 +67,25 @@ test('fillText, sendPath, optimizationsOn, apiError', () => {
   assert.equal(apiError({}, 500), 'HTTP 500');
   assert.equal(apiError({ error: { code: 100, error_subcode: 2388339, message: 'Invalid parameter', error_user_msg: 'This API is not supported for this WhatsApp Business Account.' } }, 400),
     '#100/2388339 — Invalid parameter — This API is not supported for this WhatsApp Business Account.');
+});
+
+test('resultIds + withDelivery: read message ids back from a results CSV, fill in the latest delivery', () => {
+  const old = [
+    ['नाव', 'फोन', 'WhatsApp क्रमांक', 'स्थिती', 'message id / त्रुटी', 'पोहोच', 'पोहोच त्रुटी'],
+    ['अ', '9800000000', '919800000000', 'sent', 'wamid.A=', 'delivered', ''],
+    ['ब', '9800000001', '919800000001', 'failed', '#131026 — bad number', '', ''],
+    ['क', '9800000002', '919800000002', 'sent', 'wamid.C', ''],
+    ['ड', '', '', 'skipped', ''],
+  ];
+  assert.deepEqual(resultIds(old), { column: 4, ids: ['wamid.A=', 'wamid.C'] });
+  assert.equal(resultIds([['नाव'], ['अ']]), undefined);
+  const delivery = { 'wamid.A=': { status: 'read', error: null }, 'wamid.C': { status: 'failed', error: '#131049 — not delivered' } };
+  const updated = withDelivery(old, 4, delivery);
+  assert.deepEqual(updated[1].slice(5), ['read', '']);
+  assert.deepEqual(updated[2].slice(5), ['', '']);
+  assert.deepEqual(updated[3].slice(5), ['failed', '#131049 — not delivered']);
+  assert.deepEqual(updated[4], ['ड', '', '', 'skipped', '', '', '']);
+  // A results CSV without the delivery columns gets them added
+  const plain = withDelivery([['नाव', 'id'], ['अ', 'wamid.A=']], 1, delivery);
+  assert.deepEqual(plain, [['नाव', 'id', 'पोहोच', 'पोहोच त्रुटी'], ['अ', 'wamid.A=', 'read', '']]);
 });

@@ -172,3 +172,29 @@ export function apiError(json: unknown, status: number): string {
   const code = e.code && `#${e.code}${e.error_subcode ? `/${e.error_subcode}` : ''}`;
   return [code, e.message, e.error_user_msg, e.error_data?.details].filter(Boolean).join(' — ');
 }
+
+/** The delivery columns at the end of a results CSV */
+export const DELIVERY_HEADERS = ['पोहोच', 'पोहोच त्रुटी'];
+
+/** In a downloaded results CSV (header row first): the column of message ids and its ids */
+export function resultIds(rows: string[][]): { column: number; ids: string[] } | undefined {
+  const [header = [], ...body] = rows;
+  const column = header.findIndex((_, i) => body.some((r) => r[i]?.startsWith('wamid.')));
+  if (column < 0) return undefined;
+  return { column, ids: [...new Set(body.map((r) => r[column] ?? '').filter((id) => id.startsWith('wamid.')))] };
+}
+
+/** The results CSV with the delivery columns filled from the latest statuses (added if missing) */
+export function withDelivery(rows: string[][], column: number, delivery: Record<string, { status: string; error: string | null }>): string[][] {
+  const [header = [], ...body] = rows;
+  const found = header.indexOf(DELIVERY_HEADERS[0]);
+  const at = found < 0 ? header.length : found;
+  const head = found < 0 ? [...header, ...DELIVERY_HEADERS] : header;
+  return [head, ...body.map((r) => {
+    const row = [...r];
+    while (row.length < at + 2) row.push('');
+    const d = delivery[r[column] ?? ''];
+    if (d) { row[at] = d.status; row[at + 1] = d.error ?? ''; }
+    return row;
+  })];
+}

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn, downloadFile } from '@/lib/utils';
 import {
   GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
-  CREATIVE_FEATURES, optimizationsOn, apiError, type WaTemplate,
+  CREATIVE_FEATURES, optimizationsOn, apiError, DELIVERY_HEADERS, resultIds, withDelivery, type WaTemplate,
 } from '@/lib/whatsapp';
 import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
 
@@ -33,6 +33,23 @@ type RowStatus = { state: 'sending' } | { state: 'sent'; id: string } | { state:
 /** What the webhook Worker heard from Meta about a sent message, by message id */
 type Delivery = { status: 'sent' | 'delivered' | 'read' | 'failed'; at: number; error: string | null };
 const DELIVERY_LABEL: Record<Delivery['status'], string> = { sent: 'पाठवला', delivered: 'पोहोचला', read: 'वाचला', failed: 'पोहोचला नाही' };
+
+/** The latest delivery of these messages from the webhook Worker, 100 per request. Unknown ids are left out. */
+async function fetchDelivery(ids: string[]): Promise<Record<string, Delivery>> {
+  const found: Record<string, Delivery> = {};
+  for (let i = 0; i < ids.length; i += 100) {
+    const part = await fetch(`${WA_STATUS_URL}/status?ids=${ids.slice(i, i + 100).map(encodeURIComponent).join(',')}`)
+      .then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+    Object.assign(found, part);
+  }
+  return found;
+}
+
+/** Counts of delivered (incl. read), read and failed among these messages */
+const reachedOf = (ids: string[], delivery: Record<string, Delivery>) => ids.reduce((c, id) => {
+  const d = delivery[id]?.status;
+  return { delivered: c.delivered + Number(d === 'delivered' || d === 'read'), read: c.read + Number(d === 'read'), failed: c.failed + Number(d === 'failed') };
+}, { delivered: 0, read: 0, failed: 0 });
 
 /** Errors that will fail every message the same way: stop instead of trying the rest */
 const FATAL = new Set([190, 10, 200, 100, 132000, 132001, 132015, 132016]);
@@ -269,11 +286,8 @@ export default function WhatsappSender({ invitations }: Props) {
   /** Messages that may still change: not read and not failed */
   const open = sentIds.filter((id) => delivery[id]?.status !== 'read' && delivery[id]?.status !== 'failed');
   const checkDelivery = async () => {
-    for (let i = 0; i < open.length; i += 100) {
-      const ids = open.slice(i, i + 100).map(encodeURIComponent).join(',');
-      const found = await fetch(`${WA_STATUS_URL}/status?ids=${ids}`).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
-      setDelivery((d) => ({ ...d, ...(found as Record<string, Delivery>) }));
-    }
+    const found = await fetchDelivery(open);
+    setDelivery((d) => ({ ...d, ...found }));
   };
   useEffect(() => {
     if (!WA_STATUS_URL || !open.length || Date.now() - lastSent.current > 30 * 60_000) return;
@@ -283,19 +297,39 @@ export default function WhatsappSender({ invitations }: Props) {
   const deliveryOf = (s: RowStatus | undefined) => (s?.state === 'sent' ? delivery[s.id] : undefined);
 
   const counts = Object.values(status).reduce((c, s) => ({ ...c, [s.state]: (c[s.state] ?? 0) + 1 }), {} as Record<string, number>);
-  const reached = sentIds.reduce((c, id) => {
-    const d = delivery[id]?.status;
-    return { delivered: c.delivered + Number(d === 'delivered' || d === 'read'), read: c.read + Number(d === 'read'), failed: c.failed + Number(d === 'failed') };
-  }, { delivered: 0, read: 0, failed: 0 });
+  const reached = reachedOf(sentIds, delivery);
   const downloadResults = () => {
     if (!csv) return;
-    const rows = [[...csv.header, 'WhatsApp क्रमांक', 'स्थिती', 'message id / त्रुटी', 'पोहोच', 'पोहोच त्रुटी'], ...recipients.map((r, i) => {
+    const rows = [[...csv.header, 'WhatsApp क्रमांक', 'स्थिती', 'message id / त्रुटी', ...DELIVERY_HEADERS], ...recipients.map((r, i) => {
       const s = status[i];
       const d = deliveryOf(s);
       return [...r.row, r.phone ?? '', s?.state ?? (selected.has(i) ? 'pending' : 'skipped'), s?.state === 'sent' ? s.id : s?.state === 'failed' ? s.error : '',
         d?.status ?? '', d?.error ?? ''];
     })];
     downloadFile(new Blob(['﻿' + toCsv(rows)], { type: 'text/csv;charset=utf-8' }), csv.fileName.replace(/\.csv$/i, '') + '-results.csv');
+  };
+
+  // ── 7. An earlier send: load its results CSV again and fill in the latest delivery ──
+  const [oldResults, setOldResults] = useState<{ fileName: string; rows: string[][]; column: number; ids: string[] }>();
+  const [oldDelivery, setOldDelivery] = useState<Record<string, Delivery>>();
+  const [oldError, setOldError] = useState<string>();
+  const loadOldResults = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setOldResults(undefined); setOldDelivery(undefined); setOldError(undefined);
+    if (!file) return;
+    const rows = parseCsv(await file.text());
+    const found = resultIds(rows);
+    if (!found) { setOldError('या CSV मध्ये message id (wamid.…) नाही. पाठवल्यानंतर घेतलेली "निकाल CSV" निवडा.'); return; }
+    setOldResults({ fileName: file.name, rows, ...found });
+    setOldDelivery(await fetchDelivery(found.ids));
+  };
+  const oldReached = oldResults && oldDelivery ? reachedOf(oldResults.ids, oldDelivery) : undefined;
+  /** The columns shown: the list's own and the number, up to the "स्थिती" column of the results CSV */
+  const oldShown = oldResults ? Math.max(1, oldResults.rows[0].indexOf('स्थिती') < 0 ? oldResults.column : oldResults.rows[0].indexOf('स्थिती')) : 0;
+  const downloadOldResults = () => {
+    if (!oldResults || !oldDelivery) return;
+    downloadFile(new Blob(['\ufeff' + toCsv(withDelivery(oldResults.rows, oldResults.column, oldDelivery))], { type: 'text/csv;charset=utf-8' }),
+      oldResults.fileName.replace(/\.csv$/i, '') + '-updated.csv');
   };
 
   const columnItems = (csv?.header ?? []).map((h, i) => ({ value: String(i), label: h || `स्तंभ ${i + 1}` }));
@@ -536,6 +570,57 @@ export default function WhatsappSender({ invitations }: Props) {
             अयशस्वी झालेल्यांना पुन्हा पाठवण्यासाठी हेच बटण पुन्हा दाबा.
             पान बंद केल्यास स्थिती जाते; आधी निकाल CSV घ्या.
           </p>
+        </section>
+      )}
+
+      {/* 7 */}
+      {WA_STATUS_URL && (
+        <section className={section}>
+          <h2 className="text-lg font-bold text-gray-900">जुना निकाल तपासा</h2>
+          <p className="text-sm text-gray-600">
+            आधी पाठवलेल्या संदेशांची आताची स्थिती पाहण्यासाठी त्या वेळी घेतलेली "निकाल CSV" निवडा (पाठवल्यापासून ३० दिवसांपर्यंत). फाइल या ब्राउझरमध्येच राहते; फक्त message id तपासले जातात.
+          </p>
+          <Input type="file" accept=".csv,text/csv" onChange={loadOldResults} className="sm:w-[420px]" />
+          {oldError && <p className="text-sm text-red-700">{oldError}</p>}
+          {oldResults && !oldDelivery && <p className="text-sm text-gray-600">तपासत आहे…</p>}
+          {oldResults && oldDelivery && oldReached && (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm text-gray-700">
+                  पाठवले {oldResults.ids.length} · पोहोचले {oldReached.delivered} · वाचले {oldReached.read} · पोहोचले नाहीत {oldReached.failed}
+                </p>
+                <Button variant="outline" onClick={downloadOldResults}><DownloadSimpleIcon />अद्ययावत CSV</Button>
+              </div>
+              <div className="max-h-[420px] overflow-auto rounded-xl border border-gray-100">
+                <table className="w-full text-left text-sm">
+                  <thead className="sticky top-0 bg-gray-50 text-xs text-gray-500">
+                    <tr>
+                      {oldResults.rows[0].slice(0, oldShown).map((h, i) => <th key={i} className="p-2 font-semibold">{h}</th>)}
+                      <th className="p-2 font-semibold">पोहोच</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {oldResults.rows.slice(1).map((r, i) => {
+                      const id = r[oldResults.column] ?? '';
+                      const d = oldDelivery[id];
+                      return (
+                        <tr key={i} className={cn('border-t border-gray-100', !id.startsWith('wamid.') && 'text-gray-400')}>
+                          {r.slice(0, oldShown).map((c, j) => <td key={j} className="p-2">{c}</td>)}
+                          <td className="p-2 text-xs">
+                            {!id.startsWith('wamid.') ? 'पाठवला नाही'
+                              : d?.status === 'failed' ? <span className="text-red-700">{DELIVERY_LABEL.failed}: {d.error}</span>
+                              : d ? <span className="text-secondary">{DELIVERY_LABEL[d.status]}</span>
+                              : <span className="text-gray-500">माहिती नाही</span>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-gray-500">"माहिती नाही": WhatsApp कडून अजून स्थिती आली नाही, किंवा ३० दिवसांपेक्षा जुना संदेश.</p>
+            </>
+          )}
         </section>
       )}
     </div>
