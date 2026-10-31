@@ -65,4 +65,6 @@ test('fillText, sendPath, optimizationsOn, apiError', () => {
   assert.deepEqual(optimizationsOn(undefined), []);
   assert.equal(apiError({ error: { code: 131030, message: 'Recipient not in allowed list', error_data: { details: 'add it' } } }, 400), '#131030 — Recipient not in allowed list — add it');
   assert.equal(apiError({}, 500), 'HTTP 500');
+  assert.equal(apiError({ error: { code: 100, error_subcode: 2388339, message: 'Invalid parameter', error_user_msg: 'This API is not supported for this WhatsApp Business Account.' } }, 400),
+    '#100/2388339 — Invalid parameter — This API is not supported for this WhatsApp Business Account.');
 });

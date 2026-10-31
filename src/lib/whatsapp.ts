@@ -7,7 +7,7 @@ export const GRAPH = 'https://graph.facebook.com/v26.0';
 /** The trust's WhatsApp sending number and account. Not secret (useless without a token);
  *  the access token is never written here, only typed on the page. */
 export const WA_PHONE_NUMBER_ID = '1318982904641019';
-export const WA_BUSINESS_ACCOUNT_ID = '1526133689313986';
+export const WA_BUSINESS_ACCOUNT_ID = '2539900846429599';
 
 /** A template as returned by GET /<WABA_ID>/message_templates */
 export interface WaTemplate {
@@ -163,7 +163,8 @@ export function optimizationsOn(spec: unknown): string[] {
 
 /** A readable message from a Graph API error response */
 export function apiError(json: unknown, status: number): string {
-  const e = (json as { error?: { message?: string; code?: number; error_data?: { details?: string } } })?.error;
+  const e = (json as { error?: { message?: string; code?: number; error_subcode?: number; error_user_msg?: string; error_data?: { details?: string } } })?.error;
   if (!e) return `HTTP ${status}`;
-  return [e.code && `#${e.code}`, e.message, e.error_data?.details].filter(Boolean).join(' — ');
+  const code = e.code && `#${e.code}${e.error_subcode ? `/${e.error_subcode}` : ''}`;
+  return [code, e.message, e.error_user_msg, e.error_data?.details].filter(Boolean).join(' — ');
 }

@@ -41,7 +41,8 @@ async function graph<T>(path: string, token: string, body?: object): Promise<T> 
     body: body ? JSON.stringify(body) : undefined,
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw Object.assign(new Error(apiError(json, res.status)), { code: json?.error?.code as number | undefined });
+  if (!res.ok) throw Object.assign(new Error(apiError(json, res.status)),
+    { code: json?.error?.code as number | undefined, subcode: json?.error?.error_subcode as number | undefined });
   return json as T;
 }
 
@@ -107,14 +108,41 @@ export default function WhatsappSender({ invitations }: Props) {
       setAccount(`${phone.verified_name} · ${phone.display_phone_number}${phone.quality_rating ? ` · quality ${phone.quality_rating}` : ''}`);
       const list = await graph<{ data: WaTemplate[] }>(
         `${wabaId}/message_templates?fields=id,name,language,status,category,parameter_format,components&limit=200`, settings.token)
-        .catch(async (e: Error & { code?: number }) => {
-          // #100 "nonexisting field (message_templates)": the ID is not a WhatsApp Business Account
-          throw e.code === 100 ? new Error(await explainWabaId(wabaId)) : e;
+        .catch(async (e: Error & { code?: number; subcode?: number }) => {
+          // The phone number's health status names the WhatsApp account it belongs to: offer it if it's another one
+          const health = await graph<{ health_status?: { entities?: { entity_type: string; id: string }[] } }>(
+            `${settings.phoneNumberId}?fields=health_status`, settings.token).catch(() => undefined);
+          const own = health?.health_status?.entities?.find((x) => x.entity_type === 'WABA')?.id;
+          if (own && own !== wabaId) {
+            setWabaChoices([{ id: own, name: 'या फोन नंबरचे WhatsApp खाते' }]);
+            throw new Error(`हा फोन नंबर WhatsApp खाते ${own} चा आहे, ${wabaId} चा नाही. खालील खाते निवडा.`);
+          }
+          // #100 "nonexisting field (message_templates)": the ID is not a WhatsApp Business Account.
+          // With a subcode (e.g. 2388339 "not supported for this WhatsApp Business Account") Meta's own message says more.
+          throw e.code === 100 && !e.subcode ? new Error(await explainWabaId(wabaId)) : e;
         });
       setTemplates(list.data.filter((t) => t.status === 'APPROVED'));
     } catch (e) {
       setError((e as Error).message);
     } finally { setBusy(false); }
+  };
+
+  /** Raw answers from Meta about the token, the account and the number, to see why a call fails */
+  const [debug, setDebug] = useState<string>();
+  const runDebug = async () => {
+    setDebug('…');
+    const checks: [string, string][] = [
+      ['Token (scopes, app, expiry)', `debug_token?input_token=${encodeURIComponent(settings.token)}`],
+      ['WhatsApp account', `${settings.wabaId}?fields=id,name,account_review_status,ownership_type,business_verification_status,health_status`],
+      ['Phone number', `${settings.phoneNumberId}?fields=display_phone_number,verified_name,platform_type,status,code_verification_status,quality_rating,health_status`],
+      ['Account’s phone numbers', `${settings.wabaId}/phone_numbers?fields=id,display_phone_number,platform_type`],
+      ['Apps subscribed to the account', `${settings.wabaId}/subscribed_apps`],
+      ['ID type', `${settings.wabaId}?metadata=1&fields=id`],
+    ];
+    const results = await Promise.all(checks.map(([label, path]) =>
+      graph<unknown>(path, settings.token).then((r) => JSON.stringify(r, null, 2), (e: Error) => `✗ ${e.message}`)
+        .then((out) => `## ${label}\nGET ${path.replace(settings.token, '<token>')}\n${out}`)));
+    setDebug(results.join('\n\n'));
   };
 
   // Marketing templates: Meta may alter the image and text unless its optimizations are off
@@ -276,6 +304,7 @@ export default function WhatsappSender({ invitations }: Props) {
           <Button onClick={() => connect()} disabled={!ready || busy}>जोडा व साचे आणा</Button>
           <Button variant="outline" onClick={save} disabled={!ready}>या उपकरणावर साठवा</Button>
           {saved && <Button variant="ghost" onClick={forget}>विसरा</Button>}
+          <Button variant="ghost" onClick={runDebug} disabled={!ready}>तपासणी (debug)</Button>
           {account && <span className="flex items-center gap-1.5 text-sm text-secondary"><CheckCircleIcon className="size-4" />{account}</span>}
         </div>
         {wabaChoices.length > 0 && (
@@ -286,6 +315,9 @@ export default function WhatsappSender({ invitations }: Props) {
               </Button>
             ))}
           </div>
+        )}
+        {debug && (
+          <pre className="max-h-96 overflow-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-700 whitespace-pre-wrap break-all">{debug}</pre>
         )}
       </section>
 
