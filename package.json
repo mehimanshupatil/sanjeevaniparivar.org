@@ -12,7 +12,7 @@
     "publicity": "node scripts/render-publicity.mjs",
     "photos": "node scripts/photos.mjs",
     "receipt-key": "node scripts/receipt-key.mjs",
-    "test": "node --test \"src/**/*.test.ts\"",
+    "test": "node --test \"src/**/*.test.ts\" \"workers/**/src/*.test.ts\"",
     "check": "astro check"
   },
   "dependencies": {

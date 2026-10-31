@@ -1,0 +1,18 @@
+// Cloudflare Worker that receives WhatsApp message statuses. Setup: README.md
+{
+  "name": "sp-whatsapp-webhook",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sp-whatsapp",
+      // From `wrangler d1 create sp-whatsapp`
+      "database_id": "f1dc6f56-acbc-4ffe-97fe-244fb4da0d6c",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Daily clean-up of statuses older than 30 days
+  "triggers": { "crons": ["0 3 * * *"] },
+  "observability": { "enabled": true }
+}

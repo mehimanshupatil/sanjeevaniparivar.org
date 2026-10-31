@@ -9,6 +9,10 @@ export const GRAPH = 'https://graph.facebook.com/v26.0';
 export const WA_PHONE_NUMBER_ID = '1318982904641019';
 export const WA_BUSINESS_ACCOUNT_ID = '2539900846429599';
 
+/** The webhook Worker that collects delivery reports (workers/whatsapp-webhook/README.md).
+ *  Empty until it is deployed: the page then shows only "sent". */
+export const WA_STATUS_URL = 'https://sp-whatsapp-webhook.mailhimanshupatil.workers.dev';
+
 /** A template as returned by GET /<WABA_ID>/message_templates */
 export interface WaTemplate {
   id: string;

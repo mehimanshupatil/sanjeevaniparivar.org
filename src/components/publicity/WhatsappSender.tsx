@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn, downloadFile } from '@/lib/utils';
 import {
-  GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
+  GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
   CREATIVE_FEATURES, optimizationsOn, apiError, type WaTemplate,
 } from '@/lib/whatsapp';
 import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
@@ -30,6 +30,9 @@ const EMPTY: Settings = { token: '', phoneNumberId: WA_PHONE_NUMBER_ID, wabaId: 
 /** A column of the CSV, text typed once for everyone, or a detail of the chosen invitation */
 type Source = { column: number } | { text: string } | { field: keyof ApiFields };
 type RowStatus = { state: 'sending' } | { state: 'sent'; id: string } | { state: 'failed'; error: string };
+/** What the webhook Worker heard from Meta about a sent message, by message id */
+type Delivery = { status: 'sent' | 'delivered' | 'read' | 'failed'; at: number; error: string | null };
+const DELIVERY_LABEL: Record<Delivery['status'], string> = { sent: 'पाठवला', delivered: 'पोहोचला', read: 'वाचला', failed: 'पोहोचला नाही' };
 
 /** Errors that will fail every message the same way: stop instead of trying the rest */
 const FATAL = new Set([190, 10, 200, 100, 132000, 132001, 132015, 132016]);
@@ -248,6 +251,7 @@ export default function WhatsappSender({ invitations }: Props) {
         const res = await graph<{ messages?: { id: string }[] }>(
           `${settings.phoneNumberId}/${sendPath(template)}`, settings.token, buildMessage(template, r.phone!, valuesFor(r.row), mediaLink));
         setStatus((s) => ({ ...s, [i]: { state: 'sent', id: res.messages?.[0]?.id ?? '' } }));
+        lastSent.current = Date.now();
       } catch (e) {
         const err = e as Error & { code?: number };
         setStatus((s) => ({ ...s, [i]: { state: 'failed', error: err.message } }));
@@ -257,12 +261,39 @@ export default function WhatsappSender({ invitations }: Props) {
     setSending(false);
   };
 
+  // ── 6. Delivery: Meta reports it to the webhook Worker, asked every 15 s for 30 min after the last send ──
+  const [delivery, setDelivery] = useState<Record<string, Delivery>>({});
+  const [checks, setChecks] = useState(0);
+  const lastSent = useRef(0);
+  const sentIds = Object.values(status).flatMap((s) => (s.state === 'sent' && s.id ? [s.id] : []));
+  /** Messages that may still change: not read and not failed */
+  const open = sentIds.filter((id) => delivery[id]?.status !== 'read' && delivery[id]?.status !== 'failed');
+  const checkDelivery = async () => {
+    for (let i = 0; i < open.length; i += 100) {
+      const ids = open.slice(i, i + 100).map(encodeURIComponent).join(',');
+      const found = await fetch(`${WA_STATUS_URL}/status?ids=${ids}`).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+      setDelivery((d) => ({ ...d, ...(found as Record<string, Delivery>) }));
+    }
+  };
+  useEffect(() => {
+    if (!WA_STATUS_URL || !open.length || Date.now() - lastSent.current > 30 * 60_000) return;
+    const t = setTimeout(() => { checkDelivery().finally(() => setChecks((n) => n + 1)); }, 15_000);
+    return () => clearTimeout(t);
+  }, [open.length, checks]);
+  const deliveryOf = (s: RowStatus | undefined) => (s?.state === 'sent' ? delivery[s.id] : undefined);
+
   const counts = Object.values(status).reduce((c, s) => ({ ...c, [s.state]: (c[s.state] ?? 0) + 1 }), {} as Record<string, number>);
+  const reached = sentIds.reduce((c, id) => {
+    const d = delivery[id]?.status;
+    return { delivered: c.delivered + Number(d === 'delivered' || d === 'read'), read: c.read + Number(d === 'read'), failed: c.failed + Number(d === 'failed') };
+  }, { delivered: 0, read: 0, failed: 0 });
   const downloadResults = () => {
     if (!csv) return;
-    const rows = [[...csv.header, 'WhatsApp क्रमांक', 'स्थिती', 'message id / त्रुटी'], ...recipients.map((r, i) => {
+    const rows = [[...csv.header, 'WhatsApp क्रमांक', 'स्थिती', 'message id / त्रुटी', 'पोहोच', 'पोहोच त्रुटी'], ...recipients.map((r, i) => {
       const s = status[i];
-      return [...r.row, r.phone ?? '', s?.state ?? (selected.has(i) ? 'pending' : 'skipped'), s?.state === 'sent' ? s.id : s?.state === 'failed' ? s.error : ''];
+      const d = deliveryOf(s);
+      return [...r.row, r.phone ?? '', s?.state ?? (selected.has(i) ? 'pending' : 'skipped'), s?.state === 'sent' ? s.id : s?.state === 'failed' ? s.error : '',
+        d?.status ?? '', d?.error ?? ''];
     })];
     downloadFile(new Blob(['﻿' + toCsv(rows)], { type: 'text/csv;charset=utf-8' }), csv.fileName.replace(/\.csv$/i, '') + '-results.csv');
   };
@@ -395,6 +426,7 @@ export default function WhatsappSender({ invitations }: Props) {
                   <tbody>
                     {recipients.map((r, i) => {
                       const s = status[i];
+                      const d = deliveryOf(s);
                       return (
                         <tr key={i} className={cn('border-t border-gray-100', !r.phone && 'text-gray-400')}>
                           <td className="p-2"><Checkbox checked={selected.has(i)} disabled={!r.phone || sending} onCheckedChange={(on) => toggle(i, on)} /></td>
@@ -402,7 +434,9 @@ export default function WhatsappSender({ invitations }: Props) {
                           <td className="p-2 font-mono text-xs">{r.phone ? `+${r.phone}` : 'चुकीचा क्रमांक'}{r.duplicate && ' (पुन्हा)'}</td>
                           <td className="p-2 text-xs">
                             {s?.state === 'sending' && 'पाठवत आहे…'}
-                            {s?.state === 'sent' && <span className="text-secondary">पाठवला</span>}
+                            {s?.state === 'sent' && (d?.status === 'failed'
+                              ? <span className="text-red-700">{DELIVERY_LABEL.failed}: {d.error}</span>
+                              : <span className="text-secondary">{DELIVERY_LABEL[d?.status ?? 'sent']}</span>)}
                             {s?.state === 'failed' && <span className="text-red-700">{s.error}</span>}
                           </td>
                         </tr>
@@ -489,10 +523,17 @@ export default function WhatsappSender({ invitations }: Props) {
           {Object.keys(status).length > 0 && (
             <p className="text-sm text-gray-700">
               पाठवले {counts.sent ?? 0} · अयशस्वी {counts.failed ?? 0}{sending && ' · चालू आहे…'}
+              {WA_STATUS_URL && sentIds.length > 0 && ` · पोहोचले ${reached.delivered} · वाचले ${reached.read} · पोहोचले नाहीत ${reached.failed}`}
+              {WA_STATUS_URL && open.length > 0 && !sending && (
+                <Button variant="link" size="sm" onClick={() => { lastSent.current = Date.now(); checkDelivery(); }}>पोहोच पुन्हा तपासा</Button>
+              )}
             </p>
           )}
           <p className="text-xs text-gray-500">
-            "पाठवले" म्हणजे WhatsApp ने संदेश स्वीकारला; पोहोचला / वाचला हे इथे दिसत नाही. अयशस्वी झालेल्यांना पुन्हा पाठवण्यासाठी हेच बटण पुन्हा दाबा.
+            {WA_STATUS_URL
+              ? '"पाठवले" म्हणजे WhatsApp ने संदेश स्वीकारला; पोहोचला / वाचला / पोहोचला नाही हे काही सेकंदांत प्रत्येक ओळीत दिसते (वाचल्याची खूण बंद असल्यास "पोहोचला" वरच थांबते). '
+              : '"पाठवले" म्हणजे WhatsApp ने संदेश स्वीकारला; पोहोचला / वाचला हे इथे दिसत नाही. '}
+            अयशस्वी झालेल्यांना पुन्हा पाठवण्यासाठी हेच बटण पुन्हा दाबा.
             पान बंद केल्यास स्थिती जाते; आधी निकाल CSV घ्या.
           </p>
         </section>
