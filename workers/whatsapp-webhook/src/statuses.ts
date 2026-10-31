@@ -51,3 +51,16 @@ export function statusIds(param: string | null): string[] {
   const ids = (param ?? '').split(',').map((s) => s.trim()).filter((s) => /^wamid\.[A-Za-z0-9_=+/-]{1,200}$/.test(s));
   return [...new Set(ids)].slice(0, MAX_IDS);
 }
+
+interface MetaIncoming { value?: { metadata?: { phone_number_id?: string }; messages?: { from?: string; type?: string }[] } }
+
+/** Who wrote to the trust's number, to answer with the auto-reply. Emoji reactions don't count. */
+export function parseIncoming(body: unknown): { phoneNumberId: string; from: string }[] {
+  return ((body as { entry?: { changes?: (MetaIncoming & { field?: string })[] }[] })?.entry ?? [])
+    .flatMap((e) => e.changes ?? [])
+    .filter((c) => c.field === 'messages')
+    .flatMap((c) => (c.value?.messages ?? []).flatMap((m) => {
+      const phoneNumberId = c.value?.metadata?.phone_number_id;
+      return phoneNumberId && m.from && m.type !== 'reaction' ? [{ phoneNumberId, from: m.from }] : [];
+    }));
+}

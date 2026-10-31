@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { parseStatuses, validSignature, statusIds, MAX_IDS } from './statuses.ts';
+import { parseStatuses, parseIncoming, validSignature, statusIds, MAX_IDS } from './statuses.ts';
 
 const body = {
   object: 'whatsapp_business_account',
@@ -11,13 +11,14 @@ const body = {
       field: 'messages',
       value: {
         messaging_product: 'whatsapp',
+        metadata: { phone_number_id: '1318982904641019' },
         statuses: [
           { id: 'wamid.A', status: 'delivered', timestamp: '1793030000', recipient_id: '919800000000' },
           { id: 'wamid.B', status: 'failed', timestamp: '1793030001', recipient_id: '919800000001',
             errors: [{ code: 131049, title: 'This message was not delivered to maintain healthy ecosystem engagement.', error_data: { details: 'In order to maintain…' } }] },
           { id: 'wamid.C', status: 'deleted', timestamp: '1793030002' },
         ],
-        messages: [{ id: 'wamid.IN', from: '919800000000', text: { body: 'hi' } }],
+        messages: [{ id: 'wamid.IN', from: '919800000000', type: 'text', text: { body: 'hi' } }, { id: 'wamid.R', from: '919800000002', type: 'reaction' }],
       },
     }, { field: 'account_update', value: { statuses: [{ id: 'wamid.X', status: 'sent' }] } }],
   }],
@@ -48,4 +49,9 @@ test('statusIds: WhatsApp ids, no repeats, capped', () => {
   assert.deepEqual(statusIds('wamid.HBgM=,wamid.HBgM=, wamid.b-_+/ ,x,wamid.,wamid.a;drop'), ['wamid.HBgM=', 'wamid.b-_+/']);
   assert.deepEqual(statusIds(null), []);
   assert.equal(statusIds(Array.from({ length: 150 }, (_, i) => `wamid.${i}`).join(',')).length, MAX_IDS);
+});
+
+test('parseIncoming: senders of messages, not reactions', () => {
+  assert.deepEqual(parseIncoming(body), [{ phoneNumberId: '1318982904641019', from: '919800000000' }]);
+  assert.deepEqual(parseIncoming({}), []);
 });
