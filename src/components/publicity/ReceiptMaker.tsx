@@ -4,7 +4,6 @@
 // made only with the issuer's passphrase, whose key signs the QR that /verify/ checks
 // (src/lib/receipt-sign.ts).
 import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
-import { domToBlob } from 'modern-screenshot';
 import { CopySimpleIcon, DownloadSimpleIcon, EyeIcon, EyeSlashIcon, KeyIcon, ShareNetworkIcon } from '@phosphor-icons/react';
 import { SiWhatsapp } from '@icons-pack/react-simple-icons';
 import { QRCodeSVG } from 'qrcode.react';
@@ -14,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { downloadFile } from '@/lib/utils';
+import { snapshot } from '@/lib/screenshot';
 import { amountWordsMr, formatRupees, MAX_AMOUNT } from '@/lib/amount';
 import { financialYearMr, numericDateMr } from '@/lib/marathi';
 import { jpegToPdf } from '@/lib/pdf';
@@ -159,8 +159,7 @@ export default function ReceiptMaker() {
   const fileName = `${['पावती', slug(r.name), slug(r.serial)].filter(Boolean).join('-')}.pdf`;
 
   async function makePdf(): Promise<File> {
-    await document.fonts.ready;
-    const jpeg = await domToBlob(sheet.current!, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff' });
+    const jpeg = await snapshot(sheet.current!, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff' });
     if (!jpeg) throw new Error('पावतीचे चित्र तयार झाले नाही');
     // Elements marked data-link are clickable in the PDF: the QR (a donor who opens the PDF on their
     // phone can't scan their own screen) and the website

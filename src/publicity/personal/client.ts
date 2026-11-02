@@ -1,6 +1,6 @@
 // Runs inside the personal invitation card page, which the edition's page shows in an iframe.
 // The parent posts the guest's name in and asks for the PNG; the card is re-fitted for each name.
-import { domToBlob } from 'modern-screenshot';
+import { snapshot } from '../../lib/screenshot';
 import { fitText, fillFrame } from '../fit';
 
 export type PersonalMessage =
@@ -25,8 +25,7 @@ window.addEventListener('message', async (e: MessageEvent<PersonalMessage>) => {
   if (e.data?.kind === 'personal-guest') {
     await setGuest(e.data.name);
   } else if (e.data?.kind === 'personal-export') {
-    await document.fonts.ready;
-    const blob = await domToBlob(document.getElementById('frame')!, { type: 'image/png', scale: 1 });
+    const blob = await snapshot(document.getElementById('frame')!, { type: 'image/png', scale: 1 });
     if (blob) reply({ kind: 'personal-png', id: e.data.id, blob });
   }
 });
