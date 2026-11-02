@@ -46,3 +46,42 @@ export async function snapshot(node: HTMLElement, options: Options): Promise<Blo
     for (const el of marked) el.removeAttribute(MARK);
   }
 }
+
+/** Each line of text inside root, with its box as fractions of root's: for a PDF's invisible text layer */
+export function textLines(root: HTMLElement): { x: number; y: number; w: number; h: number; text: string }[] {
+  const page = root.getBoundingClientRect();
+  const lines: { x: number; y: number; w: number; h: number; text: string }[] = [];
+  const range = document.createRange();
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const text = node.textContent ?? '';
+    let line: { text: string; left: number; top: number; right: number; bottom: number } | undefined;
+    const flush = () => {
+      if (line?.text.trim()) {
+        lines.push({
+          x: (line.left - page.left) / page.width, y: (line.top - page.top) / page.height,
+          w: (line.right - line.left) / page.width, h: (line.bottom - line.top) / page.height,
+          text: line.text.replace(/\s+/g, ' ').trim(),
+        });
+      }
+      line = undefined;
+    };
+    // Word by word, so text that wraps becomes one entry per line
+    for (const m of text.matchAll(/\S+\s*/g)) {
+      range.setStart(node, m.index);
+      range.setEnd(node, m.index + m[0].trimEnd().length);
+      const r = range.getBoundingClientRect();
+      if (!r.width || !r.height) continue;
+      if (line && Math.abs((r.top + r.bottom) / 2 - (line.top + line.bottom) / 2) < r.height / 2) {
+        line.text += m[0];
+        line.left = Math.min(line.left, r.left); line.right = Math.max(line.right, r.right);
+        line.top = Math.min(line.top, r.top); line.bottom = Math.max(line.bottom, r.bottom);
+      } else {
+        flush();
+        line = { text: m[0], left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+      }
+    }
+    flush();
+  }
+  return lines;
+}

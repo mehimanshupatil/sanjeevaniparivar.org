@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { downloadFile } from '@/lib/utils';
-import { snapshot } from '@/lib/screenshot';
+import { snapshot, textLines } from '@/lib/screenshot';
 import { amountWordsMr, formatRupees, MAX_AMOUNT } from '@/lib/amount';
 import { financialYearMr, numericDateMr } from '@/lib/marathi';
 import { jpegToPdf } from '@/lib/pdf';
@@ -168,7 +168,8 @@ export default function ReceiptMaker() {
       const b = el.getBoundingClientRect();
       return { x: (b.left - page.left) / page.width, y: (b.top - page.top) / page.height, w: b.width / page.width, h: b.height / page.height, url: el.dataset.link! };
     });
-    const pdf = jpegToPdf(new Uint8Array(await jpeg.arrayBuffer()), A5_WIDTH_PT, links);
+    // The receipt's text, invisible over the picture, so it can be selected and copied
+    const pdf = jpegToPdf(new Uint8Array(await jpeg.arrayBuffer()), A5_WIDTH_PT, links, textLines(sheet.current!));
     return new File([pdf as BlobPart], fileName, { type: 'application/pdf' });
   }
 
