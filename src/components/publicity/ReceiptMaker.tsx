@@ -2,9 +2,12 @@
 // laid out like it, with the same serial number typed from the receipt book. Made in the browser as
 // a PDF; the donor's details are never stored or sent anywhere. The page is public, so a receipt is
 // made only with the issuer's passphrase, whose key signs the QR that /verify/ checks
-// (src/lib/receipt-sign.ts).
-import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
-import { CopySimpleIcon, DownloadSimpleIcon, EyeIcon, EyeSlashIcon, KeyIcon, ShareNetworkIcon } from '@phosphor-icons/react';
+// (src/lib/receipt-sign.ts). Many receipts at once come from a CSV: a print PDF (two per A4) and a
+// ZIP of one PDF per donor (src/lib/receipt-csv.ts).
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react';
+import { flushSync } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { CopySimpleIcon, DownloadSimpleIcon, EyeIcon, EyeSlashIcon, FileZipIcon, KeyIcon, PrinterIcon, ShareNetworkIcon } from '@phosphor-icons/react';
 import { SiWhatsapp } from '@icons-pack/react-simple-icons';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
@@ -12,11 +15,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { downloadFile } from '@/lib/utils';
+import { cn, downloadFile } from '@/lib/utils';
 import { snapshot, textLines } from '@/lib/screenshot';
-import { amountWordsMr, formatRupees, MAX_AMOUNT } from '@/lib/amount';
+import { amountWordsMr, formatRupees } from '@/lib/amount';
 import { financialYearMr, numericDateMr } from '@/lib/marathi';
-import { jpegToPdf } from '@/lib/pdf';
+import { jpegSize, jpegToPdf, pagesToPdf, type PdfLink, type PdfText } from '@/lib/pdf';
+import { parseCsv, toCsv } from '@/lib/whatsapp';
+import { zip } from '@/lib/zip';
+import {
+  amountOf, parseReceiptCsv, receiptFileName, receiptMissing, signedFields, RECEIPT_CSV_TEMPLATE,
+  type Receipt as ReceiptFields, type ReceiptRow, type ReceiptRules,
+} from '@/lib/receipt-csv';
 import { deriveSigningKey, keyIdFor, passphraseOk, signReceipt, type PublicKeys } from '@/lib/receipt-sign';
 import { suggestPassphrase } from '@/lib/passphrase';
 import { DEFAULT_PURPOSE, PAYMENT_MODES, RECEIPT_PROGRAMMES, RECEIPT_TITLES, RECEIPT_TRUST, type PaymentMode } from '@/content/receipt';
@@ -29,19 +38,12 @@ const OTHER = '__other';
 const VERIFY_URL = `https://${RECEIPT_TRUST.website}/verify/#`;
 /** A5 landscape width in points, like the paper receipt */
 const A5_WIDTH_PT = 595.28;
+/** A4 portrait in points, for printing two receipts a page, each 200 mm wide */
+const A4 = { width: 595.28, height: 841.89 };
+const PRINT_WIDTH_PT = 566.93;
 
-interface Receipt {
-  serial: string;
-  date: string;
-  title: string;
-  name: string;
-  village: string;
-  amount: string;
-  programme: string;
-  purpose: string;
-  mode: PaymentMode;
-  reference: string;
-}
+type Receipt = ReceiptFields<PaymentMode>;
+const RULES: ReceiptRules = { titles: RECEIPT_TITLES, modes: PAYMENT_MODES, programme: KNOWN_PROGRAMMES[0], purpose: DEFAULT_PURPOSE };
 
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 const EMPTY = (): Receipt => ({
@@ -66,6 +68,21 @@ function keyStore<T>(mode: IDBTransactionMode, run: (s: IDBObjectStore) => IDBRe
 
 const section = 'rounded-2xl bg-white border border-gray-100 p-4 sm:p-6 flex flex-col gap-4';
 
+/** A receipt on the page as a JPEG, with its clickable areas and its text for the PDF */
+async function receiptPicture(el: HTMLElement): Promise<{ jpeg: Uint8Array; links: PdfLink[]; texts: PdfText[] }> {
+  const jpeg = await snapshot(el, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff' });
+  if (!jpeg) throw new Error('पावतीचे चित्र तयार झाले नाही');
+  // Elements marked data-link are clickable in the PDF: the QR (a donor who opens the PDF on their
+  // phone can't scan their own screen) and the website
+  const page = el.getBoundingClientRect();
+  const links = [...el.querySelectorAll<HTMLElement | SVGElement>('[data-link]')].map((a) => {
+    const b = a.getBoundingClientRect();
+    return { x: (b.left - page.left) / page.width, y: (b.top - page.top) / page.height, w: b.width / page.width, h: b.height / page.height, url: a.dataset.link! };
+  });
+  // The receipt's text, invisible over the picture, so it can be selected and copied
+  return { jpeg: new Uint8Array(await jpeg.arrayBuffer()), links, texts: textLines(el) };
+}
+
 export default function ReceiptMaker() {
   const [r, setR] = useState<Receipt>(EMPTY);
   const set = <K extends keyof Receipt>(k: K) => (v: Receipt[K]) => setR((x) => ({ ...x, [k]: v }));
@@ -73,16 +90,8 @@ export default function ReceiptMaker() {
   /** Typing a programme by hand ("इतर…"), or picking one from the list */
   const [otherProgramme, setOtherProgramme] = useState(false);
 
-  const amount = Number(r.amount);
-  const amountOk = Number.isInteger(amount) && amount >= 1 && amount <= MAX_AMOUNT;
-  const missing = [
-    !r.serial.trim() && 'क्रमांक',
-    !r.date && 'दिनांक',
-    !r.name.trim() && 'नाव',
-    !amountOk && 'रक्कम (पूर्ण रुपये)',
-    !r.programme.trim() && 'कार्यक्रम',
-    mode.ref && !mode.optional && !r.reference.trim() && mode.ref,
-  ].filter(Boolean) as string[];
+  const amount = amountOf(r);
+  const missing = receiptMissing(r, PAYMENT_MODES);
 
   // ── Signing key, made from the issuer's passphrase ──
   const [signer, setSigner] = useState<Signer>();
@@ -137,10 +146,7 @@ export default function ReceiptMaker() {
     setToken(undefined);
     if (!signer || missing.length) return;
     let live = true;
-    signReceipt(signer.key, signer.keyId, {
-      serial: r.serial.trim(), date: r.date, amount, name: `${r.title} ${r.name.trim()}`, village: r.village.trim(), mode: r.mode,
-      reference: mode.ref ? r.reference.trim() : '', programme: r.programme.trim(), purpose: r.purpose.trim(),
-    }).then((t) => live && setToken(t));
+    signReceipt(signer.key, signer.keyId, signedFields(r, PAYMENT_MODES)).then((t) => live && setToken(t));
     return () => { live = false; };
   }, [signer, r]);
 
@@ -154,23 +160,11 @@ export default function ReceiptMaker() {
     setCanShare(Boolean(navigator.canShare?.({ files: [probe] })));
   }, []);
 
-  // pavti-<name>-<receipt no>.pdf; \p{M} keeps Marathi vowel signs (पाटील, not पटल)
-  const slug = (text: string) => text.trim().replace(/[^\p{L}\p{M}\p{N}]+/gu, '-').replace(/^-|-$/g, '');
-  const fileName = `${['पावती', slug(r.name), slug(r.serial)].filter(Boolean).join('-')}.pdf`;
+  const fileName = receiptFileName(r);
 
   async function makePdf(): Promise<File> {
-    const jpeg = await snapshot(sheet.current!, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff' });
-    if (!jpeg) throw new Error('पावतीचे चित्र तयार झाले नाही');
-    // Elements marked data-link are clickable in the PDF: the QR (a donor who opens the PDF on their
-    // phone can't scan their own screen) and the website
-    const page = sheet.current!.getBoundingClientRect();
-    const links = [...sheet.current!.querySelectorAll<HTMLElement | SVGElement>('[data-link]')].map((el) => {
-      const b = el.getBoundingClientRect();
-      return { x: (b.left - page.left) / page.width, y: (b.top - page.top) / page.height, w: b.width / page.width, h: b.height / page.height, url: el.dataset.link! };
-    });
-    // The receipt's text, invisible over the picture, so it can be selected and copied
-    const pdf = jpegToPdf(new Uint8Array(await jpeg.arrayBuffer()), A5_WIDTH_PT, links, textLines(sheet.current!));
-    return new File([pdf as BlobPart], fileName, { type: 'application/pdf' });
+    const { jpeg, links, texts } = await receiptPicture(sheet.current!);
+    return new File([jpegToPdf(jpeg, A5_WIDTH_PT, links, texts) as BlobPart], fileName, { type: 'application/pdf' });
   }
 
   async function run(action: 'download' | 'share') {
@@ -262,7 +256,7 @@ export default function ReceiptMaker() {
       </section>
 
       <div className="overflow-x-auto xl:col-start-2 xl:row-span-3 xl:row-start-1">
-      <ReceiptSheet ref={sheet} r={r} amount={amountOk ? amount : undefined} token={token} />
+      <ReceiptSheet ref={sheet} r={r} amount={amount} token={token} />
       </div>
 
       <section className={section}>
@@ -339,7 +333,138 @@ export default function ReceiptMaker() {
           </div>
         )}
       </section>
+
+      <BulkReceipts signer={signer} />
     </div>
+  );
+}
+
+/** Many receipts from a CSV of donations: a PDF to print, two receipts a page, and one PDF per donor in a ZIP */
+function BulkReceipts({ signer }: { signer?: Signer }) {
+  const [csv, setCsv] = useState<{ fileName: string; rows: ReceiptRow[]; missingColumns: string[] }>();
+  const [progress, setProgress] = useState<{ done: number; total: number }>();
+  const [result, setResult] = useState<{ print: File; zip: File; pages: number }>();
+  const [error, setError] = useState<string>();
+  const good = csv?.rows.filter((row) => !row.problems.length) ?? [];
+  const bad = (csv?.rows.length ?? 0) - good.length;
+  const stamp = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+  const load = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setCsv(undefined); setResult(undefined); setError(undefined);
+    if (file) setCsv({ fileName: file.name, ...parseReceiptCsv(parseCsv(await file.text()), RULES) });
+  };
+
+  async function make() {
+    if (!signer) return;
+    setError(undefined); setResult(undefined); setProgress({ done: 0, total: good.length });
+    // Each receipt is drawn off screen by the same component as the single one, then pictured
+    const host = document.createElement('div');
+    host.style.cssText = 'position:fixed;left:-10000px;top:0';
+    document.body.append(host);
+    const root = createRoot(host);
+    const singles: { name: string; data: Uint8Array }[] = [];
+    const pictures: Awaited<ReturnType<typeof receiptPicture>>[] = [];
+    try {
+      for (const [i, row] of good.entries()) {
+        const r = row.receipt as Receipt;
+        const token = await signReceipt(signer.key, signer.keyId, signedFields(r, PAYMENT_MODES));
+        let el: HTMLDivElement | null = null;
+        flushSync(() => root.render(<ReceiptSheet ref={(n) => { el = n; }} r={r} amount={amountOf(r)} token={token} />));
+        await Promise.all([...el!.querySelectorAll('img')].map((img) => img.decode().catch(() => {})));
+        const picture = await receiptPicture(el!);
+        pictures.push(picture);
+        singles.push({ name: receiptFileName(r), data: jpegToPdf(picture.jpeg, A5_WIDTH_PT, picture.links, picture.texts) });
+        setProgress({ done: i + 1, total: good.length });
+      }
+    } catch (e) {
+      setError((e as Error).message);
+      return;
+    } finally {
+      root.unmount(); host.remove(); setProgress(undefined);
+    }
+    // Two a page, each centred in its half of the A4 sheet, with a cut line between
+    const half = A4.height / 2;
+    const pages = [];
+    for (let i = 0; i < pictures.length; i += 2) {
+      const images = pictures.slice(i, i + 2).map((p, k) => {
+        const { width, height } = jpegSize(p.jpeg);
+        const h = (PRINT_WIDTH_PT * height) / width;
+        return { ...p, x: (A4.width - PRINT_WIDTH_PT) / 2, y: k * half + (half - h) / 2, w: PRINT_WIDTH_PT };
+      });
+      pages.push({ ...A4, images, cuts: images.length > 1 ? [half] : [] });
+    }
+    setResult({
+      print: new File([pagesToPdf(pages) as BlobPart], `पावत्या-छपाई-${stamp}.pdf`, { type: 'application/pdf' }),
+      zip: new File([zip(singles) as BlobPart], `पावत्या-${stamp}.zip`, { type: 'application/zip' }),
+      pages: pages.length,
+    });
+  }
+
+  return (
+    <section className={cn(section, 'xl:col-span-2')}>
+      <h2 className="font-bold text-gray-900">एकाच वेळी अनेक पावत्या (CSV)</h2>
+      <p className="text-sm text-gray-600 max-w-3xl">
+        देणग्यांची यादी CSV मध्ये निवडा: प्रत्येक ओळीची पावती तयार होईल. छपाईसाठी एक PDF (A4 वर दोन पावत्या) आणि प्रत्येक देणगीदारासाठी वेगळी PDF (ZIP) मिळेल.
+        स्तंभ: क्रमांक, नाव, रक्कम (आवश्यक); दिनांक, संबोधन, गांव, कार्यक्रम, निमित्त, माध्यम, संदर्भ. यादी कुठेही साठवली किंवा पाठवली जात नाही.
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <Input type="file" accept=".csv,text/csv" onChange={load} className="sm:w-[420px]" />
+        <Button variant="ghost" size="sm" onClick={() => downloadFile(new Blob(['\ufeff' + toCsv(RECEIPT_CSV_TEMPLATE)], { type: 'text/csv;charset=utf-8' }), 'पावत्या-नमुना.csv')}>
+          <DownloadSimpleIcon /> नमुना CSV
+        </Button>
+      </div>
+      {csv && csv.missingColumns.length > 0 && (
+        <p className="text-sm text-red-700">या CSV मध्ये हे स्तंभ सापडले नाहीत: {csv.missingColumns.join(', ')}. पहिल्या ओळीत स्तंभांची नावे लिहा (नमुना CSV पहा).</p>
+      )}
+      {csv && csv.rows.length > 0 && (
+        <>
+          <p className="text-sm text-gray-700">
+            {csv.rows.length} ओळी · तयार होतील {good.length}{bad > 0 && <span className="text-red-700"> · त्रुटी {bad} (वगळल्या जातील; CSV दुरुस्त करून पुन्हा निवडा)</span>}
+          </p>
+          <div className="max-h-[420px] overflow-auto rounded-xl border border-gray-100">
+            <table className="w-full text-left text-sm">
+              <thead className="sticky top-0 bg-gray-50 text-xs text-gray-500">
+                <tr>{['ओळ', 'क्रमांक', 'नाव', 'गांव', 'रक्कम', 'दिनांक', 'माध्यम', 'स्थिती'].map((h) => <th key={h} className="p-2 font-semibold">{h}</th>)}</tr>
+              </thead>
+              <tbody>
+                {csv.rows.map(({ line, receipt: r, problems }) => {
+                  const amount = amountOf(r);
+                  let date = r.date;
+                  try { date = numericDateMr(r.date); } catch { /* shown as read */ }
+                  return (
+                    <tr key={line} className="border-t border-gray-100">
+                      <td className="p-2 text-gray-400">{line}</td>
+                      <td className="p-2">{r.serial}</td>
+                      <td className="p-2">{r.title} {r.name}</td>
+                      <td className="p-2">{r.village}</td>
+                      <td className="p-2 whitespace-nowrap">{amount ? `₹ ${formatRupees(amount)}` : r.amount}</td>
+                      <td className="p-2 whitespace-nowrap">{date}</td>
+                      <td className="p-2">{PAYMENT_MODES.find((m) => m.id === r.mode)?.mr}{r.reference && ` (${r.reference})`}</td>
+                      <td className="p-2 text-xs">{problems.length ? <span className="text-red-700">{problems.join('; ')}</span> : <span className="text-secondary">✔</span>}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {!signer && <p className="text-sm text-gray-500">आधी वर स्वाक्षरीसाठी पासवर्डने उघडा.</p>}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button disabled={!signer || !good.length || Boolean(progress)} onClick={make}>
+              {progress ? `तयार होत आहे… ${progress.done}/${progress.total}` : `${good.length} पावत्या तयार करा`}
+            </Button>
+            {result && (
+              <>
+                <Button variant="outline" onClick={() => downloadFile(result.print, result.print.name)}><PrinterIcon /> छपाईसाठी PDF ({result.pages} पाने)</Button>
+                <Button variant="outline" onClick={() => downloadFile(result.zip, result.zip.name)}><FileZipIcon /> प्रत्येकी PDF (ZIP)</Button>
+              </>
+            )}
+          </div>
+          {result && <p className="text-xs text-gray-500">छापताना "Actual size / 100%" निवडा, "Fit to page" नको. प्रत्येक पानावरील दोन पावत्या मधल्या रेषेवर कापा.</p>}
+          {error && <p className="text-sm text-red-700">{error}</p>}
+        </>
+      )}
+    </section>
   );
 }
 

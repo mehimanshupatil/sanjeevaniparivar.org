@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
-import { jpegSize, jpegToPdf } from './pdf.ts';
+import { jpegSize, jpegToPdf, pagesToPdf } from './pdf.ts';
 
 const jpeg = async (width: number, height: number, progressive = false) =>
   new Uint8Array(await sharp({ create: { width, height, channels: 3, background: '#C41E3A' } }).jpeg({ progressive }).toBuffer());
@@ -57,4 +57,31 @@ test('jpegToPdf: text layer is invisible, sized to each line, and maps glyphs ba
   assert.equal(offsets.length, 9);
   offsets.forEach((o, i) => assert.ok(raw.slice(o).startsWith(`${i + 1} 0 obj`), `object ${i + 1}`));
   assert.match(raw, /\/Size 10 /);
+});
+
+test('pagesToPdf: several images per page, cut lines, links and text placed within their image', async () => {
+  const img = await jpeg(400, 200);
+  const receipt = (y: number) => ({ jpeg: img, x: 50, y, w: 400, links: [{ x: 0.5, y: 0.5, w: 0.25, h: 0.25, url: 'https://x.org' }], texts: [{ x: 0, y: 0, w: 0.5, h: 0.1, text: 'अ' }] });
+  const pdf = pagesToPdf([
+    { width: 500, height: 600, images: [receipt(50), receipt(300)], cuts: [300] },
+    { width: 500, height: 600, images: [receipt(50)] },
+  ]);
+  const text = new TextDecoder().decode(pdf);
+  // Page 1: objects 3 (page), 4–5 (images), 6 (content); page 2: 7, 8, 9; the font from 10
+  assert.match(text, /\/Kids \[3 0 R 7 0 R\] \/Count 2/);
+  assert.match(text, /\/XObject << \/Im0 4 0 R \/Im1 5 0 R >> \/Font << \/F1 10 0 R >> >> \/Contents 6 0 R/);
+  // A 400×200 image at (50, 300) from the top of a 600pt page: 200pt high, bottom edge 100pt up
+  assert.match(text, /q 400 0 0 200 50 100 cm \/Im1 Do Q/);
+  assert.match(text, /\[4 3\] 0 d 14 300 m 486 300 l S/);
+  // The second image's link: x 250–350, y 300+100…300+150 from the top
+  assert.match(text, /\/Rect \[250 150 350 200\]/);
+  // Its text line: 20pt high at its top left, baseline 0.8 down
+  assert.match(text, /\/F1 20 Tf 1000 Tz 1 0 0 1 50 284 Tm <0001> Tj/);
+  // One character, one glyph, shared by both pages
+  assert.match(text, /1 beginbfchar\n<0001> <0905>/);
+  const raw = new TextDecoder('latin1').decode(pdf);
+  const xref = Number(/startxref\n(\d+)/.exec(raw)![1]);
+  const offsets = [...raw.slice(xref).matchAll(/^(\d{10}) 00000 n $/gm)].map((m) => Number(m[1]));
+  assert.equal(offsets.length, 13);
+  offsets.forEach((o, i) => assert.ok(raw.slice(o).startsWith(`${i + 1} 0 obj`), `object ${i + 1}`));
 });
