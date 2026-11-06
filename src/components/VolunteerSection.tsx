@@ -1,7 +1,7 @@
 // Home page: "सहभागी व्हा" — a short volunteer form. Like the contact form it has no backend:
 // it opens an email to the trust with the details filled in (mailto).
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { useT } from './LangContext';
 import SectionHeader from './common/SectionHeader';
 import { Input } from '@/components/ui/input';
@@ -18,7 +18,7 @@ export default function VolunteerSection() {
   const [areas, setAreas] = useState<Set<string>>(new Set());
   const [sent, setSent] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = data.get('name') as string;

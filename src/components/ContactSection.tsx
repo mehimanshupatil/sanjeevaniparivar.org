@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { useT } from './LangContext';
 import { translations as tr } from '@/i18n/translations';
 import SectionHeader from './common/SectionHeader';
@@ -40,7 +40,7 @@ export default function ContactSection() {
   const c = tr.contact;
   const [status, setStatus] = useState<Status>('idle');
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name    = data.get('name')    as string;
