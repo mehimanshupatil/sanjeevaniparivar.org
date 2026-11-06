@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import { GALLERY, type GalleryItem } from '@/content/gallery';
 import { KSHETRAS as ALL_KSHETRAS, KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 import { yearsOfService, mr } from '@/lib/org';
@@ -315,6 +316,8 @@ function GalleryContent({ eventPhotos }: { eventPhotos: GalleryItem[] }) {
       )}
 
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

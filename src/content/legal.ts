@@ -5,7 +5,7 @@ import type { Bilingual } from '@/i18n/translations';
 import { BRAND_EMAIL } from './brand';
 
 /** YYYY-MM-DD; shown via src/lib/marathi.ts */
-export const LEGAL_UPDATED = '2026-10-26';
+export const LEGAL_UPDATED = '2026-11-06';
 export const LEGAL_EMAIL = BRAND_EMAIL;
 
 export interface LegalSection {
@@ -44,8 +44,12 @@ export const PRIVACY: LegalDoc = {
       heading: { mr: 'संकेतस्थळावर आम्ही घेत असलेली माहिती', en: 'Information on our website' },
       list: [
         {
-          mr: 'संकेतस्थळावर खाते, लॉगिन किंवा जाहिराती नाहीत. आम्ही ट्रॅकिंग कुकीज किंवा विश्लेषण (analytics) साधने वापरत नाही.',
-          en: 'The website has no accounts, logins or advertising. We do not use tracking cookies or analytics tools.',
+          mr: 'संकेतस्थळावर खाते किंवा लॉगिन नाहीत. आम्ही स्वतः ट्रॅकिंग कुकीज किंवा विश्लेषण (analytics) साधने वापरत नाही.',
+          en: 'The website has no accounts or logins. We do not ourselves use tracking cookies or analytics tools.',
+        },
+        {
+          mr: 'मुख्यपृष्ठ, कार्यक्रम, क्षेत्र, उपक्रम, चित्रदालन व लेख या पानांवर Google AdSense च्या जाहिराती दिसतात. Google व त्याचे भागीदार आपल्या आधीच्या भेटींवर आधारित जाहिराती दाखवण्यासाठी कुकीज वापरू शकतात. वैयक्तिकृत जाहिराती adssettings.google.com येथे बंद करता येतात. देणगी, पावती पडताळणी (/verify) व या धोरणाच्या पानांवर जाहिराती नाहीत.',
+          en: 'The home, events, kshetra, activity, gallery and blog pages show ads from Google AdSense. Google and its partners may use cookies to show ads based on your earlier visits to this and other sites. You can turn off personalised ads at adssettings.google.com. The donation, receipt verification (/verify) and legal pages show no ads.',
         },
         {
           mr: 'संपर्क अर्ज आपल्या ई-मेल ॲपमध्ये संदेश उघडतो. आपण पाठवलेला ई-मेल (नाव, ई-मेल पत्ता, संदेश) आम्हाला मिळतो आणि तो फक्त उत्तर देण्यासाठी वापरला जातो.',
@@ -199,8 +203,8 @@ export const TERMS: LegalDoc = {
     {
       heading: { mr: 'इतर संकेतस्थळांचे दुवे', en: 'Links to other sites' },
       paragraphs: [{
-        mr: 'संकेतस्थळावर YouTube, Facebook, Instagram व WhatsApp यांसारख्या इतर सेवांचे दुवे आहेत. त्या सेवांवरील मजकूर व त्यांच्या धोरणांसाठी आम्ही जबाबदार नाही.',
-        en: 'The website links to other services such as YouTube, Facebook, Instagram and WhatsApp. We are not responsible for their content or policies.',
+        mr: 'संकेतस्थळावर YouTube, Facebook, Instagram व WhatsApp यांसारख्या इतर सेवांचे दुवे आहेत. काही पानांवर Google द्वारे निवडलेल्या जाहिराती दिसतात; त्या जाहिरातींमधील उत्पादने वा सेवांची संस्था शिफारस करत नाही. त्या सेवांवरील मजकूर व त्यांच्या धोरणांसाठी आम्ही जबाबदार नाही.',
+        en: 'The website links to other services such as YouTube, Facebook, Instagram and WhatsApp. Some pages show ads chosen by Google; the trust does not endorse the products or services in them. We are not responsible for their content or policies.',
       }],
     },
     {

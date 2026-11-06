@@ -79,6 +79,7 @@ YouTube, Facebook, Instagram, WhatsApp (`https://whatsapp.com/channel/0029Vb7kB1
 - **mailto links**: use `document.createElement('a'); a.href = ...; a.click()` — not `window.location.href`
 - **React event types**: `import type { FormEvent } from 'react'` — not `React.FormEvent` (deprecated in React 19)
 - **Contact form** sends to `sanjeevani.parivar@gmail.com` via mailto, no backend
+- **Ads**: Google AdSense, one manual unit `<AdSlot />` (`src/components/common/AdSlot.tsx`, IDs in `src/lib/ads.ts`, publisher ID also in `public/ads.txt`) above the footer of content pages only: home, events, event detail, kshetra, upakram, gallery, blog. Never on `/verify` (receipt details are in the URL and on screen), `/donate`, `/publicity`, legal, brand or team pages; no Auto ads. Privacy Policy describes this — update `src/content/legal.ts` if pages change
 - **SocialSection grid**: 5 links total — fix to `lg:grid-cols-5` or adjust layout if adding/removing links
 - Keep changes minimal and focused — don't add unrequested features alongside fixes
 

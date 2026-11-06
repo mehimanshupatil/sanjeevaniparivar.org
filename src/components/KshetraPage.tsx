@@ -6,6 +6,7 @@
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import type { KshetraData } from '@/content/kshetras';
 import { KSHETRAS } from '@/content/kshetras';
 
@@ -257,6 +258,8 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
       </section>
 
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

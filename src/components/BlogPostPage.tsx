@@ -1,6 +1,7 @@
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
 export interface BlogPostProps {
@@ -100,6 +101,8 @@ function PageContent({ post }: { post: BlogPostProps }) {
           </a>
         </div>
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

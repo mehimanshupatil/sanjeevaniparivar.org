@@ -3,6 +3,7 @@ import { LangProvider, useT } from './LangContext';
 import { Button } from '@/components/ui/button';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 import { KSHETRA_ICONS } from './AboutSection';
 
@@ -172,6 +173,8 @@ function PageContent({ posts }: { posts: BlogPostSummary[] }) {
           </div>
         )}
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

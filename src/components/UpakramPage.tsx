@@ -2,6 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@phosphor-icons/react';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import VyakhyanmalaTable from './VyakhyanmalaTable';
 import type { KshetraData, Activity } from '@/content/kshetras';
 
@@ -163,6 +164,8 @@ function PageContent({ kshetra, activity }: Props) {
       </section>
 
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

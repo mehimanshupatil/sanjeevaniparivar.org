@@ -15,6 +15,7 @@ import VolunteerSection from './VolunteerSection';
 import ContactSection from './ContactSection';
 import BackToTop from './BackToTop';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import type { Event } from '@/publicity/events';
 
 /** upcoming: events not over at build time, soonest first (pages/index.astro) */
@@ -33,6 +34,7 @@ export default function App({ upcoming = [] }: { upcoming?: Event[] }) {
         <VolunteerSection />
         <ContactSection />
       </main>
+      <AdSlot />
       <Footer />
       <BackToTop />
     </LangProvider>

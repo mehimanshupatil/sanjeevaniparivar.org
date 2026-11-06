@@ -5,6 +5,7 @@ import { SiWhatsapp } from '@icons-pack/react-simple-icons';
 import { LangProvider, useT } from './LangContext';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import type { EventDetail } from '@/publicity/events';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
@@ -215,6 +216,8 @@ function PageContent({ event: e }: { event: EventDetail }) {
         </div>
       </section>
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>

@@ -3,6 +3,7 @@ import { LangProvider, useT } from './LangContext';
 import { Button } from '@/components/ui/button';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AdSlot from './common/AdSlot';
 import type { Event } from '@/publicity/events';
 import { KSHETRA_COLOR, KSHETRA_LABEL } from '@/content/kshetras';
 
@@ -159,6 +160,8 @@ function PageContent({ events }: { events: Event[] }) {
           )}
         </section>
       </main>
+
+      <AdSlot />
 
       <Footer />
     </>
