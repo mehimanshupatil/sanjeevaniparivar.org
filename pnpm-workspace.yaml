@@ -1,3 +1,9 @@
 allowBuilds:
   esbuild: true
   sharp: true
+packageExtensions:
+  # rolldown (via astro) brings @emnapi/runtime 2.0.0-beta.2, which pnpm also hands to
+  # @astrojs/check's wasm runtime as its peer; check crashes on it ("bridge.deleteEnv is not a function")
+  "@astrojs/astro2tsx":
+    dependencies:
+      "@emnapi/runtime": "^1.11.3"
