@@ -15,7 +15,7 @@ import {
 } from '@/lib/whatsapp';
 import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
 
-interface Invitation { label: string; url: string; fields: ApiFields }
+interface Invitation { label: string; url: string; fields: Partial<ApiFields> }
 
 interface Props {
   /** Published invitations (an edition or one lecture): its wide card for the header image, and
