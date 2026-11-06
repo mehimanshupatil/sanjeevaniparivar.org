@@ -17,7 +17,7 @@ export interface RelatedPost {
   date: string;
 }
 
-interface Props { slug: string; data: KshetraData; posts?: RelatedPost[] }
+interface Props { data: KshetraData; posts?: RelatedPost[] }
 
 function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedPost[] }) {
   const t = useT();
@@ -266,7 +266,7 @@ function PageContent({ data, posts = [] }: { data: KshetraData; posts?: RelatedP
   );
 }
 
-export default function KshetraPage({ slug, data, posts }: Props) {
+export default function KshetraPage({ data, posts }: Props) {
   return (
     <LangProvider>
       <PageContent data={data} posts={posts} />

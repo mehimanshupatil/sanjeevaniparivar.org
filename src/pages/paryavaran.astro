@@ -25,5 +25,5 @@ const posts = allPosts
   description={`${data.body.en.slice(0, 155)}...`}
   ogImage="/og/kshetra/paryavaran.png"
 >
-  <KshetraPage slug="paryavaran" data={data} posts={posts} client:idle />
+  <KshetraPage data={data} posts={posts} client:idle />
 </Layout>
