@@ -20,7 +20,7 @@ const invitations = (await cardEditions())
     ...e.sessions.map((x) => ({ label: `${e.fullTitle} — ${x.label} (${x.speaker.name})`, url: `${site}/publicity/${e.id}/${x.n}/wide.png`, fields: apiFields(e, x) })),
   ]);
 
-// Festival greetings: images (wide 1200×628 by default) in public/assets/greetings/, named
+// Festival greetings: images in public/assets/greetings/ (tall works best: WhatsApp crops a wide header), named
 // <festival>-<year>.jpg, or <festival>-<year>-<n>.jpg for another version to try. No date or venue, only a title.
 const GREETINGS: Record<string, string> = { diwali: 'दिवाळी शुभेच्छा' };
 const greetings = readdirSync('public/assets/greetings')
