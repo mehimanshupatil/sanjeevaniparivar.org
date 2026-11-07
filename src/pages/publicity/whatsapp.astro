@@ -20,14 +20,16 @@ const invitations = (await cardEditions())
     ...e.sessions.map((x) => ({ label: `${e.fullTitle} — ${x.label} (${x.speaker.name})`, url: `${site}/publicity/${e.id}/${x.n}/wide.png`, fields: apiFields(e, x) })),
   ]);
 
-// Festival greetings: wide images (1200×628) in public/assets/greetings/, named <festival>-<year>.jpg.
-// No date or venue, only a title.
+// Festival greetings: images (wide 1200×628 by default) in public/assets/greetings/, named
+// <festival>-<year>.jpg, or <festival>-<year>-<n>.jpg for another version to try. No date or venue, only a title.
 const GREETINGS: Record<string, string> = { diwali: 'दिवाळी शुभेच्छा' };
 const greetings = readdirSync('public/assets/greetings')
+  .sort()
   .flatMap((file) => {
-    const m = file.match(/^([a-z]+)-(\d{4})\.(jpe?g|png)$/);
+    const m = file.match(/^([a-z]+)-(\d{4})(?:-(\d+))?\.(jpe?g|png)$/);
     const title = m && GREETINGS[m[1]];
-    return title ? [{ year: Number(m[2]), label: `${title} ${mrNum(m[2])}`, url: `${site}/assets/greetings/${file}`, fields: { title } }] : [];
+    const version = m?.[3] ? ` (${mrNum(m[3])})` : '';
+    return title ? [{ year: Number(m[2]), label: `${title} ${mrNum(m[2])}${version}`, url: `${site}/assets/greetings/${file}`, fields: { title } }] : [];
   })
   .sort((a, b) => b.year - a.year)
   .map(({ year, ...g }) => g);
