@@ -6,7 +6,6 @@ import WhatsappSender from '@/components/publicity/WhatsappSender';
 import { cardEditions } from '@/publicity/resolve';
 import { apiFields } from '@/publicity/message';
 import { mrNum } from '@/lib/marathi';
-import { readdirSync } from 'node:fs';
 
 // Each edition's wide card (and each lecture's): the shape WhatsApp shows a template's header
 // image in, with its date, venue, … for the placeholders. Meta fetches the image itself, so it
@@ -20,16 +19,19 @@ const invitations = (await cardEditions())
     ...e.sessions.map((x) => ({ label: `${e.fullTitle} — ${x.label} (${x.speaker.name})`, url: `${site}/publicity/${e.id}/${x.n}/wide.png`, fields: apiFields(e, x) })),
   ]);
 
-// Festival greetings: images in public/assets/greetings/ (tall works best: WhatsApp crops a wide header), named
+// Festival greetings: images in src/assets/greetings/ (tall works best: WhatsApp crops a wide header), named
 // <festival>-<year>.jpg, or <festival>-<year>-<n>.jpg for another version to try. No date or venue, only a title.
+// Imported, so the published URL carries a content hash: a changed card gets a new URL and Meta can't
+// send an old cached copy.
 const GREETINGS: Record<string, string> = { diwali: 'दिवाळी शुभेच्छा' };
-const greetings = readdirSync('public/assets/greetings')
-  .sort()
-  .flatMap((file) => {
-    const m = file.match(/^([a-z]+)-(\d{4})(?:-(\d+))?\.(jpe?g|png)$/);
+const greetingFiles = import.meta.glob<ImageMetadata>('/src/assets/greetings/*.{jpg,jpeg,png}', { eager: true, import: 'default' });
+const greetings = Object.entries(greetingFiles)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .flatMap(([path, image]) => {
+    const m = path.split('/').pop()!.match(/^([a-z]+)-(\d{4})(?:-(\d+))?\.(jpe?g|png)$/);
     const title = m && GREETINGS[m[1]];
     const version = m?.[3] ? ` (${mrNum(m[3])})` : '';
-    return title ? [{ year: Number(m[2]), label: `${title} ${mrNum(m[2])}${version}`, url: `${site}/assets/greetings/${file}`, fields: { title } }] : [];
+    return title ? [{ year: Number(m[2]), label: `${title} ${mrNum(m[2])}${version}`, url: `${site}${image.src}`, fields: { title } }] : [];
   })
   .sort((a, b) => b.year - a.year)
   .map(({ year, ...g }) => g);
