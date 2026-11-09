@@ -2,17 +2,16 @@
 // (/publicity/whatsapp/) asks for them by message id (id, status, time and error only). Messages
 // people send to this number are kept for 12 months and downloaded by trust members with the export
 // key (/incoming.csv); STOP / START keep the list of numbers not to message (/optout). The number has
-// no app, so each sender gets an auto-reply pointing to the trust's main number, once a day.
+// no app: members answer from the inbox, and each sender first gets an acknowledgement, once a day.
 // On inbox.sanjeevaniparivar.org the same Worker serves the members' inbox (inbox.ts). Setup: ../README.md
 import { hasKey, istTime, optOutIntent, parseIncoming, parseStatuses, statusIds, toCsv, validSignature } from './statuses.ts';
 import { BUMP, saveIncoming, sendText as send, type Env } from './env.ts';
 import { inbox } from './inbox.ts';
-/** Sent as a free-form text: allowed (and free) within 24 hours of the person's message */
+
+/** Sent as a free-form text: allowed within 24 hours of the person's message (a service message: 1,000 free a month) */
 const AUTO_REPLY = 'नमस्कार! संजीवनी परिवाराला संदेश पाठवल्याबद्दल धन्यवाद. 🙏\n\n' +
-  'हा क्रमांक कार्यक्रमांची माहिती पाठवण्यासाठी आहे; येथे लगेच उत्तर मिळणार नाही. ' +
-  'कृपया खालील लिंकवरून आमच्या दुसऱ्या WhatsApp क्रमांकावर संदेश पाठवा. आमचे संदेश नको असल्यास STOP लिहा.\n\n' +
-  'This number sends programme updates and is not answered right away. Please message us on our other number ' +
-  '(write STOP to get no more messages):\nhttps://wa.me/918847771994';
+  'आपला संदेश आम्हाला मिळाला आहे; आमचे कार्यकर्ते लवकरच उत्तर देतील. आमचे संदेश नको असल्यास STOP लिहा.\n\n' +
+  'Thank you for your message. A member of our team will reply soon. Write STOP to get no more messages.';
 const STOPPED = 'आपल्याला यापुढे संजीवनी परिवाराचे संदेश पाठवले जाणार नाहीत. पुन्हा हवे असल्यास START लिहा.\n\n' +
   'You will get no more messages from Sanjeevani Parivar. Write START to get them again.';
 const STARTED = 'धन्यवाद! आपल्याला पुन्हा संजीवनी परिवाराच्या कार्यक्रमांचे संदेश मिळतील. 🙏\n\n' +
