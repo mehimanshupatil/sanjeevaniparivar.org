@@ -13,7 +13,7 @@ import {
   WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
   CREATIVE_FEATURES, optimizationsOn, DELIVERY_HEADERS, resultIds, withDelivery, type WaTemplate,
 } from '@/lib/whatsapp';
-import { FATAL, WA_EMPTY_SETTINGS as EMPTY, WA_SETTINGS_KEY as STORAGE_KEY, graph, type WaSettings as Settings } from '@/lib/whatsapp-api';
+import { FATAL, WA_EMPTY_SETTINGS as EMPTY, WA_SETTINGS_KEY as STORAGE_KEY, graph, incomingCsv, optedOut, type WaSettings as Settings } from '@/lib/whatsapp-api';
 import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
 
 interface Invitation { label: string; url: string; fields: Partial<ApiFields> }
@@ -173,6 +173,9 @@ export default function WhatsappSender({ invitations }: Props) {
   const [phoneCol, setPhoneCol] = useState(0);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [status, setStatus] = useState<Record<number, RowStatus>>({});
+  /** Numbers that wrote STOP, from the Worker; undefined without the export key */
+  const [stopped, setStopped] = useState<Set<string>>();
+  const [stopError, setStopError] = useState<string>();
 
   const loadCsv = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -182,6 +185,8 @@ export default function WhatsappSender({ invitations }: Props) {
     setCsv({ fileName: file.name, header, rows });
     setPhoneCol(col);
     setStatus({});
+    setStopped(undefined); setStopError(undefined);
+    if (settings.exportKey) optedOut(settings.exportKey).then(setStopped, (e: Error) => setStopError(e.message));
   };
 
   const recipients = useMemo(() => {
@@ -190,12 +195,14 @@ export default function WhatsappSender({ invitations }: Props) {
       const phone = normalizePhone(row[phoneCol] ?? '');
       const duplicate = phone ? seen.has(phone) : false;
       if (phone) seen.add(phone);
-      return { row, phone, duplicate };
+      return { row, phone, duplicate, stop: Boolean(phone && stopped?.has(phone)) };
     });
-  }, [csv, phoneCol]);
-  // Select every valid, first-time number when the list or the phone column changes
+  }, [csv, phoneCol, stopped]);
+  /** A number that can be messaged: valid, first time in the list, and not one that wrote STOP */
+  const sendable = (r: (typeof recipients)[number]) => Boolean(r.phone && !r.duplicate && !r.stop);
+  // Select every sendable number when the list, the phone column or the STOP list changes
   useEffect(() => {
-    setSelected(new Set(recipients.flatMap((r, i) => (r.phone && !r.duplicate ? [i] : []))));
+    setSelected(new Set(recipients.flatMap((r, i) => (sendable(r) ? [i] : []))));
   }, [recipients]);
   const toggle = (i: number, on: boolean) => setSelected((s) => { const n = new Set(s); if (on) n.add(i); else n.delete(i); return n; });
 
@@ -314,6 +321,16 @@ export default function WhatsappSender({ invitations }: Props) {
       oldResults.fileName.replace(/\.csv$/i, '') + '-updated.csv');
   };
 
+  // ── 8. Messages people sent to the number, from the Worker ──
+  const [incomingError, setIncomingError] = useState<string>();
+  const downloadIncoming = async (days: number) => {
+    setIncomingError(undefined);
+    try {
+      const stamp = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      downloadFile(await incomingCsv(settings.exportKey, days), `आलेले-संदेश-${stamp}.csv`);
+    } catch (e) { setIncomingError((e as Error).message); }
+  };
+
   const columnItems = (csv?.header ?? []).map((h, i) => ({ value: String(i), label: h || `स्तंभ ${i + 1}` }));
 
   return (
@@ -342,6 +359,11 @@ export default function WhatsappSender({ invitations }: Props) {
             <Label htmlFor="wa-waba">WhatsApp Business Account ID</Label>
             <Input id="wa-waba" inputMode="numeric" value={settings.wabaId}
               onChange={(e) => setSettings({ ...settings, wabaId: e.target.value.trim() })} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="wa-export">Export key (ऐच्छिक: आलेले संदेश व STOP यादीसाठी)</Label>
+            <Input id="wa-export" type="password" autoComplete="off" value={settings.exportKey}
+              onChange={(e) => setSettings({ ...settings, exportKey: e.target.value.trim() })} />
           </div>
         </div>
         <p className="text-xs text-gray-500">
@@ -417,6 +439,9 @@ export default function WhatsappSender({ invitations }: Props) {
           <h2 className="text-lg font-bold text-gray-900">३. यादी (CSV)</h2>
           <p className="text-sm text-gray-600">पहिल्या ओळीत स्तंभांची नावे (उदा. नाव, गाव, फोन). फक्त संदेशासाठी संमती दिलेल्या व्यक्तींचीच यादी वापरा.</p>
           <Input type="file" accept=".csv,text/csv" onChange={loadCsv} className="sm:w-[420px]" />
+          {csv && !settings.exportKey && <p className="text-xs text-amber-800">Export key नसल्याने STOP लिहिलेले क्रमांक वगळता येत नाहीत: वर export key लिहा.</p>}
+          {stopError && <p className="text-xs text-red-700">STOP यादी मिळाली नाही: {stopError}</p>}
+          {stopped && recipients.some((r) => r.stop) && <p className="text-xs text-gray-600">{recipients.filter((r) => r.stop).length} जणांनी STOP लिहिले आहे; त्यांना पाठवले जाणार नाही.</p>}
           {csv && (
             <>
               <div className="space-y-1.5">
@@ -431,8 +456,8 @@ export default function WhatsappSender({ invitations }: Props) {
                   <thead className="sticky top-0 bg-gray-50 text-xs text-gray-500">
                     <tr>
                       <th className="p-2">
-                        <Checkbox checked={selected.size > 0 && recipients.every((r, i) => !r.phone || r.duplicate || selected.has(i))}
-                          onCheckedChange={(on) => setSelected(new Set(on ? recipients.flatMap((r, i) => (r.phone && !r.duplicate ? [i] : [])) : []))} />
+                        <Checkbox checked={selected.size > 0 && recipients.every((r, i) => !sendable(r) || selected.has(i))}
+                          onCheckedChange={(on) => setSelected(new Set(on ? recipients.flatMap((r, i) => (sendable(r) ? [i] : [])) : []))} />
                       </th>
                       {csv.header.map((h, i) => <th key={i} className="p-2 font-semibold">{h}</th>)}
                       <th className="p-2 font-semibold">WhatsApp</th>
@@ -444,10 +469,10 @@ export default function WhatsappSender({ invitations }: Props) {
                       const s = status[i];
                       const d = deliveryOf(s);
                       return (
-                        <tr key={i} className={cn('border-t border-gray-100', !r.phone && 'text-gray-400')}>
-                          <td className="p-2"><Checkbox checked={selected.has(i)} disabled={!r.phone || sending} onCheckedChange={(on) => toggle(i, on)} /></td>
+                        <tr key={i} className={cn('border-t border-gray-100', (!r.phone || r.stop) && 'text-gray-400')}>
+                          <td className="p-2"><Checkbox checked={selected.has(i)} disabled={!r.phone || r.stop || sending} onCheckedChange={(on) => toggle(i, on)} /></td>
                           {csv.header.map((_, j) => <td key={j} className="p-2">{r.row[j]}</td>)}
-                          <td className="p-2 font-mono text-xs">{r.phone ? `+${r.phone}` : 'चुकीचा क्रमांक'}{r.duplicate && ' (पुन्हा)'}</td>
+                          <td className="p-2 font-mono text-xs">{r.phone ? `+${r.phone}` : 'चुकीचा क्रमांक'}{r.duplicate && ' (पुन्हा)'}{r.stop && <span className="text-red-700"> STOP</span>}</td>
                           <td className="p-2 text-xs">
                             {s?.state === 'sending' && 'पाठवत आहे…'}
                             {s?.state === 'sent' && (d?.status === 'failed'
@@ -603,6 +628,24 @@ export default function WhatsappSender({ invitations }: Props) {
               <p className="text-xs text-gray-500">"माहिती नाही": WhatsApp कडून अजून स्थिती आली नाही, किंवा ३० दिवसांपेक्षा जुना संदेश.</p>
             </>
           )}
+        </section>
+      )}
+
+      {/* 8 */}
+      {WA_STATUS_URL && settings.exportKey && (
+        <section className={section}>
+          <h2 className="text-lg font-bold text-gray-900">आलेले संदेश</h2>
+          <p className="text-sm text-gray-600">
+            या क्रमांकावर लोकांनी पाठवलेले संदेश (वेळ, क्रमांक, नाव, संदेश, STOP), CSV मध्ये. यात फोन क्रमांक आहेत: फाइल फक्त संस्थेच्या कामासाठी वापरा व कोणालाही पाठवू नका.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {[30, 365].map((days) => (
+              <Button key={days} variant="outline" onClick={() => downloadIncoming(days)}>
+                <DownloadSimpleIcon /> {days === 30 ? 'गेल्या ३० दिवसांचे' : 'गेल्या १२ महिन्यांचे'}
+              </Button>
+            ))}
+          </div>
+          {incomingError && <p className="text-sm text-red-700">{incomingError}</p>}
         </section>
       )}
     </div>

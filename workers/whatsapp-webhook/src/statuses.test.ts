@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { parseStatuses, parseIncoming, validSignature, statusIds, MAX_IDS } from './statuses.ts';
+import { parseStatuses, parseIncoming, validSignature, statusIds, optOutIntent, hasKey, istTime, toCsv, MAX_IDS, MAX_TEXT } from './statuses.ts';
 
 const body = {
   object: 'whatsapp_business_account',
@@ -18,7 +18,13 @@ const body = {
             errors: [{ code: 131049, title: 'This message was not delivered to maintain healthy ecosystem engagement.', error_data: { details: 'In order to maintain…' } }] },
           { id: 'wamid.C', status: 'deleted', timestamp: '1793030002' },
         ],
-        messages: [{ id: 'wamid.IN', from: '919800000000', type: 'text', text: { body: 'hi' } }, { id: 'wamid.R', from: '919800000002', type: 'reaction' }],
+        contacts: [{ wa_id: '919800000000', profile: { name: 'संदीप' } }],
+        messages: [
+          { id: 'wamid.IN', from: '919800000000', type: 'text', timestamp: '1793030010', text: { body: 'hi' } },
+          { id: 'wamid.R', from: '919800000002', type: 'reaction' },
+          { id: 'wamid.BTN', from: '919800000003', type: 'button', timestamp: '1793030011', button: { text: 'Stop promotions' } },
+          { id: 'wamid.IMG', from: '919800000004', type: 'image', timestamp: '1793030012', image: {} },
+        ],
       },
     }, { field: 'account_update', value: { statuses: [{ id: 'wamid.X', status: 'sent' }] } }],
   }],
@@ -51,7 +57,30 @@ test('statusIds: WhatsApp ids, no repeats, capped', () => {
   assert.equal(statusIds(Array.from({ length: 150 }, (_, i) => `wamid.${i}`).join(',')).length, MAX_IDS);
 });
 
-test('parseIncoming: senders of messages, not reactions', () => {
-  assert.deepEqual(parseIncoming(body), [{ phoneNumberId: '1318982904641019', from: '919800000000' }]);
+test('parseIncoming: who wrote and what, not reactions', () => {
+  const p = '1318982904641019';
+  assert.deepEqual(parseIncoming(body), [
+    { phoneNumberId: p, id: 'wamid.IN', from: '919800000000', name: 'संदीप', type: 'text', text: 'hi', at: 1793030010 },
+    { phoneNumberId: p, id: 'wamid.BTN', from: '919800000003', name: '', type: 'button', text: 'Stop promotions', at: 1793030011 },
+    { phoneNumberId: p, id: 'wamid.IMG', from: '919800000004', name: '', type: 'image', text: '', at: 1793030012 },
+  ]);
+  const long = { entry: [{ changes: [{ field: 'messages', value: { metadata: { phone_number_id: p }, messages: [{ id: 'w', from: '91', type: 'text', text: { body: 'x'.repeat(900) } }] } }] }] };
+  assert.equal(parseIncoming(long)[0].text.length, MAX_TEXT);
   assert.deepEqual(parseIncoming({}), []);
+});
+
+test('optOutIntent: the whole message, in English or Marathi', () => {
+  for (const t of ['STOP', 'Stop.', ' stop promotions ', 'थांबवा', 'बंद करा']) assert.equal(optOutIntent(t), 'stop', t);
+  for (const t of ['START', 'Resume promotions', 'सुरू करा']) assert.equal(optOutIntent(t), 'start', t);
+  for (const t of ['please do not stop', 'stopped by the office', 'hi', '']) assert.equal(optOutIntent(t), undefined, t);
+});
+
+test('hasKey, istTime, toCsv', () => {
+  assert.equal(hasKey('k3y', 'Bearer k3y'), true);
+  assert.equal(hasKey('k3y', 'Bearer k3'), false);
+  assert.equal(hasKey('k3y', 'k3y'), false);
+  assert.equal(hasKey('', 'Bearer '), false);
+  assert.equal(hasKey('k3y', null), false);
+  assert.equal(istTime(Date.UTC(2026, 10, 9, 8, 35) / 1000), '2026-11-09 14:05');
+  assert.equal(toCsv([['नाव', 'संदेश'], ['अ', 'a, say "hi" now']]), '\ufeffनाव,संदेश\nअ,"a, say ""hi"" now"');
 });
