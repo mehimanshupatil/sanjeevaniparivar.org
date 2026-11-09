@@ -3,7 +3,7 @@
 // their email; every request is checked here too (access.ts). Members never see the Meta token.
 import pageModule from './inbox.html';
 import { canReply, replyInput, verifyAccess, type Jwk } from './access.ts';
-import { GRAPH, sendText, type Env } from './env.ts';
+import { BUMP, GRAPH, sendText, type Env } from './env.ts';
 
 // wrangler.jsonc bundles .html as text (rules: Text); the root type-check knows .html only as Astro's
 const page = pageModule as unknown as string;
@@ -20,19 +20,11 @@ const accessKeys = (team: string) => async (refresh: boolean): Promise<Jwk[]> =>
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 
-const CHATS = `WITH msgs AS (
-    SELECT sender AS n, at, text, type FROM incoming
-    UNION ALL SELECT recipient AS n, at, text, 'out' AS type FROM outgoing
-  )
-  SELECT n,
-    (SELECT name FROM incoming WHERE sender = msgs.n AND name != '' ORDER BY at DESC LIMIT 1) AS name,
-    MAX(at) AS lastAt,
-    (SELECT m.text FROM msgs m WHERE m.n = msgs.n ORDER BY m.at DESC LIMIT 1) AS lastText,
-    (SELECT m.type FROM msgs m WHERE m.n = msgs.n ORDER BY m.at DESC LIMIT 1) AS lastType,
-    (SELECT MAX(at) FROM incoming WHERE sender = msgs.n) AS lastIn,
-    (SELECT COUNT(*) FROM incoming i WHERE i.sender = msgs.n AND i.at > COALESCE((SELECT at FROM seen WHERE sender = msgs.n), 0)) AS unread,
-    EXISTS (SELECT 1 FROM optout WHERE sender = msgs.n) AS stopped
-  FROM msgs GROUP BY n ORDER BY lastAt DESC LIMIT 300`;
+// One row per person from `chats`; unread counts use the (sender, at) index, so only unread rows are read
+const CHATS = `SELECT c.n, c.name, c.last_at AS lastAt, c.last_text AS lastText, c.last_type AS lastType, c.last_in AS lastIn,
+    (SELECT COUNT(*) FROM incoming i WHERE i.sender = c.n AND i.at > COALESCE(s.at, 0)) AS unread,
+    EXISTS (SELECT 1 FROM optout o WHERE o.sender = c.n) AS stopped
+  FROM chats c LEFT JOIN seen s ON s.sender = c.n ORDER BY c.last_at DESC LIMIT 300`;
 
 const THREAD = `SELECT * FROM (
     SELECT id, 'in' AS dir, type, text, at, NULL AS status, NULL AS by FROM incoming WHERE sender = ?1
@@ -49,6 +41,12 @@ export async function inbox(req: Request, env: Env): Promise<Response> {
 
   if (url.pathname === '/' && req.method === 'GET') {
     return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+  }
+
+  // What the page polls: one row. It reloads the list and the chat only when this changes.
+  if (url.pathname === '/api/version' && req.method === 'GET') {
+    const row = await env.DB.prepare('SELECT v FROM inbox_version WHERE k = 1').first<{ v: number }>();
+    return json({ v: row?.v ?? 0 });
   }
 
   if (url.pathname === '/api/chats' && req.method === 'GET') {
@@ -77,6 +75,7 @@ export async function inbox(req: Request, env: Env): Promise<Response> {
     if (!last) return json({});
     const { meta } = await env.DB.prepare('INSERT INTO seen (sender, at) VALUES (?1, ?2) ON CONFLICT (sender) DO UPDATE SET at = excluded.at WHERE seen.at < excluded.at')
       .bind(n, last.at).run();
+    if (meta.changes) await env.DB.prepare(BUMP).run();
     if (meta.changes && env.ACCESS_TOKEN) {
       await fetch(`${GRAPH}/${env.PHONE_NUMBER_ID}/messages`, {
         method: 'POST',

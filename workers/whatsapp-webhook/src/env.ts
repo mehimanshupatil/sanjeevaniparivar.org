@@ -23,6 +23,24 @@ export interface Env {
 
 export const GRAPH = 'https://graph.facebook.com/v26.0';
 
+/** Bumps the inbox's change counter: the page reloads only when it has changed */
+export const BUMP = 'UPDATE inbox_version SET v = v + 1 WHERE k = 1';
+
+// The chat list's row for a person; only a newer message replaces the last one shown
+const NEWER = (col: string) => `${col} = CASE WHEN excluded.last_at >= chats.last_at THEN excluded.${col} ELSE chats.${col} END`;
+const CHAT_IN = `INSERT INTO chats (n, name, last_at, last_text, last_type, last_in) VALUES (?1, ?2, ?3, ?4, ?5, ?3)
+  ON CONFLICT (n) DO UPDATE SET name = CASE WHEN excluded.name != '' THEN excluded.name ELSE chats.name END,
+  last_in = MAX(COALESCE(chats.last_in, 0), excluded.last_in), ${NEWER('last_text')}, ${NEWER('last_type')}, last_at = MAX(chats.last_at, excluded.last_at)`;
+const CHAT_OUT = `INSERT INTO chats (n, name, last_at, last_text, last_type, last_in) VALUES (?1, '', ?2, ?3, 'out', NULL)
+  ON CONFLICT (n) DO UPDATE SET ${NEWER('last_text')}, ${NEWER('last_type')}, last_at = MAX(chats.last_at, excluded.last_at)`;
+
+/** Keeps a message someone sent (once, even if Meta sends it twice), with its chat row */
+export async function saveIncoming(env: Env, m: { id: string; from: string; name: string; type: string; text: string; at: number }): Promise<void> {
+  const { meta } = await env.DB.prepare('INSERT OR IGNORE INTO incoming (id, sender, name, type, text, at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)')
+    .bind(m.id, m.from, m.name, m.type, m.text, m.at).run();
+  if (meta.changes) await env.DB.batch([env.DB.prepare(CHAT_IN).bind(m.from, m.name, m.at, m.text, m.type), env.DB.prepare(BUMP)]);
+}
+
 /**
  * Sends a free-form text (allowed within 24 hours of the person's message) and keeps it in
  * `outgoing`, so the inbox shows it. by: the member's email, or 'auto'. Throws Meta's error.
@@ -37,8 +55,12 @@ export async function sendText(env: Env, phoneNumberId: string, to: string, body
   if (!res.ok) throw new Error(json.error ? `#${json.error.code} ${json.error.message}` : `HTTP ${res.status}`);
   const id = json.messages?.[0]?.id ?? '';
   if (id) {
-    await env.DB.prepare('INSERT OR IGNORE INTO outgoing (id, recipient, text, by, at) VALUES (?, ?, ?, ?, ?)')
-      .bind(id, to, body, by, Math.floor(Date.now() / 1000)).run();
+    const at = Math.floor(Date.now() / 1000);
+    await env.DB.batch([
+      env.DB.prepare('INSERT OR IGNORE INTO outgoing (id, recipient, text, by, at) VALUES (?, ?, ?, ?, ?)').bind(id, to, body, by, at),
+      env.DB.prepare(CHAT_OUT).bind(to, at, body),
+      env.DB.prepare(BUMP),
+    ]);
   }
   return id;
 }

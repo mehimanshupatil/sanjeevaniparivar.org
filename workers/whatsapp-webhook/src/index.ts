@@ -5,7 +5,7 @@
 // no app, so each sender gets an auto-reply pointing to the trust's main number, once a day.
 // On inbox.sanjeevaniparivar.org the same Worker serves the members' inbox (inbox.ts). Setup: ../README.md
 import { hasKey, istTime, optOutIntent, parseIncoming, parseStatuses, statusIds, toCsv, validSignature } from './statuses.ts';
-import { sendText as send, type Env } from './env.ts';
+import { BUMP, saveIncoming, sendText as send, type Env } from './env.ts';
 import { inbox } from './inbox.ts';
 /** Sent as a free-form text: allowed (and free) within 24 hours of the person's message */
 const AUTO_REPLY = 'नमस्कार! संजीवनी परिवाराला संदेश पाठवल्याबद्दल धन्यवाद. 🙏\n\n' +
@@ -46,7 +46,6 @@ async function autoReply(env: Env, phoneNumberId: string, to: string): Promise<v
   if (meta.changes) await sendText(env, phoneNumberId, to, AUTO_REPLY);
 }
 
-const SAVE_INCOMING = 'INSERT OR IGNORE INTO incoming (id, sender, name, type, text, at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)';
 const forbidden = () => new Response('Forbidden', { status: 403, headers: CORS });
 
 // Keep the furthest status: Meta may send "delivered" before "sent"
@@ -75,15 +74,22 @@ export default {
       let body: unknown;
       try { body = JSON.parse(new TextDecoder().decode(raw)); } catch { return new Response('Bad JSON', { status: 400 }); }
       const rows = parseStatuses(body);
-      if (rows.length) await env.DB.batch(rows.map((r) => env.DB.prepare(UPSERT).bind(r.id, r.status, r.rank, r.at, r.error)));
+      if (rows.length) {
+        // Ticks on inbox replies: the inbox reloads only if one of these is ours
+        const ids = rows.slice(0, 99).map((r) => r.id);
+        await env.DB.batch([...rows.map((r) => env.DB.prepare(UPSERT).bind(r.id, r.status, r.rank, r.at, r.error)),
+          env.DB.prepare(`${BUMP} AND EXISTS (SELECT 1 FROM outgoing WHERE id IN (${ids.map(() => '?').join(',')}))`).bind(...ids)]);
+      }
       // Meta resends a report that isn't answered 200, so a failed reply must not fail the request
       for (const m of parseIncoming(body)) {
-        await env.DB.prepare(SAVE_INCOMING).bind(m.id, m.from, m.name, m.type, m.text, m.at).run().catch((e) => console.error('save incoming', e));
+        await saveIncoming(env, m).catch((e) => console.error('save incoming', e));
         const intent = optOutIntent(m.text);
         const reply = intent === 'stop'
-          ? env.DB.prepare('INSERT OR REPLACE INTO optout (sender, at) VALUES (?, ?)').bind(m.from, m.at).run().then(() => sendText(env, m.phoneNumberId, m.from, STOPPED))
+          ? env.DB.batch([env.DB.prepare('INSERT OR REPLACE INTO optout (sender, at) VALUES (?, ?)').bind(m.from, m.at), env.DB.prepare(BUMP)])
+            .then(() => sendText(env, m.phoneNumberId, m.from, STOPPED))
           : intent === 'start'
-            ? env.DB.prepare('DELETE FROM optout WHERE sender = ?').bind(m.from).run().then(() => sendText(env, m.phoneNumberId, m.from, STARTED))
+            ? env.DB.batch([env.DB.prepare('DELETE FROM optout WHERE sender = ?').bind(m.from), env.DB.prepare(BUMP)])
+              .then(() => sendText(env, m.phoneNumberId, m.from, STARTED))
             : autoReply(env, m.phoneNumberId, m.from);
         await reply.catch((e) => console.error('reply', e));
       }
@@ -129,6 +135,7 @@ export default {
       env.DB.prepare('DELETE FROM replied WHERE at < ?').bind(now - 86400),
       env.DB.prepare('DELETE FROM incoming WHERE at < ?').bind(now - KEEP_INCOMING_DAYS * 86400),
       env.DB.prepare('DELETE FROM outgoing WHERE at < ?').bind(now - KEEP_INCOMING_DAYS * 86400),
+      env.DB.prepare('DELETE FROM chats WHERE last_at < ?').bind(now - KEEP_INCOMING_DAYS * 86400),
     ]);
   },
 };

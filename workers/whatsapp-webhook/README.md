@@ -10,7 +10,7 @@ Meta reports whether a WhatsApp message was delivered, read or failed, and the m
 - `GET /status?ids=wamid.…,wamid.…`: the statuses of up to 100 messages, for the sender page.
 - Every day at 03:00 UTC, statuses older than 30 days, auto-reply records older than a day and messages older than 12 months are deleted. The STOP list is kept until the person writes START.
 
-- `inbox.sanjeevaniparivar.org`: the members' inbox, like WhatsApp Web: conversations, unread counts, ticks, replies (text, within 24 hours of the person's last message, as Meta allows). Members sign in with their email through Cloudflare Access; the Worker checks Access's signed token itself (`src/access.ts`) and refuses everything without it, so the inbox stays closed even if Access is switched off. Members never see the Meta token. Each reply records who sent it. Page: `src/inbox.html`; routes: `src/inbox.ts`.
+- `inbox.sanjeevaniparivar.org`: the members' inbox, like WhatsApp Web: conversations, unread counts, ticks, replies (text, within 24 hours of the person's last message, as Meta allows). Members sign in with their email through Cloudflare Access; the Worker checks Access's signed token itself (`src/access.ts`) and refuses everything without it, so the inbox stays closed even if Access is switched off. Members never see the Meta token. Each reply records who sent it. Page: `src/inbox.html`; routes: `src/inbox.ts`. To stay within D1's free 5 million rows read a day, the page polls a one-row change counter (`inbox_version`) every 15 s and reloads only when it changes, and the chat list reads one row per person from `chats`.
 
 Storage is D1 (free: 100,000 writes a day; each message makes up to 3). Workers KV's free tier allows only 1,000 writes a day.
 

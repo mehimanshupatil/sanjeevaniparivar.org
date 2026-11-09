@@ -75,7 +75,7 @@
   // All text from people is put in with textContent, never as HTML
   const $ = (id) => document.getElementById(id);
   const KIND = { image: '📷 चित्र', video: '🎥 व्हिडिओ', document: '📄 फाईल', audio: '🎤 आवाज', sticker: 'स्टिकर', location: '📍 ठिकाण', contacts: '👤 संपर्क' };
-  let chats = [], current = null, shown = '';
+  let chats = [], current = null, shown = '', version = null;
 
   async function api(path, body) {
     const res = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
@@ -211,9 +211,19 @@
   $('search').oninput = renderChats;
   $('back').onclick = () => { current = null; $('app').classList.add('list-open'); history.replaceState(null, '', location.pathname); renderChats(); };
 
-  loadChats().then(() => { const n = location.hash.slice(1); if (/^\d{8,15}$/.test(n)) open(n); });
-  setInterval(() => { if (document.visibilityState === 'visible') { loadChats(); loadThread(); } }, 15000);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { loadChats(); loadThread(); } });
+  refresh().then(() => { const n = location.hash.slice(1); if (/^\d{8,15}$/.test(n)) open(n); });
+  // Polls one number; reloads the list and the open chat only when something changed
+  async function refresh() {
+    if (document.visibilityState !== 'visible') return;
+    try {
+      const { v } = await api('/api/version');
+      if (v === version) return;
+      version = v;
+      await Promise.all([loadChats(), loadThread()]);
+    } catch (e) { toast(e.message); }
+  }
+  setInterval(refresh, 15000);
+  document.addEventListener('visibilitychange', refresh);
 </script>
 </body>
 </html>
