@@ -13,6 +13,9 @@ export const WA_BUSINESS_ACCOUNT_ID = '2539900846429599';
  *  Empty until it is deployed: the page then shows only "sent". */
 export const WA_STATUS_URL = 'https://sp-whatsapp-webhook.mailhimanshupatil.workers.dev';
 
+/** Where members read and answer messages sent to the number (the same Worker, behind Cloudflare Access) */
+export const WA_INBOX_URL = 'https://inbox.sanjeevaniparivar.org/';
+
 /** A template as returned by GET /<WABA_ID>/message_templates */
 export interface WaTemplate {
   id: string;

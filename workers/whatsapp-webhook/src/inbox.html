@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="mr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#C41E3A">
+<title>संजीवनी परिवार · संदेश</title>
+<style>
+  :root { --brand: #C41E3A; --green: #1B7A1B; --bg: #efeae2; --line: #e5e7eb; --muted: #6b7280; --out: #dcf8c6; --tick: #34b7f1; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 15px/1.4 "Noto Sans Devanagari", system-ui, -apple-system, sans-serif; color: #111827; background: #fff; }
+  #app { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; height: 100dvh; }
+  header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; padding-top: calc(10px + env(safe-area-inset-top)); background: var(--brand); color: #fff; min-height: 56px; }
+  header b { font-size: 17px; }
+  header small { display: block; opacity: .85; font-size: 12px; }
+  #list { display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+  #me { margin-left: auto; font-size: 12px; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
+  #search { margin: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; font: inherit; }
+  #chats { overflow-y: auto; flex: 1; }
+  .chat { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; width: 100%; padding: 10px 14px; border: 0; border-bottom: 1px solid #f3f4f6; background: none; text-align: left; font: inherit; cursor: pointer; }
+  .chat:hover, .chat.on { background: #f5f5f5; }
+  .chat .who { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chat .when { font-size: 12px; color: var(--muted); }
+  .chat .last { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .chat .badge { justify-self: end; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--green); color: #fff; font-size: 12px; text-align: center; }
+  .tag { font-size: 11px; padding: 0 6px; border-radius: 4px; background: #fee2e2; color: #991b1b; margin-left: 6px; font-weight: 600; }
+  #chat { display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
+  #back { display: none; background: none; border: 0; color: #fff; font-size: 22px; padding: 0 6px; cursor: pointer; }
+  #msgs { flex: 1; overflow-y: auto; padding: 12px 6%; display: flex; flex-direction: column; gap: 4px; }
+  .day { align-self: center; margin: 8px 0; padding: 2px 10px; border-radius: 8px; background: #fff; color: var(--muted); font-size: 12px; }
+  .msg { max-width: 75%; padding: 6px 9px 4px; border-radius: 8px; background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.out { align-self: flex-end; background: var(--out); }
+  .msg .meta { display: block; text-align: right; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .msg .kind { color: var(--muted); font-style: italic; }
+  .tick.read { color: var(--tick); }
+  .tick.failed { color: #b91c1c; }
+  #composer { display: flex; gap: 8px; padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); background: #f0f0f0; }
+  #text { flex: 1; resize: none; max-height: 140px; padding: 9px 12px; border: 0; border-radius: 20px; font: inherit; }
+  #send { border: 0; border-radius: 20px; padding: 0 16px; background: var(--green); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  #send:disabled { opacity: .5; cursor: default; }
+  #note { margin: 0; padding: 8px 12px; background: #fff7ed; color: #9a3412; font-size: 13px; text-align: center; }
+  #empty { margin: auto; color: var(--muted); text-align: center; padding: 20px; }
+  #toast { position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); background: #111827; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 14px; max-width: 90vw; }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) {
+    #app { grid-template-columns: 1fr; }
+    #app.list-open #chat, #app:not(.list-open) #list { display: none; }
+    #back { display: block; }
+    #msgs { padding: 12px 10px; }
+    .msg { max-width: 85%; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="list-open">
+  <aside id="list">
+    <header><b>संदेश</b><span id="me"></span></header>
+    <input id="search" type="search" placeholder="नाव किंवा क्रमांक शोधा" autocomplete="off">
+    <div id="chats"><p id="empty">अजून कोणताही संदेश नाही.</p></div>
+  </aside>
+  <main id="chat">
+    <header><button id="back" aria-label="मागे">←</button><div><b id="cname">संभाषण निवडा</b><small id="cnum"></small></div></header>
+    <div id="msgs"></div>
+    <p id="note" hidden></p>
+    <footer id="composer" hidden>
+      <textarea id="text" rows="1" placeholder="संदेश लिहा" aria-label="संदेश"></textarea>
+      <button id="send" disabled>पाठवा</button>
+    </footer>
+  </main>
+</div>
+<p id="toast" hidden></p>
+<script>
+  // All text from people is put in with textContent, never as HTML
+  const $ = (id) => document.getElementById(id);
+  const KIND = { image: '📷 चित्र', video: '🎥 व्हिडिओ', document: '📄 फाईल', audio: '🎤 आवाज', sticker: 'स्टिकर', location: '📍 ठिकाण', contacts: '👤 संपर्क' };
+  let chats = [], current = null, shown = '';
+
+  async function api(path, body) {
+    const res = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+    return data;
+  }
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function toast(text) {
+    const t = $('toast'); t.textContent = text; t.hidden = false;
+    clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 5000);
+  }
+  const date = (at) => new Date(at * 1000);
+  const sameDay = (a, b) => a.toDateString() === b.toDateString();
+  const clock = (d) => d.toLocaleTimeString('mr-IN', { hour: 'numeric', minute: '2-digit' });
+  const dayLabel = (d) => sameDay(d, new Date()) ? 'आज' : d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const when = (at) => { const d = date(at); return sameDay(d, new Date()) ? clock(d) : d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'short' }); };
+  const label = (c) => c.name || '+' + c.n;
+  const preview = (type, text) => text || KIND[type] || type;
+  const by = (who) => who === 'auto' ? 'आपोआप' : (who || '').split('@')[0];
+
+  function renderChats() {
+    const q = $('search').value.trim().toLowerCase();
+    const list = chats.filter((c) => !q || label(c).toLowerCase().includes(q) || c.n.includes(q.replace(/\D/g, '') || '¤'));
+    const box = $('chats');
+    box.replaceChildren();
+    if (!list.length) { const p = el('p', '', chats.length ? 'काही सापडले नाही.' : 'अजून कोणताही संदेश नाही.'); p.id = 'empty'; box.append(p); }
+    for (const c of list) {
+      const b = el('button', 'chat' + (c.n === current ? ' on' : ''));
+      const who = el('span', 'who', label(c));
+      if (c.stopped) who.append(el('span', 'tag', 'STOP'));
+      b.append(who, el('span', 'when', when(c.lastAt)),
+        el('span', 'last', (c.lastType === 'out' ? '↪ ' : '') + preview(c.lastType, c.lastText)));
+      if (c.unread) b.append(el('span', 'badge', String(c.unread)));
+      b.onclick = () => open(c.n);
+      box.append(b);
+    }
+    document.title = (chats.some((c) => c.unread) ? '(' + chats.reduce((s, c) => s + c.unread, 0) + ') ' : '') + 'संजीवनी परिवार · संदेश';
+  }
+
+  async function loadChats() {
+    try {
+      const data = await api('/api/chats');
+      $('me').textContent = data.me;
+      chats = data.chats;
+      renderChats();
+    } catch (e) { toast(e.message); }
+  }
+
+  function renderThread(data) {
+    const box = $('msgs');
+    const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+    const key = data.canReply + ',' + data.stopped + ',' + data.messages.map((m) => m.id + (m.status || '')).join();
+    if (key === shown) return;
+    shown = key;
+    box.replaceChildren();
+    let prev = null;
+    for (const m of data.messages) {
+      const d = date(m.at);
+      if (!prev || !sameDay(prev, d)) box.append(el('div', 'day', dayLabel(d)));
+      prev = d;
+      const b = el('div', 'msg ' + m.dir);
+      if (m.dir === 'in' && m.type !== 'text' && KIND[m.type]) b.append(el('span', 'kind', KIND[m.type] + (m.text ? ' · ' : '')));
+      b.append(document.createTextNode(m.dir === 'in' && m.type !== 'text' && !KIND[m.type] && !m.text ? m.type : m.text));
+      const meta = el('span', 'meta', (m.dir === 'out' ? by(m.by) + ' · ' : '') + clock(d));
+      if (m.dir === 'out') {
+        const t = { sent: '✓', delivered: '✓✓', read: '✓✓', failed: '⚠' }[m.status] || '🕓';
+        meta.append(' ', el('span', 'tick ' + (m.status || ''), t));
+      }
+      b.append(meta);
+      box.append(b);
+    }
+    if (atBottom || !box.dataset.n || box.dataset.n !== current) box.scrollTop = box.scrollHeight;
+    box.dataset.n = current;
+    const note = $('note');
+    note.hidden = data.canReply && !data.stopped;
+    note.textContent = !data.canReply
+      ? '२४ तास संपले: या व्यक्तीला आता फक्त मंजूर साचा (template) पाठवता येतो, WhatsApp पाठवणी पानावरून.'
+      : 'या व्यक्तीने STOP लिहिले आहे: फक्त त्यांच्या प्रश्नाचे उत्तर द्या, कार्यक्रमांचे संदेश नको.';
+    $('composer').hidden = !data.canReply;
+  }
+
+  async function loadThread() {
+    if (!current) return;
+    const n = current;
+    try {
+      const data = await api('/api/chat?n=' + n);
+      if (n === current) renderThread(data);
+    } catch (e) { toast(e.message); }
+  }
+
+  async function open(n) {
+    current = n; shown = '';
+    const c = chats.find((x) => x.n === n);
+    $('cname').textContent = c ? label(c) : '+' + n;
+    $('cnum').textContent = c && c.name ? '+' + n : '';
+    $('app').classList.remove('list-open');
+    $('msgs').replaceChildren();
+    history.replaceState(null, '', '#' + n);
+    renderChats();
+    await loadThread();
+    if (c && c.unread) { await api('/api/read', { n }).catch(() => {}); c.unread = 0; renderChats(); }
+  }
+
+  async function send() {
+    const text = $('text').value.trim();
+    if (!text || !current) return;
+    $('send').disabled = true;
+    try {
+      await api('/api/send', { n: current, text });
+      $('text').value = '';
+      await loadThread();
+      loadChats();
+    } catch (e) { toast('पाठवता आला नाही: ' + e.message); }
+    sizeText();
+  }
+
+  function sizeText() {
+    const t = $('text');
+    t.style.height = 'auto';
+    t.style.height = Math.min(t.scrollHeight, 140) + 'px';
+    $('send').disabled = !t.value.trim();
+  }
+
+  $('text').addEventListener('input', sizeText);
+  $('text').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(); } });
+  $('send').onclick = send;
+  $('search').oninput = renderChats;
+  $('back').onclick = () => { current = null; $('app').classList.add('list-open'); history.replaceState(null, '', location.pathname); renderChats(); };
+
+  loadChats().then(() => { const n = location.hash.slice(1); if (/^\d{8,15}$/.test(n)) open(n); });
+  setInterval(() => { if (document.visibilityState === 'visible') { loadChats(); loadThread(); } }, 15000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { loadChats(); loadThread(); } });
+</script>
+</body>
+</html>

@@ -10,6 +10,8 @@ Meta reports whether a WhatsApp message was delivered, read or failed, and the m
 - `GET /status?ids=wamid.…,wamid.…`: the statuses of up to 100 messages, for the sender page.
 - Every day at 03:00 UTC, statuses older than 30 days, auto-reply records older than a day and messages older than 12 months are deleted. The STOP list is kept until the person writes START.
 
+- `inbox.sanjeevaniparivar.org`: the members' inbox, like WhatsApp Web: conversations, unread counts, ticks, replies (text, within 24 hours of the person's last message, as Meta allows). Members sign in with their email through Cloudflare Access; the Worker checks Access's signed token itself (`src/access.ts`) and refuses everything without it, so the inbox stays closed even if Access is switched off. Members never see the Meta token. Each reply records who sent it. Page: `src/inbox.html`; routes: `src/inbox.ts`.
+
 Storage is D1 (free: 100,000 writes a day; each message makes up to 3). Workers KV's free tier allows only 1,000 writes a day.
 
 Pure logic and tests: `src/statuses.ts` (run by `pnpm test` at the repo root).
@@ -37,6 +39,19 @@ Run in this folder (`workers/whatsapp-webhook/`). Needs a free Cloudflare accoun
 Send a template to your own number from `/publicity/whatsapp/`: the row should change from पाठवला to पोहोचला / वाचला within a minute.
 
 Secrets can't be read back from Cloudflare: keep a copy in the trust's password manager. For `wrangler dev`, put them in `.dev.vars` in this folder (ignored by git).
+
+## Inbox setup (once)
+
+1. Tables: `pnpm dlx wrangler@4 d1 migrations apply sp-whatsapp --remote`
+2. Cloudflare dashboard → Zero Trust. Pick a team name (it becomes `<team>.cloudflareaccess.com`) and the Free plan (up to 50 members).
+3. Zero Trust → Access → Applications → Add an application → Self-hosted:
+   - Application domain: `inbox.sanjeevaniparivar.org`; session duration e.g. 1 month.
+   - Policy: name "Members", Action **Allow**, Include → **Emails**: each member's email.
+   - Login method: One-time PIN (the default): members get a code by email.
+4. Copy the application's **AUD tag** (Overview → Application Audience). In `wrangler.jsonc` → `vars`, set `ACCESS_TEAM` to the team name and `ACCESS_AUD` to the tag (neither is secret), then `pnpm dlx wrangler@4 deploy`. The deploy also creates the `inbox` DNS record.
+5. Open https://inbox.sanjeevaniparivar.org, sign in with your email and the code. Phone: browser menu → Add to Home screen.
+
+Add or remove members in the policy's email list (step 3); no deploy needed. With `ACCESS_TEAM` / `ACCESS_AUD` empty the inbox answers 503.
 
 ## Upkeep
 

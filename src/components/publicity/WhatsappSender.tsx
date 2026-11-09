@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn, downloadFile } from '@/lib/utils';
 import {
-  WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
+  WA_INBOX_URL, WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
   CREATIVE_FEATURES, optimizationsOn, DELIVERY_HEADERS, resultIds, withDelivery, type WaTemplate,
 } from '@/lib/whatsapp';
 import { FATAL, WA_EMPTY_SETTINGS as EMPTY, WA_SETTINGS_KEY as STORAGE_KEY, graph, incomingCsv, optedOut, type WaSettings as Settings } from '@/lib/whatsapp-api';
@@ -637,6 +637,9 @@ export default function WhatsappSender({ invitations }: Props) {
           <h2 className="text-lg font-bold text-gray-900">आलेले संदेश</h2>
           <p className="text-sm text-gray-600">
             या क्रमांकावर लोकांनी पाठवलेले संदेश (वेळ, क्रमांक, नाव, संदेश, STOP), CSV मध्ये. यात फोन क्रमांक आहेत: फाइल फक्त संस्थेच्या कामासाठी वापरा व कोणालाही पाठवू नका.
+          </p>
+          <p className="text-sm text-gray-600">
+            वाचून उत्तर देण्यासाठी: <a href={WA_INBOX_URL} target="_blank" rel="noopener" className="text-primary underline">{WA_INBOX_URL.replace(/^https:\/\/|\/$/g, '')}</a> (संस्थेच्या सदस्यांसाठी, ई-मेलने लॉगिन).
           </p>
           <div className="flex flex-wrap gap-2">
             {[30, 365].map((days) => (

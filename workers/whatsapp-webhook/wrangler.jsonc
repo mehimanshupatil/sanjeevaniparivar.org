@@ -14,5 +14,15 @@
   ],
   // Daily clean-up of statuses older than 30 days
   "triggers": { "crons": ["0 3 * * *"] },
+  // The webhook and /status stay on workers.dev; the members' inbox has its own host, behind Cloudflare Access
+  "workers_dev": true,
+  "routes": [{ "pattern": "inbox.sanjeevaniparivar.org", "custom_domain": true }],
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+  "vars": {
+    "PHONE_NUMBER_ID": "1318982904641019",
+    // Zero Trust → Settings → Team name, and Access → Applications → the inbox → AUD tag. Empty: inbox closed
+    "ACCESS_TEAM": "",
+    "ACCESS_AUD": ""
+  },
   "observability": { "enabled": true }
 }

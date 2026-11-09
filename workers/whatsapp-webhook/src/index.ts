@@ -2,15 +2,11 @@
 // (/publicity/whatsapp/) asks for them by message id (id, status, time and error only). Messages
 // people send to this number are kept for 12 months and downloaded by trust members with the export
 // key (/incoming.csv); STOP / START keep the list of numbers not to message (/optout). The number has
-// no app, so each sender gets an auto-reply pointing to the trust's main number, once a day. Setup: ../README.md
+// no app, so each sender gets an auto-reply pointing to the trust's main number, once a day.
+// On inbox.sanjeevaniparivar.org the same Worker serves the members' inbox (inbox.ts). Setup: ../README.md
 import { hasKey, istTime, optOutIntent, parseIncoming, parseStatuses, statusIds, toCsv, validSignature } from './statuses.ts';
-
-// The few D1 types used, so the root type-check needs no Worker type package
-interface D1Statement { bind(...values: unknown[]): D1Statement; all<T>(): Promise<{ results: T[] }>; run(): Promise<{ meta: { changes: number } }> }
-interface D1Database { prepare(sql: string): D1Statement; batch(statements: D1Statement[]): Promise<unknown> }
-interface Env { DB: D1Database; APP_SECRET: string; VERIFY_TOKEN: string; ACCESS_TOKEN: string; EXPORT_KEY: string }
-
-const GRAPH = 'https://graph.facebook.com/v26.0';
+import { sendText as send, type Env } from './env.ts';
+import { inbox } from './inbox.ts';
 /** Sent as a free-form text: allowed (and free) within 24 hours of the person's message */
 const AUTO_REPLY = 'नमस्कार! संजीवनी परिवाराला संदेश पाठवल्याबद्दल धन्यवाद. 🙏\n\n' +
   'हा क्रमांक कार्यक्रमांची माहिती पाठवण्यासाठी आहे; येथे लगेच उत्तर मिळणार नाही. ' +
@@ -38,15 +34,10 @@ const CLAIM_REPLY = `INSERT INTO replied (sender, at) VALUES (?1, ?2)
 const sha256 = async (text: string) =>
   [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)))].map((b) => b.toString(16).padStart(2, '0')).join('');
 
-/** A free-form text, allowed within 24 hours of the person's message */
+/** The Worker's own replies: logged, never thrown, so Meta's report is still answered 200 */
 async function sendText(env: Env, phoneNumberId: string, to: string, body: string): Promise<void> {
   if (!env.ACCESS_TOKEN) return;
-  const res = await fetch(`${GRAPH}/${phoneNumberId}/messages`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${env.ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'text', text: { body, preview_url: false } }),
-  });
-  if (!res.ok) console.error('reply failed', res.status, await res.text());
+  await send(env, phoneNumberId, to, body, 'auto').catch((e) => console.error('reply failed', e));
 }
 
 async function autoReply(env: Env, phoneNumberId: string, to: string): Promise<void> {
@@ -66,6 +57,7 @@ const UPSERT = `INSERT INTO statuses (id, status, rank, at, error) VALUES (?1, ?
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
+    if (url.hostname.startsWith('inbox.')) return inbox(req, env);
 
     // Meta's one-time check when the callback URL is saved in the app
     if (url.pathname === '/webhook' && req.method === 'GET') {
@@ -136,6 +128,7 @@ export default {
       env.DB.prepare('DELETE FROM statuses WHERE at < ?').bind(now - KEEP_DAYS * 86400),
       env.DB.prepare('DELETE FROM replied WHERE at < ?').bind(now - 86400),
       env.DB.prepare('DELETE FROM incoming WHERE at < ?').bind(now - KEEP_INCOMING_DAYS * 86400),
+      env.DB.prepare('DELETE FROM outgoing WHERE at < ?').bind(now - KEEP_INCOMING_DAYS * 86400),
     ]);
   },
 };
