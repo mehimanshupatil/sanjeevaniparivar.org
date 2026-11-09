@@ -10,8 +10,8 @@ import { inbox } from './inbox.ts';
 
 /** Sent as a free-form text: allowed within 24 hours of the person's message (a service message: 1,000 free a month) */
 const AUTO_REPLY = 'नमस्कार! संजीवनी परिवाराला संदेश पाठवल्याबद्दल धन्यवाद. 🙏\n\n' +
-  'आपला संदेश आम्हाला मिळाला आहे; आमचे कार्यकर्ते लवकरच उत्तर देतील. आमचे संदेश नको असल्यास STOP लिहा.\n\n' +
-  'Thank you for your message. A member of our team will reply soon. Write STOP to get no more messages.';
+  'आपला संदेश आम्हाला मिळाला आहे; लवकरच उत्तर दिले जाईल. आमचे संदेश नको असल्यास STOP लिहा.\n\n' +
+  'Thank you for your message. You will get a reply soon. Write STOP to get no more messages.';
 const STOPPED = 'आपल्याला यापुढे संजीवनी परिवाराचे संदेश पाठवले जाणार नाहीत. पुन्हा हवे असल्यास START लिहा.\n\n' +
   'You will get no more messages from Sanjeevani Parivar. Write START to get them again.';
 const STARTED = 'धन्यवाद! आपल्याला पुन्हा संजीवनी परिवाराच्या कार्यक्रमांचे संदेश मिळतील. 🙏\n\n' +
