@@ -21,8 +21,8 @@
   "vars": {
     "PHONE_NUMBER_ID": "1318982904641019",
     // Zero Trust → Settings → Team name, and Access → Applications → the inbox → AUD tag. Empty: inbox closed
-    "ACCESS_TEAM": "",
-    "ACCESS_AUD": ""
+    "ACCESS_TEAM": "dark-heart-f9c1",
+    "ACCESS_AUD": "ca8de128c6113f1264e36234ec22765c8fa384f5f16167fa3602bc452286ded7"
   },
   "observability": { "enabled": true }
 }
