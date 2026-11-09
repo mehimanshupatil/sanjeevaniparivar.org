@@ -149,7 +149,7 @@ export function buildMessage(t: WaTemplate, to: string, values: Record<string, s
   };
 }
 
-/** Marketing templates go through the Marketing Messages API (falls back to Cloud API by itself) */
+/** Marketing templates must go through the Marketing Messages API: Cloud API stops sending them on 13 Oct 2027 */
 export const sendPath = (t: WaTemplate) => (t.category === 'MARKETING' ? 'marketing_messages' : 'messages');
 
 /** Meta's automatic creative optimizations; `turn all off` sets each to OPT_OUT on the template */
