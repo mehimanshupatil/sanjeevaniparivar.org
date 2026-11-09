@@ -10,9 +10,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn, downloadFile } from '@/lib/utils';
 import {
-  GRAPH, WA_PHONE_NUMBER_ID, WA_BUSINESS_ACCOUNT_ID, WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
-  CREATIVE_FEATURES, optimizationsOn, apiError, DELIVERY_HEADERS, resultIds, withDelivery, type WaTemplate,
+  WA_STATUS_URL, parseCsv, toCsv, normalizePhone, templateSlots, headerMedia, fillText, buildMessage, sendPath,
+  CREATIVE_FEATURES, optimizationsOn, DELIVERY_HEADERS, resultIds, withDelivery, type WaTemplate,
 } from '@/lib/whatsapp';
+import { FATAL, WA_EMPTY_SETTINGS as EMPTY, WA_SETTINGS_KEY as STORAGE_KEY, graph, type WaSettings as Settings } from '@/lib/whatsapp-api';
 import { API_FIELD_LABELS, type ApiFields } from '@/publicity/message';
 
 interface Invitation { label: string; url: string; fields: Partial<ApiFields> }
@@ -22,10 +23,6 @@ interface Props {
    *  its date, venue, … for the placeholders */
   invitations: Invitation[];
 }
-
-interface Settings { token: string; phoneNumberId: string; wabaId: string }
-const STORAGE_KEY = 'sp-whatsapp';
-const EMPTY: Settings = { token: '', phoneNumberId: WA_PHONE_NUMBER_ID, wabaId: WA_BUSINESS_ACCOUNT_ID };
 
 /** A column of the CSV, text typed once for everyone, or a detail of the chosen invitation */
 type Source = { column: number } | { text: string } | { field: keyof ApiFields };
@@ -50,21 +47,6 @@ const reachedOf = (ids: string[], delivery: Record<string, Delivery>) => ids.red
   const d = delivery[id]?.status;
   return { delivered: c.delivered + Number(d === 'delivered' || d === 'read'), read: c.read + Number(d === 'read'), failed: c.failed + Number(d === 'failed') };
 }, { delivered: 0, read: 0, failed: 0 });
-
-/** Errors that will fail every message the same way: stop instead of trying the rest */
-const FATAL = new Set([190, 10, 200, 100, 132000, 132001, 132015, 132016]);
-
-async function graph<T>(path: string, token: string, body?: object): Promise<T> {
-  const res = await fetch(`${GRAPH}/${path}`, {
-    method: body ? 'POST' : 'GET',
-    headers: { Authorization: `Bearer ${token}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw Object.assign(new Error(apiError(json, res.status)),
-    { code: json?.error?.code as number | undefined, subcode: json?.error?.error_subcode as number | undefined });
-  return json as T;
-}
 
 const section = 'rounded-2xl bg-white border border-gray-100 p-4 sm:p-6 flex flex-col gap-4';
 const PHONE_HEADER = /phone|mobile|number|whatsapp|फोन|मोबा|क्रमांक|नंबर/i;

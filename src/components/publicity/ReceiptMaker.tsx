@@ -1,9 +1,10 @@
 // Digital donation receipt for trust members (/publicity/receipt/): a copy of the paper receipt,
 // laid out like it, with the same serial number typed from the receipt book. Made in the browser as
-// a PDF; the donor's details are never stored or sent anywhere. The page is public, so a receipt is
+// a PDF; the donor's details are never stored, and sent only to Meta when a receipt goes by WhatsApp. The page is public, so a receipt is
 // made only with the issuer's passphrase, whose key signs the QR that /verify/ checks
 // (src/lib/receipt-sign.ts). Many receipts at once come from a CSV: a print PDF (two per A4) and a
-// ZIP of one PDF per donor (src/lib/receipt-csv.ts).
+// ZIP of one PDF per donor (src/lib/receipt-csv.ts). With a WhatsApp number, receipts can also go to
+// donors through Meta's API (ReceiptWhatsapp.tsx): then the PDF and number pass through Meta.
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
@@ -20,7 +21,7 @@ import { snapshot, textLines } from '@/lib/screenshot';
 import { amountWordsMr, formatRupees } from '@/lib/amount';
 import { financialYearMr, numericDateMr } from '@/lib/marathi';
 import { jpegSize, jpegToPdf, pagesToPdf, type PdfLink, type PdfText } from '@/lib/pdf';
-import { parseCsv, toCsv } from '@/lib/whatsapp';
+import { normalizePhone, parseCsv, toCsv } from '@/lib/whatsapp';
 import { zip } from '@/lib/zip';
 import {
   amountOf, parseReceiptCsv, receiptFileName, receiptMissing, signedFields, RECEIPT_CSV_TEMPLATE,
@@ -28,6 +29,7 @@ import {
 } from '@/lib/receipt-csv';
 import { deriveSigningKey, keyIdFor, passphraseOk, signReceipt, type PublicKeys } from '@/lib/receipt-sign';
 import { suggestPassphrase } from '@/lib/passphrase';
+import ReceiptWhatsapp from './ReceiptWhatsapp';
 import { DEFAULT_PURPOSE, PAYMENT_MODES, RECEIPT_PROGRAMMES, RECEIPT_TITLES, RECEIPT_TRUST, type PaymentMode } from '@/content/receipt';
 import RECEIPT_KEYS from '@/content/receipt-keys.json';
 
@@ -87,6 +89,8 @@ export default function ReceiptMaker() {
   const [r, setR] = useState<Receipt>(EMPTY);
   const set = <K extends keyof Receipt>(k: K) => (v: Receipt[K]) => setR((x) => ({ ...x, [k]: v }));
   const mode = PAYMENT_MODES.find((m) => m.id === r.mode)!;
+  /** The donor's WhatsApp number, to send the receipt; not on the receipt */
+  const [phone, setPhone] = useState('');
   /** Typing a programme by hand ("इतर…"), or picking one from the list */
   const [otherProgramme, setOtherProgramme] = useState(false);
 
@@ -253,6 +257,9 @@ export default function ReceiptMaker() {
             </Field>
           )}
         </div>
+        <Field label="WhatsApp क्रमांक (पावती पाठवण्यासाठी, ऐच्छिक; पावतीवर छापला जात नाही)" id="phone">
+          <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="off" placeholder="उदा. 98765 43210" className="sm:w-64" />
+        </Field>
       </section>
 
       <div className="overflow-x-auto xl:col-start-2 xl:row-span-3 xl:row-start-1">
@@ -271,10 +278,13 @@ export default function ReceiptMaker() {
               <ShareNetworkIcon /> WhatsApp वर पाठवा
             </Button>
           )}
-          <Button variant="ghost" disabled={busy} onClick={() => { setR(EMPTY()); setOtherProgramme(false); }}>नवीन पावती</Button>
+          <Button variant="ghost" disabled={busy} onClick={() => { setR(EMPTY()); setOtherProgramme(false); setPhone(''); }}>नवीन पावती</Button>
         </div>
         {!canShare && <p className="text-xs text-gray-500">PDF डाउनलोड करून WhatsApp मध्ये देणगीदाराला जोडा.</p>}
         {error && <p className="text-sm text-red-700">{error}</p>}
+        {token && phone.trim() && (
+          <ReceiptWhatsapp items={[{ key: `${token}|${phone}`, label: `${r.title} ${r.name.trim()}`, phone, receipt: r, pdf: makePdf }]} />
+        )}
       </section>
 
       <section className={section}>
@@ -343,7 +353,7 @@ export default function ReceiptMaker() {
 function BulkReceipts({ signer }: { signer?: Signer }) {
   const [csv, setCsv] = useState<{ fileName: string; rows: ReceiptRow[]; missingColumns: string[] }>();
   const [progress, setProgress] = useState<{ done: number; total: number }>();
-  const [result, setResult] = useState<{ print: File; zip: File; pages: number }>();
+  const [result, setResult] = useState<{ print: File; zip: File; pages: number; files: { row: ReceiptRow; file: File }[] }>();
   const [error, setError] = useState<string>();
   const good = csv?.rows.filter((row) => !row.problems.length) ?? [];
   const bad = (csv?.rows.length ?? 0) - good.length;
@@ -364,6 +374,7 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
     document.body.append(host);
     const root = createRoot(host);
     const singles: { name: string; data: Uint8Array }[] = [];
+    const files: { row: ReceiptRow; file: File }[] = [];
     const pictures: Awaited<ReturnType<typeof receiptPicture>>[] = [];
     try {
       for (const [i, row] of good.entries()) {
@@ -374,7 +385,9 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
         await Promise.all([...el!.querySelectorAll('img')].map((img) => img.decode().catch(() => {})));
         const picture = await receiptPicture(el!);
         pictures.push(picture);
-        singles.push({ name: receiptFileName(r), data: jpegToPdf(picture.jpeg, A5_WIDTH_PT, picture.links, picture.texts) });
+        const single = { name: receiptFileName(r), data: jpegToPdf(picture.jpeg, A5_WIDTH_PT, picture.links, picture.texts) };
+        singles.push(single);
+        files.push({ row, file: new File([single.data as BlobPart], single.name, { type: 'application/pdf' }) });
         setProgress({ done: i + 1, total: good.length });
       }
     } catch (e) {
@@ -398,6 +411,7 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
       print: new File([pagesToPdf(pages) as BlobPart], `पावत्या-छपाई-${stamp}.pdf`, { type: 'application/pdf' }),
       zip: new File([zip(singles) as BlobPart], `पावत्या-${stamp}.zip`, { type: 'application/zip' }),
       pages: pages.length,
+      files,
     });
   }
 
@@ -406,7 +420,8 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
       <h2 className="font-bold text-gray-900">एकाच वेळी अनेक पावत्या (CSV)</h2>
       <p className="text-sm text-gray-600 max-w-3xl">
         देणग्यांची यादी CSV मध्ये निवडा: प्रत्येक ओळीची पावती तयार होईल. छपाईसाठी एक PDF (A4 वर दोन पावत्या) आणि प्रत्येक देणगीदारासाठी वेगळी PDF (ZIP) मिळेल.
-        स्तंभ: क्रमांक, नाव, रक्कम (आवश्यक); दिनांक, संबोधन, गांव, कार्यक्रम, निमित्त, माध्यम, संदर्भ. यादी कुठेही साठवली किंवा पाठवली जात नाही.
+        स्तंभ: क्रमांक, नाव, रक्कम (आवश्यक); दिनांक, संबोधन, गांव, कार्यक्रम, निमित्त, माध्यम, संदर्भ, WhatsApp क्रमांक (पावती थेट पाठवण्यासाठी).
+        यादी कुठेही साठवली जात नाही; WhatsApp वरून पाठवल्यास फक्त ती पावती व क्रमांक Meta कडे जातात.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <Input type="file" accept=".csv,text/csv" onChange={load} className="sm:w-[420px]" />
@@ -425,10 +440,10 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
           <div className="max-h-[420px] overflow-auto rounded-xl border border-gray-100">
             <table className="w-full text-left text-sm">
               <thead className="sticky top-0 bg-gray-50 text-xs text-gray-500">
-                <tr>{['ओळ', 'क्रमांक', 'नाव', 'गांव', 'रक्कम', 'दिनांक', 'माध्यम', 'स्थिती'].map((h) => <th key={h} className="p-2 font-semibold">{h}</th>)}</tr>
+                <tr>{['ओळ', 'क्रमांक', 'नाव', 'गांव', 'रक्कम', 'दिनांक', 'माध्यम', 'WhatsApp', 'स्थिती'].map((h) => <th key={h} className="p-2 font-semibold">{h}</th>)}</tr>
               </thead>
               <tbody>
-                {csv.rows.map(({ line, receipt: r, problems }) => {
+                {csv.rows.map(({ line, receipt: r, phone, problems }) => {
                   const amount = amountOf(r);
                   let date = r.date;
                   try { date = numericDateMr(r.date); } catch { /* shown as read */ }
@@ -441,6 +456,7 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
                       <td className="p-2 whitespace-nowrap">{amount ? `₹ ${formatRupees(amount)}` : r.amount}</td>
                       <td className="p-2 whitespace-nowrap">{date}</td>
                       <td className="p-2">{PAYMENT_MODES.find((m) => m.id === r.mode)?.mr}{r.reference && ` (${r.reference})`}</td>
+                      <td className="p-2 whitespace-nowrap">{phone && (normalizePhone(phone) ? phone : <span className="text-red-700">{phone} ?</span>)}</td>
                       <td className="p-2 text-xs">{problems.length ? <span className="text-red-700">{problems.join('; ')}</span> : <span className="text-secondary">✔</span>}</td>
                     </tr>
                   );
@@ -461,6 +477,11 @@ function BulkReceipts({ signer }: { signer?: Signer }) {
             )}
           </div>
           {result && <p className="text-xs text-gray-500">छापताना "Actual size / 100%" निवडा, "Fit to page" नको. प्रत्येक पानावरील दोन पावत्या मधल्या रेषेवर कापा.</p>}
+          {result && result.files.some((f) => f.row.phone) && (
+            <ReceiptWhatsapp items={result.files.map(({ row, file }) => ({
+              key: String(row.line), label: `${row.receipt.title} ${row.receipt.name}`, phone: row.phone, receipt: row.receipt, pdf: async () => file,
+            }))} />
+          )}
           {error && <p className="text-sm text-red-700">{error}</p>}
         </>
       )}

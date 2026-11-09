@@ -1,7 +1,8 @@
 // Donation receipts, one or many (/publicity/receipt/): the checks a receipt must pass before it is
 // signed, what the QR signs, the PDF's name, and reading a CSV of donations into receipts. Pure
 // (tested); the trust's lists (titles, payment modes, …) come from src/content/receipt.ts.
-import { MAX_AMOUNT } from './amount.ts';
+import { MAX_AMOUNT, formatRupees } from './amount.ts';
+import { numericDateMr } from './marathi.ts';
 import type { SignedFields } from './receipt-sign.ts';
 
 export interface Receipt<M extends string = string> {
@@ -79,10 +80,13 @@ export const RECEIPT_COLUMNS: { key: keyof Receipt; names: string[] }[] = [
   { key: 'reference', names: ['संदर्भ', 'utr', 'धनादेश', 'cheque', 'reference'] },
 ];
 
+/** The donor's WhatsApp number: optional, only to send them the receipt; never printed or signed */
+export const PHONE_COLUMN_NAMES = ['whatsapp', 'whatsapp क्रमांक', 'मोबाईल', 'मोबाइल', 'फोन', 'phone', 'mobile'];
+
 /** A CSV to start from: every column, and one example row */
 export const RECEIPT_CSV_TEMPLATE = [
-  ['क्रमांक', 'दिनांक', 'संबोधन', 'नाव', 'गांव', 'रक्कम', 'कार्यक्रम', 'निमित्त', 'माध्यम', 'संदर्भ (UTR / धनादेश क्र., बँक)'],
-  ['1427', '02/11/2026', 'श्री', 'आनंद रमेश पाटील', 'वाघोली', '12000', 'वार्षिक', 'संजीवनी परिवाराकरिता', 'UPI', ''],
+  ['क्रमांक', 'दिनांक', 'संबोधन', 'नाव', 'गांव', 'रक्कम', 'कार्यक्रम', 'निमित्त', 'माध्यम', 'संदर्भ (UTR / धनादेश क्र., बँक)', 'WhatsApp क्रमांक'],
+  ['1427', '02/11/2026', 'श्री', 'आनंद रमेश पाटील', 'वाघोली', '12000', 'वार्षिक', 'संजीवनी परिवाराकरिता', 'UPI', '', '98765 43210'],
 ];
 
 const norm = (s: string) => s.normalize('NFC').toLowerCase().replace(/[^\p{L}\p{M}\p{N}]/gu, '');
@@ -141,6 +145,8 @@ export interface ReceiptRow {
   /** The row's line in the CSV, counting the header as 1 */
   line: number;
   receipt: Receipt;
+  /** WhatsApp number as typed, '' when none */
+  phone: string;
   /** Empty when the receipt can be made */
   problems: string[];
 }
@@ -149,6 +155,11 @@ export interface ReceiptRow {
 export function parseReceiptCsv(rows: string[][], rules: ReceiptRules): { rows: ReceiptRow[]; missingColumns: string[] } {
   const [header = [], ...body] = rows;
   const col = receiptColumns(header);
+  const used = Object.values(col);
+  const names = PHONE_COLUMN_NAMES.map(norm);
+  const free = header.map(norm).map((c, i) => (used.includes(i) ? '' : c));
+  let phoneCol = free.findIndex((c) => c && names.includes(c));
+  if (phoneCol < 0) phoneCol = free.findIndex((c) => c && names.some((n) => c.startsWith(n)));
   const missingColumns = (['serial', 'name', 'amount'] as const).filter((k) => col[k] === undefined)
     .map((k) => RECEIPT_COLUMNS.find((c) => c.key === k)!.names[0]);
   const titles = [...rules.titles].sort((a, b) => b.length - a.length);
@@ -190,7 +201,38 @@ export function parseReceiptCsv(rows: string[][], rules: ReceiptRules): { rows: 
       if (first) problems.push(`क्रमांक ${serial} ओळ ${first} मध्येही आहे`);
       else seen.set(serial, i + 2);
     }
-    return [{ line: i + 2, receipt, problems }];
+    return [{ line: i + 2, receipt, phone: phoneCol < 0 ? '' : (cells[phoneCol] ?? '').trim(), problems }];
   });
   return { rows: out, missingColumns };
+}
+
+// ── WhatsApp ──
+
+/** The receipt's details a WhatsApp template can fill in: {{name}}, {{amount}}, … */
+export const RECEIPT_MESSAGE_FIELDS = [
+  { key: 'name', mr: 'नाव' },
+  { key: 'amount', mr: 'रक्कम' },
+  { key: 'serial', mr: 'पावती क्रमांक' },
+  { key: 'date', mr: 'दिनांक' },
+  { key: 'programme', mr: 'कार्यक्रम' },
+  { key: 'purpose', mr: 'निमित्त' },
+  { key: 'village', mr: 'गांव' },
+] as const;
+export type ReceiptMessageField = (typeof RECEIPT_MESSAGE_FIELDS)[number]['key'];
+
+/** Each detail as the message shows it: "श्री आनंद पाटील", "₹ 12,000", "०२/११/२०२६" */
+export function receiptMessageValues(r: Receipt): Record<ReceiptMessageField, string> {
+  const amount = amountOf(r);
+  let date = '';
+  try { date = r.date ? numericDateMr(r.date) : ''; } catch { /* left empty */ }
+  return {
+    name: `${r.title} ${r.name.trim()}`, amount: amount ? `₹ ${formatRupees(amount)}` : '', serial: r.serial.trim(), date,
+    programme: r.programme.trim(), purpose: r.purpose.trim(), village: r.village.trim(),
+  };
+}
+
+/** Which detail fills a placeholder: {{amount}} by its name; {{1}}, {{2}}, … as name, amount, serial, date, programme */
+export function receiptFieldFor(placeholder: string, position: number): ReceiptMessageField {
+  const named = RECEIPT_MESSAGE_FIELDS.find((f) => f.key === placeholder);
+  return named ? named.key : (['name', 'amount', 'serial', 'date', 'programme'] as const)[position] ?? 'name';
 }

@@ -57,6 +57,15 @@ test('buildMessage: named parameters, no components when nothing to fill', () =>
   assert.equal('components' in buildMessage(plain, '91', {}).template, false);
 });
 
+test('buildMessage: a document uploaded to Meta, by id with its file name', () => {
+  const receipt: WaTemplate = { ...positional, category: 'UTILITY', parameter_format: 'NAMED', components: [{ type: 'HEADER', format: 'DOCUMENT' }, { type: 'BODY', text: '{{name}} जी, धन्यवाद' }] };
+  assert.deepEqual(buildMessage(receipt, '91', { 'body:name': 'श्री आनंद' }, { id: '123', filename: 'पावती-1.pdf' }).template.components?.[0],
+    { type: 'header', parameters: [{ type: 'document', document: { id: '123', filename: 'पावती-1.pdf' } }] });
+  // An image has no file name
+  assert.deepEqual(buildMessage(positional, '91', {}, { id: '9', filename: 'x.png' }).template.components?.[0],
+    { type: 'header', parameters: [{ type: 'image', image: { id: '9' } }] });
+});
+
 test('fillText, sendPath, optimizationsOn, apiError', () => {
   assert.equal(fillText('नमस्कार {{1}} {{2}}', { 'body:1': 'A' }, 'body'), 'नमस्कार A {{2}}');
   assert.equal(sendPath(positional), 'marketing_messages');

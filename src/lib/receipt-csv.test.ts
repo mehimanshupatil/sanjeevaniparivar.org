@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   parseReceiptCsv, parseReceiptDate, parseReceiptAmount, parsePaymentMode, receiptColumns, receiptFileName, receiptMissing, signedFields,
-  RECEIPT_CSV_TEMPLATE, type ReceiptRules,
+  receiptMessageValues, receiptFieldFor, RECEIPT_CSV_TEMPLATE, type ReceiptRules,
 } from './receipt-csv.ts';
 
 // As in src/content/receipt.ts
@@ -50,7 +50,7 @@ test('parseReceiptCsv: the template row is a good receipt', () => {
   const { rows, missingColumns } = parseReceiptCsv(RECEIPT_CSV_TEMPLATE, rules);
   assert.deepEqual(missingColumns, []);
   assert.deepEqual(rows, [{
-    line: 2, problems: [],
+    line: 2, problems: [], phone: '98765 43210',
     receipt: { serial: '1427', date: '2026-11-02', title: 'श्री', name: 'आनंद रमेश पाटील', village: 'वाघोली', amount: '12000',
       programme: 'वार्षिक', purpose: 'संजीवनी परिवाराकरिता', mode: 'upi', reference: '' },
   }]);
@@ -66,6 +66,7 @@ test('parseReceiptCsv: titles in the name, defaults, blank rows, and every kind 
   ], rules);
   assert.deepEqual(missingColumns, []);
   assert.deepEqual(rows.map((r) => r.line), [2, 4, 5]);
+  assert.deepEqual(rows.map((r) => r.phone), ['', '', '']);
   assert.deepEqual(rows[0].receipt.title, 'सौ.');
   assert.deepEqual(rows[0].receipt.name, 'सुनीता पाटील');
   assert.deepEqual(rows[0].receipt.serial, '1');
@@ -86,4 +87,19 @@ test('receiptMissing, signedFields and receiptFileName match the single receipt 
   });
   assert.equal(signedFields({ ...r, mode: 'cash', reference: 'X1' }, rules.modes).reference, '');
   assert.equal(receiptFileName(r), 'पावती-आनंद-रमेश-पाटील-1427.pdf');
+});
+
+test('parseReceiptCsv: the WhatsApp number column, by any of its names', () => {
+  const rows = (header: string) => parseReceiptCsv([['क्रमांक', 'नाव', 'रक्कम', header], ['1', 'अ', '10', '+91 98765 43210']], rules).rows;
+  for (const h of ['WhatsApp', 'मोबाईल क्र.', 'Phone number', 'फोन']) assert.equal(rows(h)[0].phone, '+91 98765 43210', h);
+  assert.equal(rows('शेरा')[0].phone, '');
+});
+
+test('receiptMessageValues and receiptFieldFor: what a WhatsApp template is filled with', () => {
+  const r = parseReceiptCsv(RECEIPT_CSV_TEMPLATE, rules).rows[0].receipt;
+  assert.deepEqual(receiptMessageValues(r), {
+    name: 'श्री आनंद रमेश पाटील', amount: '₹ 12,000', serial: '1427', date: '०२/११/२०२६', programme: 'वार्षिक', purpose: 'संजीवनी परिवाराकरिता', village: 'वाघोली',
+  });
+  assert.equal(receiptFieldFor('amount', 0), 'amount');
+  assert.deepEqual(['1', '2', '3', '4', '5', '6'].map((p, i) => receiptFieldFor(p, i)), ['name', 'amount', 'serial', 'date', 'programme', 'name']);
 });

@@ -116,19 +116,21 @@ export function fillText(text: string, values: Record<string, string>, where: st
 
 /**
  * The body for POST /<PHONE_NUMBER_ID>/marketing_messages (or /messages).
- * values: text for each slot key; mediaLink: public URL of the header image/video/document.
+ * values: text for each slot key; media: the header image/video/document, as a public URL or as
+ * the id of a file uploaded to Meta (POST /<PHONE_NUMBER_ID>/media) with the name the person sees.
  */
-export function buildMessage(t: WaTemplate, to: string, values: Record<string, string>, mediaLink?: string) {
+export function buildMessage(t: WaTemplate, to: string, values: Record<string, string>, media?: string | { id: string; filename?: string }) {
   const named = t.parameter_format === 'NAMED';
   const param = (s: Slot) => ({ type: 'text', ...(named ? { parameter_name: s.name } : {}), text: values[s.key] ?? '' });
   const slots = templateSlots(t);
   const of = (where: Slot['where']) => slots.filter((s) => s.where === where);
   const components: object[] = [];
 
-  const media = headerMedia(t);
-  if (media) {
-    if (!mediaLink) throw new Error('This template has a media header: give the link of the image');
-    components.push({ type: 'header', parameters: [{ type: media, [media]: { link: mediaLink } }] });
+  const kind = headerMedia(t);
+  if (kind) {
+    if (!media) throw new Error('This template has a media header: give the link of the image');
+    const file = typeof media === 'string' ? { link: media } : { id: media.id, ...(kind === 'document' && media.filename ? { filename: media.filename } : {}) };
+    components.push({ type: 'header', parameters: [{ type: kind, [kind]: file }] });
   } else if (of('header').length) {
     components.push({ type: 'header', parameters: of('header').map(param) });
   }

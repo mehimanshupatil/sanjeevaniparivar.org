@@ -1,11 +1,11 @@
 // Privacy Policy (/privacy) and Terms of Service (/terms). Also the URLs given to Meta for the
 // trust's WhatsApp Business app. Update `LEGAL_UPDATED` and the text when a new use of personal
-// data starts (e.g. registrations or donation receipts over WhatsApp).
+// data starts (e.g. registrations over WhatsApp).
 import type { Bilingual } from '@/i18n/translations';
 import { BRAND_EMAIL } from './brand';
 
 /** YYYY-MM-DD; shown via src/lib/marathi.ts */
-export const LEGAL_UPDATED = '2026-11-06';
+export const LEGAL_UPDATED = '2026-11-09';
 export const LEGAL_EMAIL = BRAND_EMAIL;
 
 export interface LegalSection {
@@ -68,14 +68,18 @@ export const PRIVACY: LegalDoc = {
     {
       heading: { mr: 'WhatsApp वर आम्ही घेत असलेली माहिती', en: 'Information on WhatsApp' },
       paragraphs: [{
-        mr: 'आम्ही Meta च्या WhatsApp Business Platform द्वारे कार्यक्रमांची निमंत्रणे व माहिती पाठवतो. त्यासाठी पुढील माहिती आमच्याकडे येते:',
-        en: 'We use Meta\'s WhatsApp Business Platform to send invitations and updates about our programmes. For this we hold:',
+        mr: 'आम्ही Meta च्या WhatsApp Business Platform द्वारे कार्यक्रमांची निमंत्रणे व माहिती, आणि क्रमांक दिलेल्या देणगीदारांना देणगीची पावती पाठवतो. त्यासाठी पुढील माहिती आमच्याकडे येते:',
+        en: 'We use Meta\'s WhatsApp Business Platform to send invitations and updates about our programmes, and donation receipts to donors who give us their number. For this we hold:',
       }],
       list: [
         { mr: 'आपला WhatsApp फोन क्रमांक आणि WhatsApp वरील प्रोफाइल नाव', en: 'Your WhatsApp phone number and WhatsApp profile name' },
         { mr: 'आपण आम्हाला पाठवलेले संदेश', en: 'The messages you send us' },
         { mr: 'आपण संदेश घेण्यास दिलेली संमती किंवा ते थांबवण्याची विनंती', en: 'Your consent to receive messages, or your request to stop them' },
         { mr: 'आमचे संदेश पोहोचले / वाचले गेले की नाही याची WhatsApp कडून मिळणारी स्थिती', en: 'Delivery and read status of our messages, as reported by WhatsApp' },
+        {
+          mr: 'देणगी पावती पाठवताना: पावतीतील तपशील (नाव, गाव, रक्कम, दिनांक, पावती क्रमांक, देणगीचे माध्यम). पावतीची PDF फक्त त्या संदेशासाठी Meta कडे जाते आणि Meta ती ३० दिवसांनी काढून टाकते; आम्ही ती कोणत्याही सार्वजनिक दुव्यावर ठेवत नाही.',
+          en: 'For donation receipts: the details on the receipt (name, village, amount, date, receipt number, payment mode). The receipt PDF goes to Meta only for that message, and Meta deletes it after 30 days; we never put it at a public link.',
+        },
       ],
     },
     {
@@ -83,6 +87,7 @@ export const PRIVACY: LegalDoc = {
       list: [
         { mr: 'आमच्या कार्यक्रमांची (उदा. ग्राहक पेठ, व्याख्यानमाला, कार्यशाळा) निमंत्रणे, स्मरण व बदलांची माहिती पाठवणे', en: 'To send invitations, reminders and changes for our programmes (for example ग्राहक पेठ, the lecture series and workshops)' },
         { mr: 'आपल्या प्रश्नांना व संदेशांना उत्तर देणे', en: 'To reply to your questions and messages' },
+        { mr: 'आपण दिलेल्या देणगीची पावती आपल्याला पाठवणे', en: 'To send you the receipt for your donation' },
         { mr: 'कोणाला संदेश पाठवायचे व कोणाला नाही, याची नोंद ठेवणे', en: 'To keep a record of who has agreed to receive messages and who has opted out' },
       ],
       note: {
@@ -145,8 +150,8 @@ export const PRIVACY: LegalDoc = {
     {
       heading: { mr: 'धोरणातील बदल', en: 'Changes to this policy' },
       paragraphs: [{
-        mr: 'माहितीचा नवीन वापर सुरू करण्यापूर्वी (उदा. WhatsApp वरून नोंदणी किंवा देणगी पावती) आम्ही हे धोरण अद्ययावत करू. सर्वात वरील तारीख शेवटच्या बदलाची आहे.',
-        en: 'We will update this policy before starting any new use of personal information (for example registrations or donation receipts over WhatsApp). The date at the top shows the last change.',
+        mr: 'माहितीचा नवीन वापर सुरू करण्यापूर्वी (उदा. WhatsApp वरून नोंदणी) आम्ही हे धोरण अद्ययावत करू. सर्वात वरील तारीख शेवटच्या बदलाची आहे.',
+        en: 'We will update this policy before starting any new use of personal information (for example registrations over WhatsApp). The date at the top shows the last change.',
       }],
     },
     { heading: { mr: 'संपर्क', en: 'Contact' }, paragraphs: [CONTACT] },
